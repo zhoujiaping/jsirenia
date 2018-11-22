@@ -1,9 +1,7 @@
 package org.jsirenia.bean;
 
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.handler.ResourceHandler;
-import org.eclipse.jetty.server.handler.StatisticsHandler;
-import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.server.handler.HandlerWrapper;
 import org.eclipse.jetty.webapp.WebAppContext;
 
 /**
@@ -26,7 +24,7 @@ public class JettySpringMVCStart {
 		//webContext.setResourceBase(DEFAULT_WEBAPP_PATH);
 		//webContext.setClassLoader(Thread.currentThread().getContextClassLoader());
 		//server.setHandler(webContext);
-		server.insertHandler(webContext);
+		server.insertHandler(server);
 		return server;
 	}
 

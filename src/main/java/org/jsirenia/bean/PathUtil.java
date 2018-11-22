@@ -14,10 +14,10 @@ public class PathUtil {
 	}
 	public static void main(String[] args) {
 		String host = "localhost";
-		String port = "";
+		String port = "8080";
 		String rootPath = "/a/b/\\/";
 		String serviceName = "/cc";
 		String serviceUrl = "http://"+PathUtil.concat(host, ":",port+"",rootPath,serviceName);
-		System.out.println(serviceUrl);
+		System.out.println(serviceUrl);//result=>http://localhost:8080/a/b/cc
 	}
 }
