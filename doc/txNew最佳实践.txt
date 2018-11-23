@@ -12,8 +12,15 @@ import org.springframework.stereotype.Service;
  * 是否在外层事务中也有更新操作。如果外层事务中也有更新操作，那么会产生死锁！！！ 
  * * 慎用REQUIRED_NEW事务，使用REQUIRED_NEW事务时，一定要考虑在此事务中更新的记录，
  * 是否在外层事务中也有更新操作。如果外层事务中也有更新操作，那么会产生死锁！！！
- * 所以最佳实践是：尽量不要在更新操作之后调用doInTxNew。非必要情况不要用REQUIRED_NEW事务。
+ * 所以最佳实践是：分析过程中要有哪些事务，哪些操作属于同一个事务，任何一个点发生异常，要回滚哪些操作，
+ 	哪些操作不能被回滚。
  * 如果希望既提交事务，又返回异常，可以考虑将异常包装到一个对象中正常返回。
+ 
+ 
+ 	 * txNewServiceImpl可以嵌套使用，嵌套的时候会开启新的事务。
+	 * 但是要注意，我们的事务隔离级别是读已提交。外层的sql，比如这里的testMapper.addCustVersion(custId);
+	 * 还没有提交，相关的记录已经被lock，内层的sql不能操作这些被lock的数据。否则就死锁了，过一会儿会抛出
+	 * 等待锁超时的异常。
  */
 @Service
 public class TxNewServiceImpl{
