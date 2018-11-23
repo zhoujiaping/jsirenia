@@ -5,7 +5,6 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sfpay.msfs.jyd.common.util.RedisLock;
 /**
  * 使用模板方法模式，封装Redis锁的相关操作。
  * 应用该模板，在获取redis锁成功，失败，释放redis锁成功，失败，异常时，自定义行为。
