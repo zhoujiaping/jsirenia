@@ -1,0 +1,27 @@
+import org.springframework.stereotype.Service;
+/**
+在spring的事务配置中，配置
+<tx:method name="*TxNew" propagation="REQUIRES_NEW" rollback-for="..." isolation="..."/>
+ * 用来解决spring事务的REQUIRED_NEW需要在一个被代理的方法上起作用的问题。
+ * 之前的解决办法是调用另外一个service的xxxTxNew方法，在它的xxxTxNew方法中做业务处理，
+ * 这样导致业务逻辑分散到多个类中，并且不方便使用上下文。
+ * 注意：
+ * * 慎用REQUIRED_NEW事务，使用REQUIRED_NEW事务时，一定要考虑在此事务中更新的记录，
+ * 是否在外层事务中也有更新操作。如果外层事务中也有更新操作，那么会产生死锁！！！ 
+ * * 慎用REQUIRED_NEW事务，使用REQUIRED_NEW事务时，一定要考虑在此事务中更新的记录，
+ * 是否在外层事务中也有更新操作。如果外层事务中也有更新操作，那么会产生死锁！！！ 
+ * * 慎用REQUIRED_NEW事务，使用REQUIRED_NEW事务时，一定要考虑在此事务中更新的记录，
+ * 是否在外层事务中也有更新操作。如果外层事务中也有更新操作，那么会产生死锁！！！
+ * 所以最佳实践是：尽量不要在更新操作之后调用doInTxNew。非必要情况不要用REQUIRED_NEW事务。
+ * 如果希望既提交事务，又返回异常，可以考虑将异常包装到一个对象中正常返回。
+ */
+@Service
+public class TxNewServiceImpl{
+	public <T> T doInTxNew(Callback<T> callback){
+		return callback.execute();
+	}
+}
+
+public interface Callback<T> {
+	T execute();
+}
