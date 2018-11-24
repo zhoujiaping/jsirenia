@@ -19,5 +19,9 @@ public class PathUtil {
 		String serviceName = "/cc";
 		String serviceUrl = "http://"+PathUtil.concat(host, ":",port+"",rootPath,serviceName);
 		System.out.println(serviceUrl);//result=>http://localhost:8080/a/b/cc
+		
+		String rootPath2 = "f:/";
+		String subPath2 =  "text.txt";
+		System.out.println(PathUtil.concat(rootPath2, subPath2));//result=>http://localhost:8080/a/b/cc
 	}
 }
