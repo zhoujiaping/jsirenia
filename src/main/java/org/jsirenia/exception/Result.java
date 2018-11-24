@@ -7,14 +7,14 @@ import com.alibaba.fastjson.JSONObject;
 /**
  * 返回给用户的结果
  */
-public class Result implements Serializable{
+public class Result<T> implements Serializable{
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	private boolean success;
 	private String msg;
-	private Object data;
+	private T data;
 	public boolean isSuccess() {
 		return success;
 	}
@@ -27,10 +27,10 @@ public class Result implements Serializable{
 	public void setMsg(String msg) {
 		this.msg = msg;
 	}
-	public Object getData() {
+	public T getData() {
 		return data;
 	}
-	public void setData(Object data) {
+	public void setData(T data) {
 		this.data = data;
 	}
 	@Override

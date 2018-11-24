@@ -1,6 +1,5 @@
 package org.jsirenia.exception.demo;
 
-import org.jsirenia.exception.DemoExceptionCode;
 import org.jsirenia.exception.ServiceException;
 
 /**

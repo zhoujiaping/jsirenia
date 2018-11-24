@@ -1,4 +1,4 @@
-package org.jsirenia.bean;
+package org.jsirenia.data;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -8,7 +8,12 @@ import java.util.function.Consumer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+/**
+ * 每次从数据库读取1000条数据，逐条处理，处理完毕继续读1000条，直到所有数据处理完毕。
+ * @author Administrator
+ *
+ * @param <T>
+ */
 public class BatchData<T> implements Iterator<T>{
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -75,7 +80,7 @@ public class BatchData<T> implements Iterator<T>{
 		return item;
 	}
 	public static void main(String[] args) {
-		BatchData.withProducer("test", (Integer prev,int fetchSize)->{
+		BatchData.withProducer("test", (Integer prev,int fetchSize)->{//读取一批数据
 			if(prev==null){
 				prev=0;
 			}
@@ -84,7 +89,7 @@ public class BatchData<T> implements Iterator<T>{
 				list.add(prev+i);
 			}
 			return list;
-		}).withFetchSize(10).forEach(item->{
+		}).withFetchSize(10).forEach(item->{//逐条处理
 			System.out.println(item);
 		});
 	}

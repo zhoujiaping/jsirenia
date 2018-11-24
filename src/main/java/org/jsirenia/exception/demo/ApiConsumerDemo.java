@@ -1,7 +1,6 @@
 package org.jsirenia.exception.demo;
 
 import org.jsirenia.exception.ApiException;
-import org.jsirenia.exception.Demo2ExceptionCode;
 import org.jsirenia.exception.Result;
 import org.jsirenia.exception.ServiceException;
 
@@ -10,8 +9,8 @@ import org.jsirenia.exception.ServiceException;
  * 比如dubbo的cosumer filter做统一异常处理
  */
 public class ApiConsumerDemo {
-	public Result filter(String method){
-		Result result = new Result();
+	public Result<Object> filter(String method){
+		Result<Object> result = new Result<>();
 		try{
 			if(method=="doService1"){
 				result.setData(new ApiConsumerServiceDemo().doService1());

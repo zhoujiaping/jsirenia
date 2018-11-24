@@ -1,4 +1,4 @@
-package org.jsirenia.bean;
+package org.jsirenia.spring;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;

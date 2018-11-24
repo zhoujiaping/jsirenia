@@ -10,24 +10,24 @@ import org.jsirenia.exception.Result;
 public class ApiExceptionTest {
 	public static void main(String[] args) {
 		try{
-			Result r = test1();
+			Result<Object> r = test1();
 			System.out.println(r);
 		}catch(Exception e){
 			System.out.println("at main");
 			e.printStackTrace();
 		}
 		try{
-			Result r = test2();
+			Result<Object> r = test2();
 			System.out.println(r);
 		}catch(Exception e){
 			System.out.println("at main");
 			e.printStackTrace();
 		}
 	}
-	public static Result test1(){
+	public static Result<Object> test1(){
 		return new ApiConsumerDemo().filter("doService1");
 	}
-	public static Result test2(){
+	public static Result<Object> test2(){
 		return new ApiConsumerDemo().filter("doService2");
 	}
 }
