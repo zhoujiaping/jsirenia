@@ -1,4 +1,4 @@
-package org.jsirenia.bean;
+package org.jsirenia.server;
 
 import java.io.ByteArrayInputStream;
 import java.io.FileOutputStream;

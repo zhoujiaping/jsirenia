@@ -1,4 +1,4 @@
-package org.jsirenia.bean;
+package org.jsirenia.aop;
 
 import java.lang.reflect.Type;
 import java.lang.reflect.WildcardType;
@@ -9,6 +9,7 @@ import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.jsirenia.js.Js;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -20,9 +21,6 @@ import com.alibaba.fastjson.JSONObject;
 @Component
 public class JsAspect {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-
-
 	/**
 	 * 环绕通知
 	 * 
@@ -70,6 +68,43 @@ public class JsAspect {
 			Object ret = joinPoint.proceed();
 			return ret;
 		}
-		
+	}
+
+	/**
+	 * 前置通知
+	 */
+	// @Before("execution(* com.xxx.impl..*(..))")
+	public void before() {
+		System.out.println("前置通知....");
+	}
+
+	/**
+	 * 后置通知 returnVal,切点方法执行后的返回值
+	 */
+	// @AfterReturning(value="execution(*
+	// com.zejian.spring.springAop.dao.UserDao.addUser(..))",returning =
+	// "returnVal")
+	public void AfterReturning(Object returnVal) {
+		System.out.println("后置通知...." + returnVal);
+	}
+
+	/**
+	 * 抛出通知
+	 * 
+	 * @param e
+	 */
+	// @AfterThrowing(value="execution(*
+	// com.zejian.spring.springAop.dao.UserDao.addUser(..))",throwing = "e")
+	public void afterThrowable(Throwable e) {
+		System.out.println("出现异常:msg=" + e.getMessage());
+	}
+
+	/**
+	 * 无论什么情况下都会执行的方法
+	 */
+	// @After(value="execution(*
+	// com.zejian.spring.springAop.dao.UserDao.addUser(..))")
+	public void after() {
+		System.out.println("最终通知....");
 	}
 }

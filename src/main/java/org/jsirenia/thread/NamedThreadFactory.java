@@ -1,4 +1,4 @@
-package org.jsirenia.bean;
+package org.jsirenia.thread;
 
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;

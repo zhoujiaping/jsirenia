@@ -1,4 +1,4 @@
-package org.jsirenia.bean;
+package org.jsirenia.file;
 
 public class PathUtil {
 	public static String concat(String path0,String... paths){

@@ -11,7 +11,6 @@ import java.nio.file.WatchService;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jsirenia.bean.PathUtil;
 import org.jsirenia.util.callback.Callback10;
 
 public class FileWatcher {
@@ -41,7 +40,7 @@ public class FileWatcher {
 			throw new RuntimeException(e);
 		}
 	}
-	public void watchInternal(Callback10<WatchEvent<?>> cb) throws IOException, InterruptedException{
+	private void watchInternal(Callback10<WatchEvent<?>> cb) throws IOException, InterruptedException{
 		WatchService watcher = FileSystems.getDefault().newWatchService();
 		Path path = FileSystems.getDefault().getPath(dir);
 		//WatchKey key = path.register(watcher, StandardWatchEventKinds.ENTRY_MODIFY);

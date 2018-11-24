@@ -1,4 +1,4 @@
-package org.jsirenia.bean;
+package org.jsirenia.reflect;
 
 import java.lang.reflect.Field;
 

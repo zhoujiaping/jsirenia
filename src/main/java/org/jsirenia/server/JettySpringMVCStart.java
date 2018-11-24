@@ -1,4 +1,4 @@
-package org.jsirenia.bean;
+package org.jsirenia.server;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerWrapper;

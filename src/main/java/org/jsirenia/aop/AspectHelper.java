@@ -1,4 +1,4 @@
-package org.jsirenia.bean;
+package org.jsirenia.aop;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
