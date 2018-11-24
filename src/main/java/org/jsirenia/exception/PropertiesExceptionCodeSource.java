@@ -20,9 +20,6 @@ public class PropertiesExceptionCodeSource implements ExceptionCodeSource{
 		}
 		String key = code.substring(dotIndex+1);
 		String value = prop.getProperty(key);
-		if(value==null||value.trim()==""){
-			value = "系统内部错误";
-		}
 		return value;
 	}
 	//为了支持系统不重启就可以修改错误提示消息，添加重新加载的功能。

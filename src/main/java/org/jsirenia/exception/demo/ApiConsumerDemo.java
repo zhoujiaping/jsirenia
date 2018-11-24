@@ -25,7 +25,11 @@ public class ApiConsumerDemo {
 			System.err.print(e.getCode());
 			e.printStackTrace();
 			result.setSuccess(false);
-			result.setMsg(e.getMessage());
+			String msg = e.getMessage();
+			if(msg==null||msg.trim()==""){
+				msg = "系统内部错误";
+			}
+			result.setMsg(msg);
 			return result;
 		}catch(ServiceException e){
 			System.out.println("at consumer");
