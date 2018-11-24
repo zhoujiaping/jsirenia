@@ -9,7 +9,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 
 import redis.clients.jedis.Jedis;
 
-public class RedisLock2 {
+public class SpringRedisLock  implements RedisLock {
 
 	// private static Logger logger = LoggerFactory.getLogger(RedisLock.class);
 	private static final String LOCK_SUCCESS = "OK";

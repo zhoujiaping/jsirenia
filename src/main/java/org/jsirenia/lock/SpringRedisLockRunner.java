@@ -2,6 +2,10 @@ package org.jsirenia.lock;
 
 import java.util.UUID;
 
+import org.jsirenia.util.callback.Callback00;
+import org.jsirenia.util.callback.Callback01;
+import org.jsirenia.util.callback.Callback10;
+import org.jsirenia.util.callback.Callback11;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,8 +14,8 @@ import org.slf4j.LoggerFactory;
  * 应用该模板，在获取redis锁成功，失败，释放redis锁成功，失败，异常时，自定义行为。
  * 默认在获取锁失败、释放锁失败、释放锁异常的时候，打印日志并抛出异常。
  * */
-public abstract class RedisLockCallback<T> implements Callback<T>{
-	protected Logger logger = LoggerFactory.getLogger(RedisLockCallback.class);
+public abstract class SpringRedisLockRunner<T> implements Callback11<T,Callback01<T>>,Callback10<Callback00>{
+	protected Logger logger = LoggerFactory.getLogger(SpringRedisLockRunner.class);
 	private RedisLock redisLock;
 	protected String lockKey;
 	protected long expireTime;
@@ -22,12 +26,11 @@ public abstract class RedisLockCallback<T> implements Callback<T>{
 	 * @param lockKey
 	 * @param expireTime 锁的过期时间，单位秒
 	 */
-	public RedisLockCallback(RedisLock redisLock,String lockKey,long expireTime){
+	public SpringRedisLockRunner(RedisLock redisLock,String lockKey,long expireTime){
 		this.redisLock = redisLock;
 		this.lockKey = lockKey;
 		this.expireTime = expireTime;
 	}
-	protected abstract T onGetLockSuccess();
 	protected void onReleaseLockSuccess(){
 		
 	}
@@ -44,12 +47,19 @@ public abstract class RedisLockCallback<T> implements Callback<T>{
 		throw new RuntimeException(e);
 	}
 	@Override
-	public T execute() {
+	public void apply(Callback00 cb) {
+		apply(()->{
+			cb.apply();
+			return null;
+		});
+	}
+		@Override
+	public T apply(Callback01<T> cb) {
 		//boolean locked = redisLock.setValueNxExpire(lockKey,requestId, ""+expireTime);
 		boolean locked = redisLock.tryGetDistributedLock(lockKey, requestId, expireTime*1000);
 		if(locked){
 			try{
-				return onGetLockSuccess();
+				return cb.apply();
 			}finally{
 				Boolean unlockSuccess = null;
 				try{
