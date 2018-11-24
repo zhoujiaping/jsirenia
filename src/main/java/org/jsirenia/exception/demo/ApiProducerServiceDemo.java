@@ -1,4 +1,8 @@
-package org.jsirenia.exception;
+package org.jsirenia.exception.demo;
+
+import org.jsirenia.exception.DemoExceptionCode;
+import org.jsirenia.exception.ServiceException;
+
 /**
  * api提供者(Demo模块)的业务异常处理
  */

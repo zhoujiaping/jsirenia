@@ -1,4 +1,10 @@
-package org.jsirenia.exception;
+package org.jsirenia.exception.demo;
+
+import org.jsirenia.exception.ApiException;
+import org.jsirenia.exception.Demo2ExceptionCode;
+import org.jsirenia.exception.Result;
+import org.jsirenia.exception.ServiceException;
+
 /**
  * api消费者(Demo2模块)统一异常处理
  * 比如dubbo的cosumer filter做统一异常处理
@@ -31,7 +37,7 @@ public class ApiConsumerDemo {
 			System.out.println("at consumer");
 			result.setSuccess(false);
 			String code = Demo2ExceptionCode.SYSTEM_ERROR;
-			result.setMsg(ServiceException.getMsgFromProperties(code));
+			result.setMsg(ServiceException.currentExceptionCodeSource().getMsg(code));
 			System.err.println(code+"#"+result.getMsg());
 			e.printStackTrace();//模拟日志打印异常
 			return result;

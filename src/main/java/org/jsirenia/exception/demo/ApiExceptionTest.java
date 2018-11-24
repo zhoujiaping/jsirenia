@@ -1,4 +1,7 @@
-package org.jsirenia.exception;
+package org.jsirenia.exception.demo;
+
+import org.jsirenia.exception.Result;
+
 /**
  * 测试api异常设计
  * 结果：src/main/resource/exception/异常处理结果.png

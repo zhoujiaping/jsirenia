@@ -1,4 +1,4 @@
-package org.jsirenia.exception;
+package org.jsirenia.exception.demo;
 
 import java.io.FileNotFoundException;
 
