@@ -4,7 +4,7 @@ import java.util.Collections;
 
 import redis.clients.jedis.Jedis;
 
-public class RedisDistLock {
+public class JedisLock implements RedisLock{
     // private static Logger logger = LoggerFactory.getLogger(RedisLock.class);
     private static final String LOCK_SUCCESS = "OK";
     private static final Long RELEASE_SUCCESS = 1L;

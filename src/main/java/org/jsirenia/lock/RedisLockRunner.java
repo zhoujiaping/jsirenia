@@ -2,6 +2,10 @@ package org.jsirenia.lock;
 
 import java.util.UUID;
 
+import org.jsirenia.util.callback.Callback00;
+import org.jsirenia.util.callback.Callback01;
+import org.jsirenia.util.callback.Callback10;
+import org.jsirenia.util.callback.Callback11;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
@@ -13,9 +17,9 @@ import redis.clients.jedis.Jedis;
  * 固定次数重试模式，每隔一小段时间重试获取锁，如果最后仍然获取不到锁，就返回失败。
  * 使用了模板方法模式和适配器模式、回调风格。在成功获取锁之后、获取锁异常、获取锁失败、释放锁成功等各个点设计了回调。
  */
-public abstract class RedisDistLockCallback<T> implements Callback<T> {
-	private static final Logger logger = LoggerFactory.getLogger(RedisDistLockCallback.class);
-	private RedisDistLock redisDistLock;
+public class RedisLockRunner<T> implements Callback11<T,Callback01<T>>,Callback10<Callback00> {
+	private static final Logger logger = LoggerFactory.getLogger(RedisLockRunner.class);
+	private RedisLock redisDistLock;
 	private String lockKey;
 	/** 锁的过期时间，毫秒 */
 	private long expireTime;
@@ -39,14 +43,12 @@ public abstract class RedisDistLockCallback<T> implements Callback<T> {
 	 * @param expireTime
 	 *            锁的过期时间，单位秒
 	 */
-	public RedisDistLockCallback(RedisDistLock redisDistLock, String lockKey, long expireTime) {
+	public RedisLockRunner(RedisLock redisDistLock, String lockKey, long expireTime) {
 		this.redisDistLock = redisDistLock;
 		this.lockKey = lockKey;
 		this.expireTime = expireTime;
 		this.retryMode = RetryMode.DEFAULT;
 	}
-
-	protected abstract T onGetLockSuccess();
 
 	protected void onReleaseLockSuccess() {
 		logger.info(String.format("释放redis锁成功,lockKey=%s,requestId=%s,expireTime=%s", lockKey, requestId, expireTime));
@@ -75,7 +77,7 @@ public abstract class RedisDistLockCallback<T> implements Callback<T> {
 			throw new RuntimeException("已经执行过，某些操作不被支持");
 		}
 	}
-	protected RedisDistLockCallback<T> withRetryTimeout(long retryTimeout, long millisecond) {
+	protected RedisLockRunner<T> withRetryTimeout(long retryTimeout, long millisecond) {
 		ensureNotAtExecuting();
 		this.retryTimeout = retryTimeout;
 		Assert.isTrue(millisecond >= 5, "millisecond必须大于等于5ms");
@@ -89,7 +91,7 @@ public abstract class RedisDistLockCallback<T> implements Callback<T> {
 	/**
 	 * 采用了链式调用风格，使调用更简洁方便
 	 */
-	protected RedisDistLockCallback<T> withRetryTimeout(long retryTimeout) {
+	protected RedisLockRunner<T> withRetryTimeout(long retryTimeout) {
 		ensureNotAtExecuting();
 		Assert.isTrue(retryTimeout >= 5, "retryTimeout必须大于等于5ms");
 		this.retryTimeout = retryTimeout;
@@ -97,7 +99,7 @@ public abstract class RedisDistLockCallback<T> implements Callback<T> {
 		return this;
 	}
 
-	protected RedisDistLockCallback<T> withRetryTimes(int retryTimes, long millisecond) {
+	protected RedisLockRunner<T> withRetryTimes(int retryTimes, long millisecond) {
 		ensureNotAtExecuting();
 		Assert.isTrue(millisecond >= 5, "millisecond必须大于等于5ms");
 		Assert.isTrue(retryTimes >= 0, "retryTimes必须大于等于0");
@@ -107,7 +109,7 @@ public abstract class RedisDistLockCallback<T> implements Callback<T> {
 		return this;
 	}
 
-	protected RedisDistLockCallback<T> withRetryTimes(int retryTimes) {
+	protected RedisLockRunner<T> withRetryTimes(int retryTimes) {
 		ensureNotAtExecuting();
 		Assert.isTrue(retryTimes >= 0, "retryTimes必须大于等于0");
 		this.retryTimes = retryTimes;
@@ -116,16 +118,16 @@ public abstract class RedisDistLockCallback<T> implements Callback<T> {
 	}
 
 	@Override
-	public T execute() {
+	public T apply(Callback01<T> onGetLockSuccess) {
 		try {
 			executed = true;
-			return executeInternal();
+			return executeInternal(onGetLockSuccess);
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	private T executeInternal() throws InterruptedException {
+	private T executeInternal(Callback01<T> onGetLockSuccess) throws InterruptedException {
 		// boolean locked = redisLock.setValueNxExpire(lockKey,requestId,
 		// ""+expireTime);
 		boolean locked = false;
@@ -174,7 +176,7 @@ public abstract class RedisDistLockCallback<T> implements Callback<T> {
 		if (locked) {
 			try {
 				logger.info(String.format("获取redis锁成功,lockKey=%s,requestId=%s,expireTime=%s", lockKey, requestId, expireTime));
-				return onGetLockSuccess();
+				return onGetLockSuccess.apply();
 			} finally {
 				Boolean unlockSuccess = null;
 				try {
@@ -200,38 +202,49 @@ public abstract class RedisDistLockCallback<T> implements Callback<T> {
 	public static void main(String[] args) {
 		Jedis redis = new Jedis("localhost", 6379);
         // redis.auth("");
-		RedisDistLock redisDistLock = new RedisDistLock();
+		JedisLock redisDistLock = new JedisLock();
 		redisDistLock.setRedis(redis);
 		String lockKey = "aaaa";
 		long expireTime = 1200;
 		long timeout = 1000 * 600;
-		RedisDistLockCallback<Object> cb = new RedisDistLockCallback<Object>(redisDistLock, lockKey, expireTime) {
-			@Override
-			protected Object onGetLockSuccess() {
-				logger.info("onGetLockSuccess1");
-				try {
-					new RedisDistLockCallback<Object>(redisDistLock, lockKey, expireTime) {
-						@Override
-						protected Object onGetLockSuccess() {
-							logger.info("onGetLockSuccess2");
-							try {
-								Thread.sleep(1000);
-							} catch (InterruptedException e) {
-								logger.error("",e);
-								e.printStackTrace();
-							}
-							return null;
-						}
-					}.withRetryTimes(3).execute();
-					//Thread.sleep(1000);
-				} catch (Exception e) {
-					logger.error("",e);
-				}
-				return null;
-			}
-		};
-		cb.withRetryTimeout(timeout, 20).execute();
+		Object res = new RedisLockRunner<Object>(redisDistLock, lockKey, expireTime).withRetryTimeout(timeout, 20).apply(()->{
+			return doInAnotherLock(redisDistLock, lockKey, expireTime);
+		});
+		System.out.println(res);
 		//
 		
+	}
+
+	private static Object doInAnotherLock(JedisLock redisDistLock, String lockKey, long expireTime) {
+		logger.info("onGetLockSuccess1");
+		try {
+			new RedisLockRunner<Object>(redisDistLock, lockKey, expireTime).withRetryTimes(3).apply(()->{
+				logger.info("onGetLockSuccess2");
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					logger.error("",e);
+					e.printStackTrace();
+				}
+				return null;
+			});
+			//Thread.sleep(1000);
+		} catch (Exception e) {
+			logger.error("",e);
+		}
+		return null;
+	}
+
+	@Override
+	public void apply(Callback00 onGetLockSuccess) {
+			try {
+				executed = true;
+				executeInternal(()->{
+					onGetLockSuccess.apply();
+					return null;
+				});
+			} catch (InterruptedException e) {
+				throw new RuntimeException(e);
+			}
 	}
 }
