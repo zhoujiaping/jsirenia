@@ -17,6 +17,7 @@ import javax.script.ScriptException;
 
 import org.jsirenia.cache.LRUCache;
 import org.jsirenia.file.FileWatcher;
+import org.jsirenia.json.JSONUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.ResourceUtils;
@@ -136,7 +137,7 @@ public class JsFunctionRunner {
 		Object res;
 		Object param = null;
 		if (arg != null) {
-			if(isJSONArray(arg)){
+			if(JSONUtil.isJSONArray(arg)){
 				param = JSONArray.parseArray(arg);
 			}else{
 				param = JSONObject.parseObject(arg);
@@ -148,9 +149,6 @@ public class JsFunctionRunner {
 		}
 		return res.toString();
 	}
-	private static boolean isJSONArray(String json){
-		return json.matches("\\s*\\[");
-	} 
 	public static void watch(String dir){
 		Thread t = new Thread(()->{
 			try{

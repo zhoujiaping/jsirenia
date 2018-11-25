@@ -49,7 +49,7 @@ public class JsAspect {
 			if(retType.isArray()){
 				return JSONArray.parseArray(res,retType.getComponentType());
 			}else if(Collection.class.isAssignableFrom(retType)){
-				Type[] pts = AspectHelper.getActualReturnTypeArguments(joinPoint);
+				Type[] pts = AspectUtil.getActualReturnTypeArguments(joinPoint);
 				if(pts==null){
 					throw new RuntimeException("返回值类型的泛型类型未指定");
 				}

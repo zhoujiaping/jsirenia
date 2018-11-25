@@ -25,4 +25,7 @@ public class JSONUtil {
 	public static String toJSONString(Object obj){
 		return toJSONString(obj, false);
 	}
+	public static boolean isJSONArray(String json){
+		return json.matches("\\s*\\[");
+	} 
 }
