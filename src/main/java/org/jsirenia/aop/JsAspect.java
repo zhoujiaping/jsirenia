@@ -9,7 +9,7 @@ import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.jsirenia.js.Js;
+import org.jsirenia.js.JsFunctionRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -41,7 +41,7 @@ public class JsAspect {
 		String funcName = signature.getName();//方法名
 		String clazzname = joinPoint.getTarget().getClass().getSimpleName();//简单类名
 		try{
-			String res = Js.runFile("classpath:js/"+clazzname+".js", funcName, arg);
+			String res = JsFunctionRunner.runFile("classpath:js/"+clazzname+".js", funcName, arg);
 			Class<?> retType = ms.getReturnType();
 			if(res==null){
 				return res;
@@ -84,7 +84,7 @@ public class JsAspect {
 	// @AfterReturning(value="execution(*
 	// com.zejian.spring.springAop.dao.UserDao.addUser(..))",returning =
 	// "returnVal")
-	public void AfterReturning(Object returnVal) {
+	public void afterReturning(Object returnVal) {
 		System.out.println("后置通知...." + returnVal);
 	}
 

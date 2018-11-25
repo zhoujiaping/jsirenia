@@ -5,7 +5,7 @@ import java.util.Map;
 
 import groovy.lang.GroovyObject;
 
-public class GroovyScriptHelper {
+public class GroovyScriptMethodRunner {
 	/**
 	 * 
 	 * @param classname
@@ -30,7 +30,7 @@ public class GroovyScriptHelper {
 				return o;
 			}
 		}
-		GroovyObject groovyObject = (GroovyObject) GroovyScriptHelper.class.getClassLoader().loadClass(classname)
+		GroovyObject groovyObject = (GroovyObject) GroovyScriptMethodRunner.class.getClassLoader().loadClass(classname)
 				.newInstance();
 		groovyClassCache.put(classname, groovyObject);
 		return groovyObject;

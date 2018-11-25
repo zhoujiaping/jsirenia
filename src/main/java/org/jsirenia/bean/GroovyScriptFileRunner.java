@@ -10,12 +10,12 @@ import org.springframework.util.ResourceUtils;
 import groovy.lang.Binding;
 import groovy.util.GroovyScriptEngine;
 
-public class GroovyScriptEngineHelper {
+public class GroovyScriptFileRunner {
 	private String filepath = "";//目录
 	private GroovyScriptEngine  engine ;
-	public GroovyScriptEngineHelper(String filepath){
+	public GroovyScriptFileRunner(String filepath){
 		try {
-			this.filepath = ResourceUtils.getFile(filepath).getAbsolutePath();;
+			this.filepath = ResourceUtils.getFile(filepath).getAbsolutePath();
 			this.engine =  new GroovyScriptEngine(this.filepath);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
@@ -37,7 +37,7 @@ public class GroovyScriptEngineHelper {
 	public static void main(String[] args) throws FileNotFoundException{
 		Map<String, Object> variables = new HashMap<>();
 		String filename = 	"classpath:./";
-		Object res = new GroovyScriptEngineHelper(filename).run("groovy/Hello.groovy", variables);
+		Object res = new GroovyScriptFileRunner(filename).run("groovy/Hello.groovy", variables);
 		System.out.println(res);
 	}
 }
