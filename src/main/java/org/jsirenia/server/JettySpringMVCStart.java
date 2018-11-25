@@ -11,7 +11,7 @@ public class JettySpringMVCStart {
 	public static final int PORT = 8080;
 
 	// web访问的根路径http://ip:port/，相当于项目名,/即忽略项目名
-	public static final String CONTEXT_PATH= "/xxx";
+	public static final String CONTEXT_PATH= "/jsirenia";
 
 	private static final String DEFAULT_WEBAPP_PATH = "src/main/webapp";
 
@@ -24,7 +24,7 @@ public class JettySpringMVCStart {
 		//webContext.setResourceBase(DEFAULT_WEBAPP_PATH);
 		//webContext.setClassLoader(Thread.currentThread().getContextClassLoader());
 		//server.setHandler(webContext);
-		server.insertHandler(server);
+		server.insertHandler(webContext);
 		return server;
 	}
 

@@ -24,7 +24,7 @@ import com.alibaba.fastjson.JSONObject;
 public class HttpAspect {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	private String host = "localhost";
-	private int port = 20000;
+	private int port = 8080;
 	private String contextPath = "/";
 	private CloseableHttpClient client;//client = HttpClients.createMinimal();
 	public HttpAspect(CloseableHttpClient client,String host,int port,String contextPath) {
@@ -46,7 +46,7 @@ public class HttpAspect {
 		return client;
 	}
 
-	@Around("execution(* com.xxx.impl..*(..))")
+	@Around("execution(* ogr.jsirenia..*(..))")
 	public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
 		Signature signature =	joinPoint.getSignature();
 		String funcName = signature.getName();//方法名
