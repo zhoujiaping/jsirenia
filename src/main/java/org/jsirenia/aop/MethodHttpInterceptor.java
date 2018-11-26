@@ -20,11 +20,14 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.jsirenia.array.JArray;
 import org.jsirenia.file.PathUtil;
 import org.jsirenia.json.JSONTypeUtil;
 import org.jsirenia.json.JSONUtil;
 import org.jsirenia.json.MapTypeReference;
+import org.jsirenia.proxy.ProxyFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cglib.proxy.MethodInterceptor;
@@ -63,7 +66,7 @@ public class MethodHttpInterceptor implements MethodInterceptor{
 	}
 	private Object invoke(Method method,String clazzname, String funcName, String argsJson) {
 		try{
-			String url = PathUtil.concat("http://"+host+":"+port, contextPath, clazzname, funcName);
+			String url = "http://" + PathUtil.concat(host+":"+port, contextPath, clazzname, funcName+"Invoke");
 			HttpGet request = new HttpGet(url);
 			return client.execute(request, (response)->{
 				HttpEntity entity = response.getEntity();
@@ -168,7 +171,7 @@ public class MethodHttpInterceptor implements MethodInterceptor{
 			logger.warn(e.getMessage(), e);
 		}
 		try{
-			String url = PathUtil.concat("http://"+host+":"+port, contextPath, clazzname, funcName);
+			String url = "http://" + PathUtil.concat(host+":"+port, contextPath, clazzname, funcName+"Before");
 			HttpGet request = new HttpGet(url);
 			return client.execute(request, (response)->{
 				HttpEntity entity = response.getEntity();
@@ -182,7 +185,7 @@ public class MethodHttpInterceptor implements MethodInterceptor{
 	private Object afterReturning(Method method,String clazzname, String funcName, Object ret) {
 		try{
 			String retJson = JSONUtil.toJSONString(ret);
-			String url = PathUtil.concat("http://"+host+":"+port, contextPath, clazzname, funcName);
+			String url = "http://" + PathUtil.concat(host+":"+port, contextPath, clazzname, funcName+"AfterReturning");
 			HttpPost request = new HttpPost(url);
 			HttpEntity reqEntity = new StringEntity(retJson, "utf-8");
 			request.setEntity(reqEntity );
@@ -199,8 +202,8 @@ public class MethodHttpInterceptor implements MethodInterceptor{
 	public Object intercept(Object target, Method method, Object[] args, MethodProxy methodProxy)
 			throws Throwable {
 		String argsJson = JSONArray.toJSONString(args);
-		String clazzname = target.getClass().getName();
-		int index = target.getClass().getName().indexOf('$');
+		String clazzname = target.getClass().getSimpleName();
+		int index = clazzname.indexOf('$');
 		if(index>-1){
 			clazzname = clazzname.substring(0, index);
 		}
@@ -216,6 +219,24 @@ public class MethodHttpInterceptor implements MethodInterceptor{
 				ret = afterReturning(method,clazzname,funcName,ret);
 			}
 			return ret;
+		}
+	}
+	public static void main(String[] args) {
+		CloseableHttpClient client = HttpClients.createMinimal();
+		MethodHttpInterceptor methodInterceptor = new MethodHttpInterceptor(client,"localhost",8080,"/");
+		ProxyFactory fac = new ProxyFactory();
+		MyService service = fac.createProxy(MyService.class, methodInterceptor);
+		List<String> res = service.query();
+		System.out.println(res);
+		res = service.query();
+		System.out.println(res);
+	}
+	public static class MyService{
+		public List<String> query(){
+			List<String> list = new ArrayList<>();
+			list.add("hello");
+			list.add("world");
+			return list;
 		}
 	}
 }

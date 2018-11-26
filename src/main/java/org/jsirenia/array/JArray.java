@@ -24,6 +24,9 @@ import com.alibaba.fastjson.JSONArray;
  */
 public class JArray<T> implements org.jsirenia.array.Array<T>{
 	private List<T> list;
+	public JArray(){
+		list = new ArrayList<>();
+	}
 	public static <E> JArray<E> of(List<E> list){
 		JArray<E> array = new JArray<>();
 		array.list = list;

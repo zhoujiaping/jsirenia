@@ -5,9 +5,8 @@ import org.springframework.cglib.proxy.Enhancer;
 import org.springframework.cglib.proxy.MethodInterceptor;
 
 public class ProxyFactory {
-	public <T> T createProxy(Class<T> clazz,MethodInterceptor methodInterceptor){
+	public <T> T createProxy(Class<T> superclass,MethodInterceptor methodInterceptor){
 		Enhancer enhancer = new Enhancer();
-		Class<?> superclass = ApiProducerDemo.class;
 		enhancer.setSuperclass(superclass);
 		enhancer.setCallback(methodInterceptor);
 		Object proxyObj = enhancer.create();

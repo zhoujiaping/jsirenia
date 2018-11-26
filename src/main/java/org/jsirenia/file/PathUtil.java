@@ -5,9 +5,10 @@ public class PathUtil {
 		//Pattern p = Pattern.compile("/", Pattern.MULTILINE);
 		StringBuilder path = new StringBuilder(path0);
 		if(paths!=null){
-			for(int i=0;i<paths.length;i++){
-				path.append(paths[i]);
+			for(int i=0;i<paths.length-1;i++){
+				path.append(paths[i]).append("/");
 			}
+			path.append(paths[paths.length-1]);
 		}
 		String res = path.toString().replaceAll("[/\\\\]+", "/");
 		return res;
