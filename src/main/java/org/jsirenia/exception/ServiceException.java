@@ -1,5 +1,7 @@
 package org.jsirenia.exception;
 
+import org.jsirenia.string.JIndexRender;
+
 /**
  * 系统内部异常
  * 携带异常栈
@@ -28,6 +30,18 @@ public class ServiceException extends RuntimeException{
 		super(message);
 		this.code = code;
 		this.msg = exceptionCodeSource.getMsg(code);
+	}
+	public ServiceException(String code,String message,Object... args){
+		super(render(message, args));
+		this.code = code;
+		this.msg = exceptionCodeSource.getMsg(code);
+	}
+	private static String render(String message,Object... args){
+		if(args==null || args.length==0){
+			return message;
+		}
+		JIndexRender render = new JIndexRender().withToken("{", "}").withNullValueStrategy(JIndexRender.NullValueStrategy.ReturnNullString);
+		return render.render(message);
 	}
 	public String getCode() {
 		return code;

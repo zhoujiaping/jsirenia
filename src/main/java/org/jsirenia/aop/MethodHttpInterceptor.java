@@ -81,8 +81,7 @@ public class MethodHttpInterceptor implements MethodInterceptor{
 		Class<?> returnType = method.getReturnType();// 获取返回值类型
 		Type genericReturnType = method.getGenericReturnType();// 获取泛型返回值类型
 		if (returnType.isPrimitive()) {//基本类型，以及void
-			Object newRes = JSONObject.parseObject(json, returnType);
-			return newRes;
+			return JSONObject.parseObject(json, returnType);
 		}
 		if (returnType.isArray()) {//数组类型
 			Class<?> componentType = returnType.getComponentType();
@@ -97,7 +96,7 @@ public class MethodHttpInterceptor implements MethodInterceptor{
 			throw new RuntimeException("不支持注解类型");//无法实现
 		}
 		if(returnType.isEnum()){
-			throw new RuntimeException("不支持枚举类型");//可能没有空参构造函数
+			return JSONObject.parseObject(json, returnType);
 		}
 		if(returnType.isInterface()){//如果是接口
 			if(List.class.isAssignableFrom(returnType)){//使用ArrayList
@@ -155,7 +154,7 @@ public class MethodHttpInterceptor implements MethodInterceptor{
 			return JSON.parseObject(json,type);
 		}
 		if(genericReturnType instanceof TypeVariable<?>){
-			throw new RuntimeException("不支持返回值泛型");
+			throw new RuntimeException("不支持返回值为泛型变量");
 		}
 		return JSONObject.parseObject(json, returnType);
 	}

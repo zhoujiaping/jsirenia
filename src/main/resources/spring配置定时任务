@@ -1,0 +1,31 @@
+applicationContext.xml
+
+xmlns:task="http://www.springframework.org/schema/task" 
+xsi:schemaLocation添加http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd
+	
+<!-- 等价于 @EnableAsync， executor指定线程池 -->
+<task:annotation-driven executor="xmlExecutor"/>
+<!-- id指定线程池产生线程名称的前缀 -->
+<task:executor
+    id="xmlExecutor"
+    pool-size="5-25"
+    queue-capacity="100"
+    keep-alive="120"
+    rejection-policy="CALLER_RUNS"/>
+<!-- ==========定时任务=========== -->
+<!-- <task:scheduled-tasks> 
+              <task:scheduled ref="taskJob" method="job1" cron="* * * * * ?"/> 
+</task:scheduled-tasks>  -->
+ 
+@Service("taskJob")
+public class TaskJob {
+	@PostConstruct
+	public void init(){
+		System.out.println("TaskJob.init...");
+	}
+	@Scheduled(cron="0 * * * * ?")
+	public void job1(){
+		System.out.println(LocalDateTime.now());
+	}
+}
+     

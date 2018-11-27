@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
  * 应用该模板，在获取redis锁成功，失败，释放redis锁成功，失败，异常时，自定义行为。
  * 默认在获取锁失败、释放锁失败、释放锁异常的时候，打印日志并抛出异常。
  * */
-public abstract class SpringRedisLockRunner<T> implements Callback11<T,Callback01<T>>,Callback10<Callback00>{
+public abstract class SpringRedisLockRunner<T> implements Callback11<T,Callback01<T>>{
 	protected Logger logger = LoggerFactory.getLogger(SpringRedisLockRunner.class);
 	private RedisLock redisLock;
 	protected String lockKey;
@@ -47,13 +47,6 @@ public abstract class SpringRedisLockRunner<T> implements Callback11<T,Callback0
 		throw new RuntimeException(e);
 	}
 	@Override
-	public void apply(Callback00 cb) {
-		apply(()->{
-			cb.apply();
-			return null;
-		});
-	}
-		@Override
 	public T apply(Callback01<T> cb) {
 		//boolean locked = redisLock.setValueNxExpire(lockKey,requestId, ""+expireTime);
 		boolean locked = redisLock.tryGetDistributedLock(lockKey, requestId, expireTime*1000);

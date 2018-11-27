@@ -21,14 +21,16 @@ public class JIndexRender {
 		this.values = new ArrayList<>();
 		return this;
 	}
-	public JIndexRender(String openToken, String closeToken){
-		 this.openToken = openToken;
-		    this.closeToken = closeToken;
+	public JIndexRender(){
 	}
-	public JIndexRender(String openToken, String closeToken,NullValueStrategy nullValueStrategy){
+	public JIndexRender withToken(String openToken, String closeToken){
 		 this.openToken = openToken;
 		    this.closeToken = closeToken;
+		    return this;
+	}
+	public JIndexRender withNullValueStrategy(NullValueStrategy nullValueStrategy){
 		    this.nullValueStrategy = nullValueStrategy;
+		    return this;
 	}
 	public JIndexRender withValues(Object... values){
 		if(values==null){
@@ -87,7 +89,7 @@ public class JIndexRender {
 	}
 	public static void main(String[] args) {
 		String text = "i am {},\r\nhello {}";
-		JIndexRender jrender = new JIndexRender("{", "}");
+		JIndexRender jrender = new JIndexRender();
 		String res = jrender.withValues("zhou","jiaping").withValue("a").render(text);
 		System.out.println(res);
 	}
