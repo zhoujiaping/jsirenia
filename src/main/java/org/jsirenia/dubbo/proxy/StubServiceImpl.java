@@ -11,7 +11,7 @@ public class StubServiceImpl implements StubService{
 	public Object invoke(String interfaceClazz,String method,String jsonArray){
 		try {
 			Class<?> delegateClazz = Class.forName(interfaceClazz);
-			Object delegate = ProxyBootstrap.getRefFromActual(delegateClazz);
+			Object delegate = DubboProxy.getInstance().getRef(delegateClazz);
 			Class<?> clazz ;
 			Object target;
 			try{
