@@ -26,4 +26,11 @@ public class AppContextHolder implements ApplicationContextAware{
 	public static WebApplicationContext getWebApplicationContext(){
 		return webApplicationContext;
 	}
+	public static Object getBean(String name){
+		Object bean = applicationContext.getBean(name);
+		if(bean==null){
+			bean = webApplicationContext.getBean(name);
+		}
+		return bean;
+	}
 }

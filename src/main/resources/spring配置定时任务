@@ -28,4 +28,13 @@ public class TaskJob {
 		System.out.println(LocalDateTime.now());
 	}
 }
-     
+异步执行
+@Service
+public class AsyncTestService {
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
+	@Async
+	public void doAsync() throws InterruptedException{
+		Thread.sleep(1000);
+		logger.info("doAsync at "+LocalDateTime.now());
+	}
+}

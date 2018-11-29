@@ -1,0 +1,5 @@
+dubboConsumerLogFilter=org.jsirenia.dubbo.filter..DubboConsumerLogFilter
+dubboProducerLogFilter=org.jsirenia.dubbo.filter..DubboProducerLogFilter
+dubboConsumerMockFilter=org.jsirenia.dubbo.filter.DubboConsumerMockFilter
+dubboProducerMockFilter=org.jsirenia.dubbo.filter.DubboProducerMockFilter
+
