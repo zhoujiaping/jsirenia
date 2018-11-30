@@ -12,9 +12,6 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.reflect.MethodSignature;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-
 public class AspectUtil {
 	public static boolean hasTypeArg(Class<?> clazz){
 		TypeVariable<?>[] tv = clazz.getTypeParameters();
