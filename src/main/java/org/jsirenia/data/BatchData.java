@@ -1,13 +1,14 @@
 package org.jsirenia.data;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Consumer;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 /**
  * 每次从数据库读取1000条数据，逐条处理，处理完毕继续读1000条，直到所有数据处理完毕。
  * @author Administrator
