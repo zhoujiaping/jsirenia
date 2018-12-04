@@ -13,7 +13,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.jsirenia.file.PathUtil;
 import org.jsirenia.json.JSONUtil;
-import org.jsirenia.proxy.ProxyFactory;
+import org.jsirenia.proxy.ProxyUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cglib.proxy.MethodInterceptor;
@@ -126,8 +126,7 @@ public class MethodHttpInterceptor implements MethodInterceptor{
 	public static void main(String[] args) {
 		CloseableHttpClient client = HttpClients.createMinimal();
 		MethodHttpInterceptor methodInterceptor = new MethodHttpInterceptor(client,"localhost",8080,"/");
-		ProxyFactory fac = new ProxyFactory();
-		MyService service = fac.createProxy(MyService.class, methodInterceptor);
+		MyService service = ProxyUtil.createProxy(MyService.class, methodInterceptor);
 		List<String> res = service.query();
 		System.out.println(res);
 		res = service.query();

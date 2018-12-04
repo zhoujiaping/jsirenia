@@ -4,8 +4,8 @@ import org.jsirenia.exception.demo.ApiProducerDemo;
 import org.springframework.cglib.proxy.Enhancer;
 import org.springframework.cglib.proxy.MethodInterceptor;
 
-public class ProxyFactory {
-	public <T> T createProxy(Class<T> superclass,MethodInterceptor methodInterceptor){
+public class ProxyUtil {
+	public static <T> T createProxy(Class<T> superclass,MethodInterceptor methodInterceptor){
 		Enhancer enhancer = new Enhancer();
 		enhancer.setSuperclass(superclass);
 		enhancer.setCallback(methodInterceptor);
@@ -13,9 +13,8 @@ public class ProxyFactory {
 		return (T) proxyObj;
 	}
 	public static void main(String[] args){
-		ProxyFactory fac = new ProxyFactory();
 		MethodInterceptor methodInterceptor = new MyMethodInterceptor();
-		ApiProducerDemo proxy = fac.createProxy(ApiProducerDemo.class, methodInterceptor);
+		ApiProducerDemo proxy = createProxy(ApiProducerDemo.class, methodInterceptor);
 		String res = proxy.filter();
 		System.out.println(res);
 	}
