@@ -90,11 +90,7 @@ public class RedisLockRunner<T> implements Callback11<T,Callback01<T>> {
 	 * 采用了链式调用风格，使调用更简洁方便
 	 */
 	protected RedisLockRunner<T> withRetryTimeout(long retryTimeout) {
-		ensureNotAtExecuting();
-		Assert.isTrue(retryTimeout >= 5, "retryTimeout必须大于等于5ms");
-		this.retryTimeout = retryTimeout;
-		this.retryMode = RetryMode.RETRY_TIMEOUT;
-		return this;
+		return withRetryTimeout(retryTimeout, this.sleepMillisecond);
 	}
 
 	protected RedisLockRunner<T> withRetryTimes(int retryTimes, long millisecond) {
@@ -108,11 +104,7 @@ public class RedisLockRunner<T> implements Callback11<T,Callback01<T>> {
 	}
 
 	protected RedisLockRunner<T> withRetryTimes(int retryTimes) {
-		ensureNotAtExecuting();
-		Assert.isTrue(retryTimes >= 0, "retryTimes必须大于等于0");
-		this.retryTimes = retryTimes;
-		this.retryMode = RetryMode.RETRY_TIMES;
-		return this;
+		return this.withRetryTimes(retryTimes, this.sleepMillisecond);
 	}
 	@Override
 	public T apply(Callback01<T> onGetLockSuccess) {
@@ -137,21 +129,6 @@ public class RedisLockRunner<T> implements Callback11<T,Callback01<T>> {
 			}
 			break;
 		case RETRY_TIMEOUT:
-			int i = retryTimes;
-			while (true) {
-				locked = redisDistLock.tryGetDistributedLock(lockKey, requestId, expireTime * 1000);
-				if (locked) {
-					break;
-				}
-				i--;
-				logger.info(String.format("第%s次获取redis锁失败,lockKey=%s,requestId=%s,expireTime=%s",count, lockKey, requestId, expireTime));
-				count++;
-				if (i >= 0) {
-					Thread.sleep(sleepMillisecond);
-				}
-			}
-			break;
-		case RETRY_TIMES:
 			long millisecond = System.currentTimeMillis();
 			while (true) {
 				locked = redisDistLock.tryGetDistributedLock(lockKey, requestId, expireTime * 1000);
@@ -164,6 +141,21 @@ public class RedisLockRunner<T> implements Callback11<T,Callback01<T>> {
 					Thread.sleep(sleepMillisecond);
 				} else {
 					break;
+				}
+			}
+			break;
+		case RETRY_TIMES:
+			int i = retryTimes;
+			while (true) {
+				locked = redisDistLock.tryGetDistributedLock(lockKey, requestId, expireTime * 1000);
+				if (locked) {
+					break;
+				}
+				i--;
+				logger.info(String.format("第%s次获取redis锁失败,lockKey=%s,requestId=%s,expireTime=%s",count, lockKey, requestId, expireTime));
+				count++;
+				if (i >= 0) {
+					Thread.sleep(sleepMillisecond);
 				}
 			}
 			break;
