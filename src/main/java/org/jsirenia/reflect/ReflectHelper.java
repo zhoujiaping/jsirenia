@@ -1,6 +1,8 @@
 package org.jsirenia.reflect;
 
 import java.lang.reflect.Field;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * 反射的方法类
@@ -86,5 +88,15 @@ public class ReflectHelper {
 			}
 		} while (isProxy);
 		return target;
+	}
+	public static Set<Class<?>> getAllInterfaces(Class<?> type){
+		Set<Class<?>> interfaces = new HashSet<>();
+		while(type!=null){
+			for(Class<?> i : type.getInterfaces()){
+				interfaces.add(i);
+			}
+			type = type.getSuperclass();
+		}
+		return interfaces;
 	}
 }
