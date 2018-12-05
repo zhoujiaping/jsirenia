@@ -1,6 +1,5 @@
 package org.jsirenia.array;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -22,7 +21,7 @@ import com.alibaba.fastjson.JSONArray;
  * 性能嘛，当然和java的stream没法比。
  * 挺有意思的，操作数据很6很方便
  */
-public class JArray<T> implements org.jsirenia.array.Array<T>{
+public class JArray<T> implements Array<T>{
 	private List<T> list;
 	public JArray(){
 		list = new ArrayList<>();
@@ -49,7 +48,7 @@ public class JArray<T> implements org.jsirenia.array.Array<T>{
 		return list;
 	}
 	@Override
-	public <E> JArray<E> map(Callback11<E,T> cb){
+	public <E> Array<E> map(Callback11<E,T> cb){
 		List<E> localList = new ArrayList<>();
 		for(int i=0;i<list.size();i++){
 			localList.add(cb.apply(list.get(i)));
@@ -57,7 +56,7 @@ public class JArray<T> implements org.jsirenia.array.Array<T>{
 		return JArray.of(localList);
 	}
 	@Override
-	public <E> JArray<E> map(Callback21<E,T,Integer> cb){
+	public <E> Array<E> map(Callback21<E,T,Integer> cb){
 		List<E> localList = new ArrayList<>();
 		for(int i=0;i<list.size();i++){
 			localList.add(cb.apply(list.get(i),i));
@@ -65,7 +64,7 @@ public class JArray<T> implements org.jsirenia.array.Array<T>{
 		return JArray.of(localList);
 	}
 	@Override
-	public <E> JArray<E> map(Callback31<E,T,Integer,JArray<T>> cb){
+	public <E> Array<E> map(Callback31<E,T,Integer,Array<T>> cb){
 		List<E> localList = new ArrayList<>();
 		for(int i=0;i<list.size();i++){
 			localList.add(cb.apply(list.get(i),i,this));
@@ -74,12 +73,12 @@ public class JArray<T> implements org.jsirenia.array.Array<T>{
 	}
 	@Override
 	public Object[] toArray(){
-		return (Object[]) Array.newInstance(Object.class, list.size());
+		return (Object[]) java.lang.reflect.Array.newInstance(Object.class, list.size());
 	}
 	@Override
 	@SuppressWarnings("unchecked")
 	public T[] toArray(Class<T> clazz){
-		T[] array = (T[]) Array.newInstance(clazz, list.size());
+		T[] array = (T[]) java.lang.reflect.Array.newInstance(clazz, list.size());
 		for(int i=0;i<array.length;i++){
 			array[i] = list.get(i);
 		}
@@ -94,7 +93,7 @@ public class JArray<T> implements org.jsirenia.array.Array<T>{
 		return v;
 	}
 	@Override
-	public T reduce(Callback41<T,T,T,Integer,JArray<T>> cb,T initValue){
+	public T reduce(Callback41<T,T,T,Integer,Array<T>> cb,T initValue){
 		T v = initValue;
 		for(int i=0;i<list.size();i++){
 			v = cb.apply(v, list.get(i), i ,this);
@@ -110,7 +109,7 @@ public class JArray<T> implements org.jsirenia.array.Array<T>{
 		return v;
 	}
 	@Override
-	public JArray<T> filter(Callback11<Boolean,T> cb){
+	public Array<T> filter(Callback11<Boolean,T> cb){
 		List<T> newList = new ArrayList<>(list.size());
 		T v = null;
 		for(int i=0;i<list.size();i++){
@@ -124,7 +123,7 @@ public class JArray<T> implements org.jsirenia.array.Array<T>{
 		return array;
 	}
 	@Override
-	public JArray<T> filter(Callback21<Boolean,T,Integer> cb){
+	public Array<T> filter(Callback21<Boolean,T,Integer> cb){
 		List<T> newList = new ArrayList<>(list.size());
 		T v = null;
 		for(int i=0;i<list.size();i++){
@@ -138,7 +137,7 @@ public class JArray<T> implements org.jsirenia.array.Array<T>{
 		return array;
 	}
 	@Override
-	public JArray<T> filter(Callback31<Boolean,T,Integer,JArray<T>> cb){
+	public Array<T> filter(Callback31<Boolean,T,Integer,Array<T>> cb){
 		List<T> newList = new ArrayList<>(list.size());
 		T v = null;
 		for(int i=0;i<list.size();i++){
@@ -152,11 +151,11 @@ public class JArray<T> implements org.jsirenia.array.Array<T>{
 		return array;
 	}
 	@Override
-	public <R> Map<R,JArray<T>> groupBy(Callback11<R,T> cb){
-		Map<R,JArray<T>> map = new HashMap<>();
+	public <R> Map<R,Array<T>> groupBy(Callback11<R,T> cb){
+		Map<R,Array<T>> map = new HashMap<>();
 		T v;
 		R k;
-		JArray<T> array;
+		Array<T> array;
 		for(int i=0;i<list.size();i++){
 			v = list.get(i);
 			k = cb.apply(v);
@@ -170,11 +169,11 @@ public class JArray<T> implements org.jsirenia.array.Array<T>{
 		return map;
 	}
 	@Override
-	public <R> Map<R,JArray<T>> groupBy(Callback21<R,T,Integer> cb){
-		Map<R,JArray<T>> map = new HashMap<>();
+	public <R> Map<R,Array<T>> groupBy(Callback21<R,T,Integer> cb){
+		Map<R,Array<T>> map = new HashMap<>();
 		T v;
 		R k;
-		JArray<T> array;
+		Array<T> array;
 		for(int i=0;i<list.size();i++){
 			v = list.get(i);
 			k = cb.apply(v,i);
@@ -188,11 +187,11 @@ public class JArray<T> implements org.jsirenia.array.Array<T>{
 		return map;
 	}
 	@Override
-	public <R> Map<R,JArray<T>> groupBy(Callback31<R,T,Integer,JArray<T>> cb){
-		Map<R,JArray<T>> map = new HashMap<>();
+	public <R> Map<R,Array<T>> groupBy(Callback31<R,T,Integer,Array<T>> cb){
+		Map<R,Array<T>> map = new HashMap<>();
 		T v;
 		R k;
-		JArray<T> array;
+		Array<T> array;
 		for(int i=0;i<list.size();i++){
 			v = list.get(i);
 			k = cb.apply(v,i,this);
@@ -225,7 +224,7 @@ public class JArray<T> implements org.jsirenia.array.Array<T>{
 		return sb.toString();
 	}
 	@Override
-	public boolean every(Callback31<Boolean,T,Integer,JArray<T>> cb){
+	public boolean every(Callback31<Boolean,T,Integer,Array<T>> cb){
 		for(int i=0;i<list.size();i++){
 			if(!cb.apply(list.get(i), i, this)){
 				return false;
@@ -252,7 +251,7 @@ public class JArray<T> implements org.jsirenia.array.Array<T>{
 		return true;
 	}
 	@Override
-	public boolean some(Callback31<Boolean,T,Integer,JArray<T>> cb){
+	public boolean some(Callback31<Boolean,T,Integer,Array<T>> cb){
 		for(int i=0;i<list.size();i++){
 			if(cb.apply(list.get(i),i,this)){
 				return true;
@@ -380,71 +379,71 @@ public class JArray<T> implements org.jsirenia.array.Array<T>{
 	//最多支持10个元素。可变参数版本调用方也会有警告，哎！
 	@Override
 	@SuppressWarnings("unchecked")
-	public JArray<T> concat(JArray<T> a1,JArray<T> a2,JArray<T> a3,JArray<T> a4,JArray<T> a5,JArray<T> a6,JArray<T> a7,JArray<T> a8,JArray<T> a9,JArray<T> a10){
-		return concat(new JArray[]{a1,a2,a3,a4,a5,a6,a7,a8,a9,a10});
+	public Array<T> concat(Array<T> a1,Array<T> a2,Array<T> a3,Array<T> a4,Array<T> a5,Array<T> a6,Array<T> a7,Array<T> a8,Array<T> a9,Array<T> a10){
+		return concat(new Array[]{a1,a2,a3,a4,a5,a6,a7,a8,a9,a10});
 	}
 	@Override
 	@SuppressWarnings("unchecked")
-	public JArray<T> concat(JArray<T> a1,JArray<T> a2,JArray<T> a3,JArray<T> a4,JArray<T> a5,JArray<T> a6,JArray<T> a7,JArray<T> a8,JArray<T> a9){
-		return concat(new JArray[]{a1,a2,a3,a4,a5,a6,a7,a8,a9});
+	public Array<T> concat(Array<T> a1,Array<T> a2,Array<T> a3,Array<T> a4,Array<T> a5,Array<T> a6,Array<T> a7,Array<T> a8,Array<T> a9){
+		return concat(new Array[]{a1,a2,a3,a4,a5,a6,a7,a8,a9});
 	}
 	@Override
 	@SuppressWarnings("unchecked")
-	public JArray<T> concat(JArray<T> a1,JArray<T> a2,JArray<T> a3,JArray<T> a4,JArray<T> a5,JArray<T> a6,JArray<T> a7,JArray<T> a8){
-		return concat(new JArray[]{a1,a2,a3,a4,a5,a6,a7,a8});
+	public Array<T> concat(Array<T> a1,Array<T> a2,Array<T> a3,Array<T> a4,Array<T> a5,Array<T> a6,Array<T> a7,Array<T> a8){
+		return concat(new Array[]{a1,a2,a3,a4,a5,a6,a7,a8});
 	}
 	@Override
 	@SuppressWarnings("unchecked")
-	public JArray<T> concat(JArray<T> a1,JArray<T> a2,JArray<T> a3,JArray<T> a4,JArray<T> a5,JArray<T> a6,JArray<T> a7){
-		return concat(new JArray[]{a1,a2,a3,a4,a5,a6,a7});
+	public Array<T> concat(Array<T> a1,Array<T> a2,Array<T> a3,Array<T> a4,Array<T> a5,Array<T> a6,Array<T> a7){
+		return concat(new Array[]{a1,a2,a3,a4,a5,a6,a7});
 	}
 	@Override
 	@SuppressWarnings("unchecked")
-	public JArray<T> concat(JArray<T> a1,JArray<T> a2,JArray<T> a3,JArray<T> a4,JArray<T> a5,JArray<T> a6){
-		return concat(new JArray[]{a1,a2,a3,a4,a5,a6});
+	public Array<T> concat(Array<T> a1,Array<T> a2,Array<T> a3,Array<T> a4,Array<T> a5,Array<T> a6){
+		return concat(new Array[]{a1,a2,a3,a4,a5,a6});
 	}
 	@Override
 	@SuppressWarnings("unchecked")
-	public JArray<T> concat(JArray<T> a1,JArray<T> a2,JArray<T> a3,JArray<T> a4,JArray<T> a5){
-		return concat(new JArray[]{a1,a2,a3,a4,a5});
+	public Array<T> concat(Array<T> a1,Array<T> a2,Array<T> a3,Array<T> a4,Array<T> a5){
+		return concat(new Array[]{a1,a2,a3,a4,a5});
 	}
 	@Override
 	@SuppressWarnings("unchecked")
-	public JArray<T> concat(JArray<T> a1,JArray<T> a2,JArray<T> a3,JArray<T> a4){
-		return concat(new JArray[]{a1,a2,a3,a4});
+	public Array<T> concat(Array<T> a1,Array<T> a2,Array<T> a3,Array<T> a4){
+		return concat(new Array[]{a1,a2,a3,a4});
 	}
 	@Override
 	@SuppressWarnings("unchecked")
-	public JArray<T> concat(JArray<T> a1,JArray<T> a2,JArray<T> a3){
-		return concat(new JArray[]{a1,a2,a3});
+	public Array<T> concat(Array<T> a1,Array<T> a2,Array<T> a3){
+		return concat(new Array[]{a1,a2,a3});
 	}
 	@Override
 	@SuppressWarnings("unchecked")
-	public JArray<T> concat(JArray<T> a1,JArray<T> a2){
-		return concat(new JArray[]{a1,a2});
+	public Array<T> concat(Array<T> a1,Array<T> a2){
+		return concat(new Array[]{a1,a2});
 	}
 	@Override
 	//只有一个的情况，优化一下，这种情况使用概率较高
-	public JArray<T> concat(JArray<T> a1){
-		List<T> newList = new ArrayList<>(list.size()+a1.list.size());
+	public Array<T> concat(Array<T> a1){
+		List<T> newList = new ArrayList<>(list.size()+a1.toList().size());
 		newList.addAll(list);
-		newList.addAll(a1.list);
+		newList.addAll(a1.toList());
 		return JArray.of(newList);
 	}
-	private JArray<T> concat(JArray<T>[] anothers){
+	private Array<T> concat(Array<T>[] anothers){
 		int size = list.size();
 		for(int i=0;i<anothers.length;i++){
-			size+=anothers[i].list.size();
+			size+=anothers[i].toList().size();
 		}
 		List<T> newList = new ArrayList<>(size);
 		newList.addAll(list);
 		for(int i=0;i<anothers.length;i++){
-			newList.addAll(anothers[i].list);
+			newList.addAll(anothers[i].toList());
 		}
 		return JArray.of(newList);
 	}
 	@Override
-	public JArray<T> concat(T v1,T v2,T v3,T v4,T v5,T v6,T v7,T v8,T v9,T v10){
+	public Array<T> concat(T v1,T v2,T v3,T v4,T v5,T v6,T v7,T v8,T v9,T v10){
 		List<T> newList = new ArrayList<>(list.size()+10);
 		newList.addAll(list);
 		newList.add(v1);
@@ -460,7 +459,7 @@ public class JArray<T> implements org.jsirenia.array.Array<T>{
 		return JArray.of(newList);
 	}
 	@Override
-	public JArray<T> concat(T v1,T v2,T v3,T v4,T v5,T v6,T v7,T v8,T v9){
+	public Array<T> concat(T v1,T v2,T v3,T v4,T v5,T v6,T v7,T v8,T v9){
 		List<T> newList = new ArrayList<>(list.size()+9);
 		newList.addAll(list);
 		newList.add(v1);
@@ -475,7 +474,7 @@ public class JArray<T> implements org.jsirenia.array.Array<T>{
 		return JArray.of(newList);
 	}
 	@Override
-	public JArray<T> concat(T v1,T v2,T v3,T v4,T v5,T v6,T v7,T v8){
+	public Array<T> concat(T v1,T v2,T v3,T v4,T v5,T v6,T v7,T v8){
 		List<T> newList = new ArrayList<>(list.size()+8);
 		newList.addAll(list);
 		newList.add(v1);
@@ -489,7 +488,7 @@ public class JArray<T> implements org.jsirenia.array.Array<T>{
 		return JArray.of(newList);
 	}
 	@Override
-	public JArray<T> concat(T v1,T v2,T v3,T v4,T v5,T v6,T v7){
+	public Array<T> concat(T v1,T v2,T v3,T v4,T v5,T v6,T v7){
 		List<T> newList = new ArrayList<>(list.size()+7);
 		newList.addAll(list);
 		newList.add(v1);
@@ -502,7 +501,7 @@ public class JArray<T> implements org.jsirenia.array.Array<T>{
 		return JArray.of(newList);
 	}
 	@Override
-	public JArray<T> concat(T v1,T v2,T v3,T v4,T v5,T v6){
+	public Array<T> concat(T v1,T v2,T v3,T v4,T v5,T v6){
 		List<T> newList = new ArrayList<>(list.size()+6);
 		newList.addAll(list);
 		newList.add(v1);
@@ -514,7 +513,7 @@ public class JArray<T> implements org.jsirenia.array.Array<T>{
 		return JArray.of(newList);
 	}
 	@Override
-	public JArray<T> concat(T v1,T v2,T v3,T v4,T v5){
+	public Array<T> concat(T v1,T v2,T v3,T v4,T v5){
 		List<T> newList = new ArrayList<>(list.size()+5);
 		newList.addAll(list);
 		newList.add(v1);
@@ -525,7 +524,7 @@ public class JArray<T> implements org.jsirenia.array.Array<T>{
 		return JArray.of(newList);
 	}
 	@Override
-	public JArray<T> concat(T v1,T v2,T v3,T v4){
+	public Array<T> concat(T v1,T v2,T v3,T v4){
 		List<T> newList = new ArrayList<>(list.size()+4);
 		newList.addAll(list);
 		newList.add(v1);
@@ -535,7 +534,7 @@ public class JArray<T> implements org.jsirenia.array.Array<T>{
 		return JArray.of(newList);
 	}
 	@Override
-	public JArray<T> concat(T v1,T v2,T v3){
+	public Array<T> concat(T v1,T v2,T v3){
 		List<T> newList = new ArrayList<>(list.size()+3);
 		newList.addAll(list);
 		newList.add(v1);
@@ -544,7 +543,7 @@ public class JArray<T> implements org.jsirenia.array.Array<T>{
 		return JArray.of(newList);
 	}
 	@Override
-	public JArray<T> concat(T v1,T v2){
+	public Array<T> concat(T v1,T v2){
 		List<T> newList = new ArrayList<>(list.size()+2);
 		newList.addAll(list);
 		newList.add(v1);
@@ -552,13 +551,13 @@ public class JArray<T> implements org.jsirenia.array.Array<T>{
 		return JArray.of(newList);
 	}
 	@Override
-	public JArray<T> concat(T v1){
+	public Array<T> concat(T v1){
 		List<T> newList = new ArrayList<>(list.size()+1);
 		newList.addAll(list);
 		newList.add(v1);
 		return JArray.of(newList);
 	}
-	/*private JArray<T> concat(T[] values){
+	/*private Array<T> concat(T[] values){
 		if(values==null){
 			throw new RuntimeException("anothers can not be null");
 		}
@@ -578,15 +577,15 @@ public class JArray<T> implements org.jsirenia.array.Array<T>{
 		throw new RuntimeException("method shift is not supported!");
 	}
 	@Override
-	public JArray<T> splice(){
+	public Array<T> splice(){
 		throw new RuntimeException("method splice is not supported!");
 	}
 	@Override
-	public JArray<T> slice(int start){
+	public Array<T> slice(int start){
 		return slice(start,list.size());
 	}
 	@Override
-	public JArray<T> slice(int start, int end){
+	public Array<T> slice(int start, int end){
 		int size = list.size();
 		if(start<0){
 			start = start+size;
@@ -619,12 +618,12 @@ public class JArray<T> implements org.jsirenia.array.Array<T>{
 		});
 	}
 	@Override
-	public JArray<T> reverse(){
+	public Array<T> reverse(){
 		Collections.reverse(list);
 		return this;
 	}
 	@Override
-	public T reduceRight(Callback41<T,T,T,Integer,JArray<T>> cb,T initValue){
+	public T reduceRight(Callback41<T,T,T,Integer,Array<T>> cb,T initValue){
 		T v = initValue;
 		for(int i=list.size()-1;i>=0;i--){
 			v = cb.apply(v, list.get(i), i ,this);
@@ -674,7 +673,7 @@ public class JArray<T> implements org.jsirenia.array.Array<T>{
 		return -1;
 	}
 	@Override
-	public JArray<T> fill(T t,int start,int end){
+	public Array<T> fill(T t,int start,int end){
 		int size = list.size();
 		if(start<0){
 			start = start+size;
@@ -694,7 +693,7 @@ public class JArray<T> implements org.jsirenia.array.Array<T>{
 		}
 	}
 	@Override
-	public void forEach(Callback30<T,Integer,JArray<T>> cb){
+	public void forEach(Callback30<T,Integer,Array<T>> cb){
 		for(int i=0;i<list.size();i++){
 			cb.apply(list.get(i),i,this);
 		}
@@ -704,7 +703,7 @@ public class JArray<T> implements org.jsirenia.array.Array<T>{
 		throw new RuntimeException("method inclueds is not supported!");
 	}
 	@Override
-	public JArray<Integer> keys(){
+	public Array<Integer> keys(){
 		throw new RuntimeException("method keys is not supported!");
 	}
 	@Override
@@ -730,7 +729,7 @@ public class JArray<T> implements org.jsirenia.array.Array<T>{
 		jarray.sort();
 		System.out.println(jarray.join());
 		
-		Map<String,JArray<String>> map = jarray2.groupBy(t->{
+		Map<String,Array<String>> map = jarray2.groupBy(t->{
 			return t.charAt(0)+"";
 		});
 		System.out.println(map);
@@ -739,10 +738,10 @@ public class JArray<T> implements org.jsirenia.array.Array<T>{
 	public String toString(){
 		return JSONArray.toJSONString(list);
 	}
-	public static <E> JArray<E> fromString(String str,Class<E> clazz){
+	public static <E> Array<E> fromString(String str,Class<E> clazz){
 		return JArray.of(JSONArray.parseArray(str, clazz));
 	}
-	public static JArray<String> split(String text,String sepratorReg){
+	public static Array<String> split(String text,String sepratorReg){
 		String[] arr = text.split(sepratorReg);
 		return JArray.of(arr);
 	}
