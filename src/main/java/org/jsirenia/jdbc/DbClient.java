@@ -29,6 +29,10 @@ public class DbClient {
 		Connection conn = connectionHolder.get();
 		if(conn==null||conn.isClosed()){
 			conn = ds.getConnection();
+			connectionHolder.set(conn);
+		}
+		if(conn.getAutoCommit()){
+			conn.setAutoCommit(false);
 		}
 		return conn;
 	}
@@ -48,10 +52,8 @@ public class DbClient {
 	 */
 	public <R>R withConn(Callback11<R,Connection> callback) {
 		try (Connection conn =getOrOpenConnection()) {
-			connectionHolder.set(conn);
 			conn.setTransactionIsolation(Connection.TRANSACTION_REPEATABLE_READ);
 			// conn.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
-			conn.setAutoCommit(false);
 			return callback.apply(conn);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -75,7 +77,9 @@ public class DbClient {
 		try {
 			conn = getOrOpenConnection();
 			T res = callback.apply(this);
-			conn.commit();
+			if(!conn.getAutoCommit()){
+				conn.commit();
+			}
 			return res;
 		} catch (Exception e) {
 			try {
