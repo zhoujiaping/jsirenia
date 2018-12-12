@@ -23,7 +23,7 @@ public class RateLimiter {
 
 	public RateLimiter(Jedis jedis){
 		this.jedis = jedis;
-		String file = "classpath:ratelimit.lua";
+		String file = "classpath:ratelimit2.lua";
 		try {
 			script = new JFile(ResourceUtils.getFile(file)).text();
 		} catch (FileNotFoundException e) {
@@ -55,12 +55,12 @@ public class RateLimiter {
 			//清理环境
 			jedis.del("myservice:tokens");
 			jedis.del("myservice:timestamp");
-			String script = new JFile(ResourceUtils.getFile("classpath:ratelimit.lua")).text();
+			String script = new JFile(ResourceUtils.getFile("classpath:ratelimit2.lua")).text();
 			for(int i=0;i<500;i++){
 				Object result = jedis.eval(script, Lists.newArrayList(),
 						Lists.newArrayList("myservice", System.currentTimeMillis()/1000 + ""));
 				System.out.println(result);
-				Thread.sleep(100);
+				Thread.sleep(1000);
 			}
 		} finally {
 			jedis.close();

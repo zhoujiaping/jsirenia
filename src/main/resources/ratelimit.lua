@@ -32,6 +32,7 @@ local function grant() --获取一个令牌
 		return 0
 	else
 		tokens=tokens-1
+		redis.call('set',ARGV[1]..':timestamp',now)
 		redis.call('set',tokenskey,tokens)
 		return 1
 	end
