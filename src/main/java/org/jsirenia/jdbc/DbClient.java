@@ -93,7 +93,7 @@ public class DbClient {
 		}
 	}
 	/**
-	 * 执行查询
+	 * 执行查询。必须在withTx或者withConn方法的回调中执行
 	 * @param sql
 	 * @return
 	 */
@@ -101,7 +101,7 @@ public class DbClient {
 		return query(sql,null);
 	}
 	/**
-	 * 执行查询，sql支持#{}和${}占位符功能
+	 * 执行查询，sql支持#{}和${}占位符功能。必须在withTx或者withConn方法的回调中执行
 	 * @param sql
 	 * @param params
 	 * @return
@@ -115,10 +115,11 @@ public class DbClient {
 		}
 		logger.info("sql=>{}",sql);
 		logger.info("params=>{}",params);
-		Connection conn = null;
+		Connection conn = connectionHolder.get();
 		try {
-			conn = getOrOpenConnection(false);
-			conn.setReadOnly(true);
+			if(conn==null || conn.isClosed()){
+				throw new RuntimeException("连接未获取或连接已关闭");
+			}
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
@@ -167,7 +168,7 @@ public class DbClient {
 		return res;
 	}
 	/**
-	 * 执行更新
+	 * 执行更新。必须在withTx或者withConn方法的回调中执行
 	 * @param sql
 	 * @return
 	 */
@@ -175,7 +176,7 @@ public class DbClient {
 		return update(sql,null);
 	}
 	/**
-	 * 执行更新(自动提交)
+	 * 执行更新(自动提交)。必须在withTx或者withConn方法的回调中执行
 	 * @param sql
 	 * @return
 	 */
@@ -188,9 +189,11 @@ public class DbClient {
 		}
 		logger.info("sql=>{}",sql);
 		logger.info("params=>{}",params);
-		Connection conn = null;
+		Connection conn = connectionHolder.get();
 		try {
-			conn = getOrOpenConnection(true);
+			if(conn==null || conn.isClosed()){
+				throw new RuntimeException("连接未获取或连接已关闭");
+			}
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
