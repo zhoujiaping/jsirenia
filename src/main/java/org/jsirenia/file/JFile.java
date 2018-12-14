@@ -3,7 +3,10 @@ package org.jsirenia.file;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.jsirenia.util.callback.Callback10;
 /**
@@ -20,11 +23,24 @@ public class JFile{
 	public File getFile(){
 		return file;
 	}
+	public boolean createRecursion(){
+		File p = file.getParentFile();
+		try {
+			if(!p.exists()){
+				p.mkdirs();
+			}
+			return file.createNewFile();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
 	/**
 	 * 递归删除该文件及其子文件
 	 */
-	public void deleteRecursion(){
-		walkRecursion(f->f.delete());
+	public boolean deleteRecursion(){
+		Map<String,Boolean> map = new HashMap<>();
+		walkRecursion(f->map.put(f.getAbsolutePath(), f.delete()));
+		return map.isEmpty();
 	}
 	/**
 	 * 遍历其子文件和当前文件
@@ -79,6 +95,7 @@ public class JFile{
 		return sb.toString();
 	}
 	public static void main(String[] args) {
-		new JFile("f:/Settings.xml").eachLine(System.out::println);
+		//new JFile("f:/Settings.xml").eachLine(System.out::println);
+		new JFile("d:/upc/a/b/c/d").createRecursion();
 	}
 }

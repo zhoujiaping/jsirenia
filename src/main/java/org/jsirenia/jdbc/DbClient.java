@@ -25,14 +25,14 @@ public class DbClient {
 	public DbClient(DataSource ds) {
 		this.ds = ds;
 	}
-	private Connection getOrOpenConnection() throws SQLException{
+	private Connection getOrOpenConnection(boolean autoCommit) throws SQLException{
 		Connection conn = connectionHolder.get();
 		if(conn==null||conn.isClosed()){
 			conn = ds.getConnection();
 			connectionHolder.set(conn);
 		}
-		if(conn.getAutoCommit()){
-			conn.setAutoCommit(false);
+		if(conn.getAutoCommit()!=autoCommit){
+			conn.setAutoCommit(autoCommit);
 		}
 		return conn;
 	}
@@ -51,7 +51,7 @@ public class DbClient {
 	 * @param callback
 	 */
 	public <R>R withConn(Callback11<R,Connection> callback) {
-		try (Connection conn =getOrOpenConnection()) {
+		try (Connection conn =getOrOpenConnection(true)) {
 			conn.setTransactionIsolation(Connection.TRANSACTION_REPEATABLE_READ);
 			// conn.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 			return callback.apply(conn);
@@ -75,7 +75,7 @@ public class DbClient {
 	public <T> T withTx(Callback11<T,DbClient> callback) {
 		Connection conn = null;
 		try {
-			conn = getOrOpenConnection();
+			conn = getOrOpenConnection(false);
 			T res = callback.apply(this);
 			if(!conn.getAutoCommit()){
 				conn.commit();
@@ -115,7 +115,13 @@ public class DbClient {
 		}
 		logger.info("sql=>{}",sql);
 		logger.info("params=>{}",params);
-		Connection conn = connectionHolder.get();
+		Connection conn = null;
+		try {
+			conn = getOrOpenConnection(false);
+			conn.setReadOnly(true);
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
 		try (PreparedStatement ps = conn.prepareStatement(sql);) {
 			if(params!=null){
 				JSONArray names = parseRes.getJSONArray("names");
@@ -142,6 +148,7 @@ public class DbClient {
 			return list;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
+		}finally{
 		}
 	}
 
@@ -168,7 +175,7 @@ public class DbClient {
 		return update(sql,null);
 	}
 	/**
-	 * 执行更新
+	 * 执行更新(自动提交)
 	 * @param sql
 	 * @return
 	 */
@@ -181,7 +188,12 @@ public class DbClient {
 		}
 		logger.info("sql=>{}",sql);
 		logger.info("params=>{}",params);
-		Connection conn = connectionHolder.get();
+		Connection conn = null;
+		try {
+			conn = getOrOpenConnection(true);
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
 		try (PreparedStatement ps = conn.prepareStatement(sql)) {
 			if(params!=null){
 				JSONArray names = parseRes.getJSONArray("names");
