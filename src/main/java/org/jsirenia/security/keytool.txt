@@ -1,0 +1,8 @@
+https://baijiahao.baidu.com/s?id=1579761258668508032&wfr=spider&for=pc
+https://blog.csdn.net/qq_30698633/article/details/77895151
+https://blog.csdn.net/qq827245563/article/details/60150624
+列出密钥库中的条目
+keytool -keystore ./xxx.keystore -list
+导出证书
+keytool -keystore ./xxx.keystore -alias xxx -exportcert -file xxx.cer
+

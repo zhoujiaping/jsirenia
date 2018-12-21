@@ -1,0 +1,26 @@
+字节数组=》16进制字符串 spring,apache commons 都有提供工具类DigestUtils
+
+对称加密（AES、DES、3DES）和非对称加密配合使用。
+服务端随机生成对称加密的密钥key1
+使用key1对数据data进行加密得到数据data2
+使用私钥privateKey对key1进行加密得到key2
+客户端收到数据data2和key2
+使用公钥publicKey对key2进行解密得到key1
+使用key1对数据data2进行解密得到数据data
+
+架构
+其实使用了https已经没有必要在自己做加解密了
+服务->加解密层-------->加解密层->服务
+可以通过http传输二进制，减少网络io，也可以转成base64/Hex字符串传输，通过http header控制
+通过aop，实现加解密透明化
+所有请求和响应都需要经过加密
+由于使用加密，要求所有请求都使用post方法
+加密前的数据，都使用json格式的文本
+特殊情况要用get的，将加密后的byte[]转成base64放在url的参数中
+
+
+
+除了md5，其他加密、编码得到的字节数组，不要转成Hex字符串（浪费空间）。
+Hex：1个byte转成2个byte
+Base64:2个byte转成3个byte
+
