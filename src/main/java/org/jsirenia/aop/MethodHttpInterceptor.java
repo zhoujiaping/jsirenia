@@ -55,7 +55,7 @@ public class MethodHttpInterceptor implements MethodInterceptor{
 			return client.execute(request, (response)->{
 				HttpEntity entity = response.getEntity();
 				String json = EntityUtils.toString(entity , "utf-8" );
-				return JSONUtil.parseJSON( json,method);
+				return JSONUtil.parseJSONForMethodReturnType( json,method);
 			});
 		}catch(Exception e){
 			throw new RuntimeException(e);
@@ -66,7 +66,7 @@ public class MethodHttpInterceptor implements MethodInterceptor{
 		ret0.put("invoke", true);
 		ret0.put("afterReturning", false);
 		try{
-			JSONUtil.parseJSON("null",method);
+			JSONUtil.parseJSONForMethodReturnType("null",method);
 		}catch(Exception e){
 			ret0.put("invoke", false);
 			ret0.put("afterReturning", false);
@@ -94,7 +94,7 @@ public class MethodHttpInterceptor implements MethodInterceptor{
 			return client.execute(request, (response)->{
 				HttpEntity entity = response.getEntity();
 				String json = EntityUtils.toString(entity , "utf-8" );
-				return JSONUtil.parseJSON( json,method);
+				return JSONUtil.parseJSONForMethodReturnType( json,method);
 			});
 		}catch(Exception e){
 			throw new RuntimeException(e);

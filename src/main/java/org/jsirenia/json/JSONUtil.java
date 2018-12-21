@@ -43,10 +43,26 @@ public class JSONUtil {
 	public static boolean isJSONArray(String json){
 		return json.matches("\\s*\\[");
 	}
-	public static Object parseJSON(String json,Method method){
+	public static Object parseJSONForMethodReturnType(String json,Method method){
 		Class<?> returnType = method.getReturnType();// 获取返回值类型
 		Type genericReturnType = method.getGenericReturnType();// 获取泛型返回值类型
 		return parseJSON(json,returnType,genericReturnType);
+	}
+	public static Object toJavaObject(Object obj,Class<?> returnType ,Type genericReturnType){
+		if(obj==null){
+			return null;
+		}
+		if(obj instanceof Integer){
+			if(Long.class.equals(returnType)){
+				return ((Integer)obj).longValue();
+			}
+		}
+		if(obj instanceof JSON){
+			JSON json = (JSON) obj;
+			String s = json.toJSONString();
+			return JSONUtil.parseJSON(s,returnType,genericReturnType);
+		}
+		return obj;
 	}
 	public static Object parseJSON(String json,Class<?> returnType ,Type genericReturnType){
 		if(JSONObject.class.isAssignableFrom(returnType)){
