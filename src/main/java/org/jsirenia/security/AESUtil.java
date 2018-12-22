@@ -6,7 +6,6 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.util.Base64;
-import java.util.concurrent.ThreadLocalRandom;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
@@ -16,10 +15,6 @@ import javax.crypto.spec.SecretKeySpec;
 public class AESUtil {
     private static final Charset defaultCharset = Charset.forName("UTF-8");
     private static final String KEY_AES = "AES";
-    private static final char[] alphas =("0123456789"
-            +"`~!@#$%^&*()-=_+[];',./{}|:<>?" +
-            "abcdefghijklmnopqrstuvwxyz" +
-            "ABCDEFGHIJKLMNOPQRSTUVWXYZ").toCharArray();
     /**
      * 加密
      * @param data 数据
@@ -29,12 +24,12 @@ public class AESUtil {
     public static byte[] encrypt(byte[] data, String key) {
         return doAES(data, key, Cipher.ENCRYPT_MODE);
     }
-    public static String encryptBase64(String data, String key) {
-        byte[] buf = doAES(data.getBytes(defaultCharset), key, Cipher.ENCRYPT_MODE);
+    public static String encryptBase64(String base64, String key) {
+        byte[] buf = doAES(base64.getBytes(defaultCharset), key, Cipher.ENCRYPT_MODE);
         return Base64.getEncoder().encodeToString(buf);
     }
-    public static String encryptHex(String data, String key) {
-        byte[] buf = doAES(data.getBytes(defaultCharset), key, Cipher.ENCRYPT_MODE);
+    public static String encryptHex(String hex, String key) {
+        byte[] buf = doAES(hex.getBytes(defaultCharset), key, Cipher.ENCRYPT_MODE);
         return HexUtil.toHexString(buf);
     }
 
@@ -47,12 +42,12 @@ public class AESUtil {
     public static byte[] decrypt(byte[] data, String key) {
         return doAES(data, key, Cipher.DECRYPT_MODE);
     }
-    public static String decryptBase64(String data, String key) {
-        byte[] buf = Base64.getDecoder().decode(data);
+    public static String decryptBase64(String base64, String key) {
+        byte[] buf = Base64.getDecoder().decode(base64);
         return new String(doAES(buf, key, Cipher.DECRYPT_MODE),defaultCharset);
     }
-    public static String decryptHex(String data, String key) {
-        byte[] buf = HexUtil.toByteArray(data);
+    public static String decryptHex(String hex, String key) {
+        byte[] buf = HexUtil.toByteArray(hex);
         return new String(doAES(buf, key, Cipher.DECRYPT_MODE),defaultCharset);
     }
 
@@ -86,21 +81,10 @@ public class AESUtil {
             throw new RuntimeException(e);
         }
     }
-    public static String randomKey(int size){
-        char[] arr = new char[size];
-        ThreadLocalRandom random = ThreadLocalRandom.current();
-        int len = alphas.length;
-        for(int i=0;i<size;i++){
-            arr[i] = alphas[random.nextInt(len)];
-        }
-        return new String(arr);
-        //return UUID.randomUUID().toString();
-    }
-
     public static void main(String[] args) throws Exception {
         int size = 1024;
         //随机生成AES加密的密钥
-        String key = randomKey(128);
+        String key = KeyUtil.randomKey(128);
         String content = "{'repairPhone':'18547854787','customPhone':'12365478965','captchav':'58m7'}";
         System.out.println("加密前：" + content);
         System.out.println("加密密钥和解密密钥：" + key);
@@ -111,7 +95,7 @@ public class AESUtil {
         String decrypt = decryptBase64(encrypt, key);
         System.out.println("解密后：" + decrypt);
         //生成rsa的密钥对
-        KeyPair pair = RSAUtil.generateKeyPair(size);
+        KeyPair pair = KeyUtil.generateKeyPair("RSA",size);
         PrivateKey privateKey = pair.getPrivate();
         PublicKey publicKey = pair.getPublic();
         //对AES的密钥加密

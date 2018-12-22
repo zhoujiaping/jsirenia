@@ -1,10 +1,13 @@
 package org.jsirenia.security;
 
-import javax.crypto.Cipher;
 import java.io.ByteArrayOutputStream;
-import java.security.*;
+import java.security.KeyFactory;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+
+import javax.crypto.Cipher;
 
 /**
  * https://blog.csdn.net/defonds/article/details/42775183
@@ -14,28 +17,6 @@ import java.security.spec.X509EncodedKeySpec;
  */
 public class RSAUtil {
     private static final String ALGOL = "RSA";
-    /**
-     *
-     * @param size 密钥长度，单位比特
-     * @return
-     * @throws NoSuchAlgorithmException
-     */
-    public static KeyPair generateKeyPair(int size) throws NoSuchAlgorithmException {
-        /** RSA算法要求有一个可信任的随机数源 */
-        SecureRandom sr = new SecureRandom();
-        /** 为RSA算法创建一个KeyPairGenerator对象 */
-        KeyPairGenerator keyPairGenerator=KeyPairGenerator.getInstance(ALGOL);
-        /** 利用上面的随机数据源初始化这个KeyPairGenerator对象 */
-        keyPairGenerator.initialize(size,sr);
-        //keyPairGenerator.initialize(KEYSIZE);  
-
-        /** 生成密匙对 */
-        KeyPair keyPair=keyPairGenerator.generateKeyPair();
-
-        //Key publicKey=keyPair.getPublic();
-        //Key privateKey=keyPair.getPrivate();
-        return keyPair;
-    }
 
     /**
      * 私钥加密

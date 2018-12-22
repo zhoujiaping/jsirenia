@@ -2,17 +2,11 @@ package org.jsirenia.http;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
 import java.nio.charset.Charset;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.jsirenia.json.JSONUtil;
 import org.jsirenia.reflect.MethodUtil;
-import org.springframework.beans.BeansException;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.ResourceUtils;
 import org.springframework.util.StreamUtils;
@@ -22,8 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
-
-import com.alibaba.fastjson.JSONArray;
 
 /**
  * 将本地方法暴露为http接口
@@ -45,34 +37,14 @@ public class HttpExporter{
 	public Object callHessianApi(@RequestBody String body,
 			@PathVariable("className")String className,
 			@PathVariable("methodName")String methodName,
-			HttpServletRequest req) throws ClassNotFoundException, BeansException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
+			HttpServletRequest req) throws Exception{
 		WebApplicationContext context = WebApplicationContextUtils.getWebApplicationContext(req.getSession(true).getServletContext());
 		Class<?> type = Class.forName(className);
 		Object target = context.getBean(type);
 		if(target==null){
 			throw new RuntimeException("没有找到"+className+"的实例");
 		}
-		Method[] methods = type.getDeclaredMethods();
-		Method method = null;
-		if(methods!=null){
-			for(Method m : methods){
-				if(m.getName().equals(methodName)){
-					method = m;
-					break;
-				}
-			}
-		}
-		if(method==null){
-			throw new RuntimeException("没有找到方法"+methodName);
-		}
-		Class<?>[] parameterTypes = method.getParameterTypes();
-		Type[] genericParameterTypes = method.getGenericParameterTypes();
-		List<Object> argList = JSONArray.parseArray(body);
-		Object[] args = new Object[parameterTypes.length];
-		for(int i=0;i<parameterTypes.length;i++){
-			args[i] = JSONUtil.toJavaObject(argList.get(i), parameterTypes[i],genericParameterTypes[i]);
-		}
-		Object res = method.invoke(target, args );
+		Object res = MethodUtil.invoke(target, className, methodName, body);
 		return res;
 	}
 	public static void main(String[] args0) throws Exception{

@@ -1,5 +1,6 @@
 package org.jsirenia.security;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -7,7 +8,7 @@ import java.security.Key;
 import java.security.KeyStore;
 import java.security.cert.Certificate;
 
-public class KeyStoreUtil {
+public class KeyStoreUtil{
     public static final String PKCS12 = "PKCS12";
     public static final String JKS = "JKS";
 
@@ -86,7 +87,22 @@ public class KeyStoreUtil {
             throw new RuntimeException(e);
         }
     }
-
+    /**
+    *
+    * @param keystorefile   .keystore或者.pfx
+    * @param pwd
+    * @param type
+    * @return
+    */
+   public static KeyStore loadKeyStore(File keystorefile, String pwd, String type){
+       try(BufferedInputStream bis = new BufferedInputStream(new FileInputStream(keystorefile))){
+           KeyStore ks = KeyStore.getInstance(type);
+           ks.load(bis,pwd.toCharArray());
+           return ks;
+       }catch(Exception e){
+           throw new RuntimeException(e);
+       }
+   }
     public static void main(String[] args) {
         String ksfile = "xxx.keystore";
         String pfxfile = "xxx.pfx";

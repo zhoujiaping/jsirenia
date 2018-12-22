@@ -10,7 +10,7 @@ import java.util.Base64;
  * Hex和Base64比较，Base64编码方式能占用更少的空间。
  */
 public class HexUtil {
-    private static final char[] chars = "0123456789abcdef".toCharArray();
+    private static final char[] chars = "0123456789ABCDEF".toCharArray();
     public static String toHexString(byte[] buf){
         char[] charArray = new char[buf.length*2];
         int j = 0;
