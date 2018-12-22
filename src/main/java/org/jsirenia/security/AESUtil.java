@@ -13,7 +13,7 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 public class AESUtil {
-    private static final Charset defaultCharset = Charset.forName("UTF-8");
+    public static final Charset defaultCharset = Charset.forName("UTF-8");
     private static final String KEY_AES = "AES";
     /**
      * 加密
