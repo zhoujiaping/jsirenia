@@ -16,7 +16,7 @@ public class MethodUtil {
 	 * 不支持方法重载
 	 * 方法参数不能太复杂
 	 * @param target
-	 * @param method 类名+.+方法名
+	 * @param methodName 方法名
 	 * @param args
 	 * @return
 	 * @throws Exception 
@@ -60,10 +60,10 @@ public class MethodUtil {
 	 * @throws IllegalAccessException 
 	 */
 	public static Object invoke(Object target,Method method,String args) throws Exception{
-		Object[] methodArgs = parseArgs(method,args);
+		Object[] methodArgs = null;//parseArgs(method,args);
 		return method.invoke(target, methodArgs);
 	}
-	public static Object[] parseArgs(String className,String methodName,String args) throws ClassNotFoundException{
+	/*public static Object[] parseArgs(String className,String methodName,String args) throws ClassNotFoundException{
 		Method m = findMethod(className,methodName);
 		return parseArgs(m,args);
 	}
@@ -76,5 +76,5 @@ public class MethodUtil {
 			methodArgs[i] = JSONUtil.toJavaObject(argList.get(i), parameterTypes[i],genericParameterTypes[i]);
 		}
 		return methodArgs;
-	}
+	}*/
 }

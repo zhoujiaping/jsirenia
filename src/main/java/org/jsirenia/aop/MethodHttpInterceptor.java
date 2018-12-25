@@ -4,6 +4,8 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.parser.ParserConfig;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -26,10 +28,14 @@ import com.alibaba.fastjson.JSONObject;
  */
 public class MethodHttpInterceptor implements MethodInterceptor{
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	private static ParserConfig parseConfig = new ParserConfig();
 	private String host = "localhost";
 	private int port = 8080;
 	private String contextPath = "/";
 	private CloseableHttpClient client;//client = HttpClients.createMinimal();
+	static{
+		parseConfig.setAutoTypeSupport(true);
+	}
 	public MethodHttpInterceptor(CloseableHttpClient client,String host,int port,String contextPath) {
 		this.client = client;
 		this.host = host;
@@ -55,7 +61,7 @@ public class MethodHttpInterceptor implements MethodInterceptor{
 			return client.execute(request, (response)->{
 				HttpEntity entity = response.getEntity();
 				String json = EntityUtils.toString(entity , "utf-8" );
-				return JSONUtil.parseJSONForMethodReturnType( json,method);
+				return JSON.parseObject(json,new Object[]{}.getClass(),parseConfig);
 			});
 		}catch(Exception e){
 			throw new RuntimeException(e);
@@ -66,7 +72,7 @@ public class MethodHttpInterceptor implements MethodInterceptor{
 		ret0.put("invoke", true);
 		ret0.put("afterReturning", false);
 		try{
-			JSONUtil.parseJSONForMethodReturnType("null",method);
+			return JSON.parseObject("null",new Object[]{}.getClass(),parseConfig);
 		}catch(Exception e){
 			ret0.put("invoke", false);
 			ret0.put("afterReturning", false);
@@ -94,7 +100,7 @@ public class MethodHttpInterceptor implements MethodInterceptor{
 			return client.execute(request, (response)->{
 				HttpEntity entity = response.getEntity();
 				String json = EntityUtils.toString(entity , "utf-8" );
-				return JSONUtil.parseJSONForMethodReturnType( json,method);
+				return JSON.parseObject(json,new Object[]{}.getClass(),parseConfig);
 			});
 		}catch(Exception e){
 			throw new RuntimeException(e);

@@ -20,35 +20,36 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 
+/**
+ * 经验：只有不关心类型信息的时候，才用不带类型信息的序列化。
+ */
 public class JSONUtil {
+	/**
+	 * @param obj:对象或数组或集合
+	 * */
 	public static String toJSONString(Object obj,boolean prettyFormat){
-		String jsonString = null;
-		if(obj!=null){
-			Class<?> clazz = obj.getClass();
-			if(clazz.isArray()){
-				jsonString = JSONArray.toJSONString(obj,prettyFormat);
-			}else if(Collection.class.isAssignableFrom(clazz)){
-				jsonString = JSONArray.toJSONString(obj,prettyFormat);
-			}else{
-				jsonString = JSONObject.toJSONString(obj,prettyFormat);
-			}
-		}else{
-			jsonString = JSONObject.toJSONString(obj,prettyFormat);
-		}
-		return jsonString;
+		//JSON.toJSONString会自动处理对象和数组
+		return JSON.toJSONString(obj,prettyFormat);
 	}
 	public static String toJSONString(Object obj){
 		return toJSONString(obj, false);
 	}
-	public static boolean isJSONArray(String json){
-		return json.matches("\\s*\\[");
+	/**
+	 * 返回JSONObject或者JSONArray
+	* */
+	public static Object parse(String text){
+		return JSON.parse(text);
 	}
-	public static Object parseJSONForMethodReturnType(String json,Method method){
+	public static <T> T parseObject(String text,Class<T> clazz){
+		return JSON.parseObject(text,clazz);
+	}
+
+	/*public static Object parseJSONForMethodReturnType(String json,Method method){
 		Class<?> returnType = method.getReturnType();// 获取返回值类型
 		Type genericReturnType = method.getGenericReturnType();// 获取泛型返回值类型
 		return parseJSON(json,returnType,genericReturnType);
-	}
-	public static Object toJavaObject(Object obj,Class<?> returnType ,Type genericReturnType){
+	}*/
+	/*public static Object toJavaObject(Object obj,Class<?> returnType ,Type genericReturnType){
 		if(obj==null){
 			return null;
 		}
@@ -60,11 +61,11 @@ public class JSONUtil {
 		if(obj instanceof JSON){
 			JSON json = (JSON) obj;
 			String s = json.toJSONString();
-			return JSONUtil.parseJSON(s,returnType,genericReturnType);
+			return parseJSON(s,returnType,genericReturnType);
 		}
 		return obj;
-	}
-	public static Object parseJSON(String json,Class<?> returnType ,Type genericReturnType){
+	}*/
+	/*public static Object parseJSON(String json,Class<?> returnType ,Type genericReturnType){
 		if(JSONObject.class.isAssignableFrom(returnType)){
 			return JSONObject.parseObject(json);
 		}
@@ -148,5 +149,5 @@ public class JSONUtil {
 			throw new RuntimeException("不支持返回值为泛型变量");
 		}
 		return JSONObject.parseObject(json, returnType);
-	}
+	}*/
 }

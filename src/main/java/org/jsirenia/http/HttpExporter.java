@@ -50,7 +50,7 @@ public class HttpExporter{
 	public static void main(String[] args0) throws Exception{
 		File f = ResourceUtils.getFile("classpath:test2.json");
 		String body = StreamUtils.copyToString(new FileInputStream(f), Charset.forName("utf-8"));
-		Object[] args = MethodUtil.parseArgs("org.jsirenia.http.MyTest","test1",body);
+		Object[] args = null;//MethodUtil.parseArgs("org.jsirenia.http.MyTest","test1",body);
 		System.out.println(args);
 	}
 }

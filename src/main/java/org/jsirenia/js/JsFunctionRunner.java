@@ -15,6 +15,7 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
+import com.alibaba.fastjson.JSON;
 import org.jsirenia.cache.LRUCache;
 import org.jsirenia.file.FileWatcher;
 import org.jsirenia.json.JSONUtil;
@@ -99,7 +100,6 @@ public class JsFunctionRunner {
 	}
 	/**
 	 * 将给定名称的文件的内容作为js代码执行，并且将字符串作为入参和出参。
-	 * @param file
 	 * @param arg
 	 * @return
 	 */
@@ -137,11 +137,12 @@ public class JsFunctionRunner {
 		Object res;
 		Object param = null;
 		if (arg != null) {
-			if(JSONUtil.isJSONArray(arg)){
+			param = JSON.parse(arg);
+			/*if(JSONUtil.isJSONArray(arg)){
 				param = JSONArray.parseArray(arg);
 			}else{
 				param = JSONObject.parseObject(arg);
-			}
+			}*/
 		}
 		res = invocable.invokeFunction(funcName, param);
 		if (res == null) {
