@@ -4,8 +4,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.parser.ParserConfig;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -14,15 +12,16 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.jsirenia.file.PathUtil;
-import org.jsirenia.json.JSONUtil;
 import org.jsirenia.proxy.ProxyUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cglib.proxy.MethodInterceptor;
 import org.springframework.cglib.proxy.MethodProxy;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.parser.ParserConfig;
 /**
  *
  */
@@ -92,7 +91,7 @@ public class MethodHttpInterceptor implements MethodInterceptor{
 	}
 	private Object afterReturning(Method method,String clazzname, String funcName, Object ret) {
 		try{
-			String retJson = JSONUtil.toJSONString(ret);
+			String retJson = JSON.toJSONString(ret);
 			String url = "http://" + PathUtil.concat(host+":"+port, contextPath, clazzname, funcName+"AfterReturning");
 			HttpPost request = new HttpPost(url);
 			HttpEntity reqEntity = new StringEntity(retJson, "utf-8");

@@ -80,7 +80,8 @@ public class JArray<T> implements Array<T>{
 	public T[] toArray(Class<T> clazz){
 		T[] array = (T[]) java.lang.reflect.Array.newInstance(clazz, list.size());
 		for(int i=0;i<array.length;i++){
-			array[i] = list.get(i);
+			//array[i] = list.get(i);
+			java.lang.reflect.Array.set(array,i,list.get(i));
 		}
 		return array;
 	}

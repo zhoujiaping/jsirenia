@@ -12,10 +12,10 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
 import org.jsirenia.file.PathUtil;
-import org.jsirenia.json.JSONUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 /**
@@ -69,7 +69,7 @@ public class HttpAspect {
 					ret = afterReturning(clazzname,funcName,ret,joinPoint);
 				}
 			}
-			logger.info("方法"+clazzname+"."+funcName+"结果=>{}",JSONUtil.toJSONString(ret));
+			logger.info("方法"+clazzname+"."+funcName+"结果=>{}",JSON.toJSONString(ret));
 			return ret;
 		}catch(Exception e){
 			logger.error("方法"+clazzname+"."+funcName+"异常，{}=>{}",e.getMessage(),e);
@@ -118,7 +118,7 @@ public class HttpAspect {
 	}
 	private Object afterReturning(String clazzname, String funcName, Object ret, ProceedingJoinPoint joinPoint) {
 		try{
-			String retJson = JSONUtil.toJSONString(ret);
+			String retJson = JSON.toJSONString(ret);
 			String url = PathUtil.concat("http://"+host+":"+port, contextPath, clazzname, funcName);
 			HttpPost request = new HttpPost(url);
 			HttpEntity reqEntity = new StringEntity(retJson, "utf-8");

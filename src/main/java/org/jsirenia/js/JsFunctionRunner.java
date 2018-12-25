@@ -15,15 +15,13 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
-import com.alibaba.fastjson.JSON;
 import org.jsirenia.cache.LRUCache;
 import org.jsirenia.file.FileWatcher;
-import org.jsirenia.json.JSONUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.ResourceUtils;
 
-import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 /**
  * 重复加载文件的问题已经通过缓存解决。
