@@ -2,6 +2,7 @@ package org.jsirenia.http;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,21 +18,20 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.parser.Feature;
+import com.alibaba.fastjson.parser.ParserConfig;
+
 /**
  * 将本地方法暴露为http接口
- * 
- * 收到http请求，获取 接口名、接口方法 参数
- * 不支持方法重载
- * 不支持泛型方法
- * 读取暴露hessian接口的配置（beans-hessian.xml），获取暴露的接口
- * 从spring上下文获取注入的接口实现
- * 获取方法
- * 执行方法
- * 返回结果
  */
 @Controller
 @RequestMapping("/http-exporter/{className}/{methodName}")
 public class HttpExporter{
+	private static final ParserConfig parseConfig = new ParserConfig();
+	static{
+		parseConfig.setAutoTypeSupport(true);
+	}
 	@RequestMapping
 	@ResponseBody
 	public Object callHessianApi(@RequestBody String body,
@@ -44,8 +44,9 @@ public class HttpExporter{
 		if(target==null){
 			throw new RuntimeException("没有找到"+className+"的实例");
 		}
-		Object res = MethodUtil.invoke(target, className, methodName, body);
-		return res;
+		Object[] args = JSON.parseObject(body, new Object[]{}.getClass(), parseConfig);
+		Method method = MethodUtil.getMethodByName(className, methodName);
+		return method.invoke(target, args);
 	}
 	public static void main(String[] args0) throws Exception{
 		File f = ResourceUtils.getFile("classpath:test2.json");

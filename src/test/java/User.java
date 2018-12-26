@@ -8,4 +8,7 @@ public class User {
     public void setName(String name) {
         this.name = name;
     }
+    public String sayHello(String a,int b,char c){
+    	return a+b+c;
+    }
 }

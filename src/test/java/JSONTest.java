@@ -1,15 +1,17 @@
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.parser.ParserConfig;
-import com.alibaba.fastjson.serializer.SerializeConfig;
-import com.alibaba.fastjson.serializer.SerializerFeature;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.List;
+
 import org.junit.Test;
 
-import java.util.List;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.parser.ParserConfig;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 
 public class JSONTest {
 
     @Test
-    public void test1(){
+    public void test1() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
         String text = "[1,1,1]";
         Class<?> clazz = new Object[]{}.getClass();
         ParserConfig parseconfig = new ParserConfig();
@@ -23,5 +25,8 @@ public class JSONTest {
         //fastjson序列化带类型信息的json
         text = JSON.toJSONString(res,SerializerFeature.WriteClassName);
         System.out.println(text);
+        Method m = User.class.getMethod("sayHello",String.class,int.class,char.class);
+        Object r = m.invoke(new User(), null,1,'c');
+        System.out.println(r);
     }
 }
