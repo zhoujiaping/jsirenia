@@ -1,0 +1,52 @@
+1、添加依赖
+<dependency>
+	<groupId>org.eclipse.jetty</groupId>
+	<artifactId>jetty-server</artifactId>
+	<version>9.4.12.RC2</version>
+	<scope>test</scope>
+</dependency>
+<dependency>
+	<groupId>org.eclipse.jetty</groupId>
+	<artifactId>jetty-webapp</artifactId>
+	<version>9.4.12.RC2</version>
+	<scope>test</scope>
+</dependency>
+
+2、添加启动类
+public class JettySpringMVCStart {
+
+	public static final int PORT = 8080;
+
+	// web访问的根路径http://ip:port/，相当于项目名,/即忽略项目名
+	public static final String CONTEXT_PATH= "/jyd-credit";
+
+	private static final String DEFAULT_WEBAPP_PATH = "src/main/webapp";
+
+	public static Server createServerIn(int port) {
+		// 创建Server
+		Server server = new Server(port);
+
+		WebAppContext webContext = new WebAppContext(DEFAULT_WEBAPP_PATH, CONTEXT_PATH);
+		//webContext.setDescriptor(DEFAULT_WEBAPP_PATH+"/WEB-INF/web.xml");
+		//webContext.setResourceBase(DEFAULT_WEBAPP_PATH);
+		//webContext.setClassLoader(Thread.currentThread().getContextClassLoader());
+		//server.setHandler(webContext);
+		server.insertHandler(webContext);
+		return server;
+	}
+
+	public static void main(String[] args) throws Exception {
+		//DOMConfigurator.configure(Thread.currentThread().getContextClassLoader().getResource("log4j.xml"));
+		Server server = createServerIn(PORT);
+		server.stop();
+		server.start();
+		server.join();
+	}
+}
+
+3、执行main方法启动
+
+经测试，发现这种方法启动比用tomcat启动快30秒左右。
+如果要部署多个context，目前还没研究怎么支持。
+		
+		

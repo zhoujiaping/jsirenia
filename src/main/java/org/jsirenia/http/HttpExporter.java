@@ -11,6 +11,7 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.jsirenia.collection.CollectionUtil;
 import org.jsirenia.http.model.HessianApiCall;
 import org.jsirenia.json.JSONUtil;
 import org.jsirenia.properties.PropertiesUtil;
@@ -66,10 +67,7 @@ public class HttpExporter{
 				method = MethodUtil.getMethod(call.getClassName(), call.getMethodName(),call.getArgTypes().toArray(new String[0]));
 			}
 			if(body.contains("@type")){//复杂类型，需要调用者指定类型信息
-				args = new Object[call.getArgs().size()];
-				for(int i=0;i<args.length;i++){
-					args[i] = call.getArgs().get(i);
-				}
+				args = CollectionUtil.toArray(call.getArgs(), Object.class);
 			}else{//简单类型，自动处理类型信息
 				String argsJSONArray = JSON.toJSONString(call.getArgs());
 				args = MethodUtil.parseJSONForArgs(method, argsJSONArray);
