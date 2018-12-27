@@ -34,13 +34,8 @@ public class MethodUtil {
 		Type[] argTypes = method.getGenericParameterTypes();
     	List<Object> list = JSON.parseArray(argsJSONArray,argTypes);
     	Object[] args = new Object[list.size()];
-    	/*DefaultJSONParser存在缺陷，如下
-    	 *  if (type instanceof Class) {
-                            Class<?> clazz = (Class<?>) type;
-                            isArray = clazz.isArray();
-                            componentType = clazz.getComponentType();
-                        }
-    	 * 对于数组类型，反序列化时传class，则会丢失泛型信息；传type，则不会使用componentType。
+    	/*JavaObjectDeserializer类的deserialze方法存在缺陷，
+    	 * 对于数组元素为数组类型的情况，反序列化时，反序列化后的元素类型固定为Object[]类型，会造成类型转换异常。
     	 * */
     	for(int i=0;i<list.size();i++){
     		if(pts[i].isArray()){
