@@ -1,27 +1,31 @@
 package org.jsirenia.http;
 
-import java.io.File;
-import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.nio.charset.Charset;
+import java.net.MalformedURLException;
+import java.util.Map;
+import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.jsirenia.http.model.HessianApiCall;
+import org.jsirenia.json.JSONUtil;
+import org.jsirenia.properties.PropertiesUtil;
 import org.jsirenia.reflect.MethodUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.ResourceUtils;
-import org.springframework.util.StreamUtils;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.parser.Feature;
-import com.alibaba.fastjson.parser.ParserConfig;
+import com.caucho.hessian.client.HessianProxyFactory;
 
 /**
  * 将本地方法暴露为http接口
@@ -29,36 +33,72 @@ import com.alibaba.fastjson.parser.ParserConfig;
 @Controller
 @RequestMapping("/http-exporter/{className}/{methodName}")
 public class HttpExporter{
-	private static final ParserConfig parseConfig = new ParserConfig();
-	static{
-		parseConfig.setAutoTypeSupport(true);
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
+	private HessianProxyFactory factory = new HessianProxyFactory();
+	private Map<String,Object> apiCache = new ConcurrentHashMap<>();
+	private Properties props = null;
+	@PostConstruct
+	public void init() throws FileNotFoundException{
+		props = PropertiesUtil.loadProperties(ResourceUtils.getFile("classpath:hessian-uri.properties"));
 	}
-	@RequestMapping
+	@RequestMapping(value="/hessian-api",method=RequestMethod.POST,produces="application/json")
 	@ResponseBody
-	public Object callHessianApi(@RequestBody String body,
-			@PathVariable("className")String className,
-			@PathVariable("methodName")String methodName,
-			HttpServletRequest req) throws Exception{
-		WebApplicationContext context = WebApplicationContextUtils.getWebApplicationContext(req.getSession(true).getServletContext());
-		Class<?> type = Class.forName(className);
-		Object target = context.getBean(type);
-		if(target==null){
-			throw new RuntimeException("没有找到"+className+"的实例");
-		}
-		Method method = MethodUtil.getMethodByName(className, methodName);
-		if(body.contains("@type")){
-			Object[] args = JSON.parseObject(body, new Object[]{}.getClass(), parseConfig);
-			return method.invoke(target, args);
-		}else{
-			Type[] types = method.getGenericParameterTypes();
-			Object[] args = JSON.parseArray(body, types).toArray();
-			return method.invoke(target, args);
+	public Object callHessianApi(@RequestBody  String body,
+			HttpServletRequest req,HttpServletResponse resp) throws Exception{
+		try{
+			logger.info("\n"+body);
+			req.setCharacterEncoding("utf-8");
+			resp.setCharacterEncoding("utf-8");
+			HessianApiCall call = null;
+			Object res = null;
+			Object api = null;
+			Object[] args = null;
+			Method method = null;
+			if(body.contains("@type")){//复杂类型，需要调用者指定类型信息
+				call = JSONUtil.parseObjectWithType(body, HessianApiCall.class);
+			}else{
+				call = JSON.parseObject(body,HessianApiCall.class);
+			}
+			api =getHessianApi(call);
+			if(call.getArgTypes()==null){//可以指定方法参数的类型，用来解决方法重载问题。如果未指定，就根据方法名获取方法。
+				method = MethodUtil.getMethodByName(call.getClassName(), call.getMethodName());
+			}else{
+				method = MethodUtil.getMethod(call.getClassName(), call.getMethodName(),call.getArgTypes().toArray(new String[0]));
+			}
+			if(body.contains("@type")){//复杂类型，需要调用者指定类型信息
+				args = new Object[call.getArgs().size()];
+				for(int i=0;i<args.length;i++){
+					args[i] = call.getArgs().get(i);
+				}
+			}else{//简单类型，自动处理类型信息
+				String argsJSONArray = JSON.toJSONString(call.getArgs());
+				args = MethodUtil.parseJSONForArgs(method, argsJSONArray);
+			}
+			res = method.invoke(api, args);
+			/*WebApplicationContext context = WebApplicationContextUtils.getWebApplicationContext(req.getSession(true).getServletContext());
+			Object target = context.getBean(Class.forName(call.getClassName()));
+			if(target==null){
+				throw new RuntimeException("spring上下文中没有找到"+call.getClassName()+"的实例");
+			}*/
+			String resString = JSON.toJSONString(res);
+			logger.info(resString);
+			return resString;
+		}catch(Exception e){
+			logger.error("服务器内部错误",e);
+			resp.setStatus(500);
+			resp.setContentType("text/plain");
+			e.printStackTrace(resp.getWriter());
+			return null;
 		}
 	}
-	public static void main(String[] args0) throws Exception{
-		File f = ResourceUtils.getFile("classpath:test2.json");
-		String body = StreamUtils.copyToString(new FileInputStream(f), Charset.forName("utf-8"));
-		Object[] args = null;//MethodUtil.parseArgs("org.jsirenia.http.MyTest","test1",body);
-		System.out.println(args);
+	private Object getHessianApi(HessianApiCall call ) throws MalformedURLException, ClassNotFoundException{
+		Object api =apiCache.get(call.getClassName());
+		if(api==null){
+			String uri = props.getProperty(call.getModuleName());
+			String serviceUri = call.getServiceUri();
+			api = factory.create(Class.forName(call.getClassName()), uri+serviceUri);
+			apiCache.put(call.getClassName(), api);
+		}
+		return api;
 	}
 }
