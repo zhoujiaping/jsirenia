@@ -38,7 +38,7 @@ public class User implements IUser{
     	return res;
     }
     //泛型数组
-    public Object testGenericArray(Map<String,Res<List<User>>>[] res){
+    public Map<String,Res<List<User>>>[] testGenericArray(Map<String,Res<List<User>>>[] res){
     	return res;
     }
     //数组

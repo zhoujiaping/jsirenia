@@ -9,7 +9,8 @@ import com.alibaba.fastjson.util.ParameterizedTypeImpl;
 /**
  * fastjson反序列化处理泛型时，有一种TypeReference的方式。
  * 这种方式，可以通过静态的指定泛型的类型，解决问题。
- * 但是缺陷有两个，一是定义的TypeReference的子类型的泛型，不能再嵌套泛型。
+ * 但是缺陷有两个，
+ * 一是定义的TypeReference的子类型的泛型，不能再嵌套泛型。
  * 即可以这样定义public class MapTypeReference<K,V> extends TypeReference<Map<K,V>>{}
  * 但是不能这样定义public class MapTypeReference<K,E> extends TypeReference<Map<K,List<E>>{}
  * 可以这样TypeReference<Map<String,List<User>> tf = new TypeReference<Map<String,List<User>>(){};

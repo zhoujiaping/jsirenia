@@ -4,7 +4,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.List;
 
-import org.jsirenia.json.JSONUtil;
+import org.jsirenia.collection.CollectionUtil;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.parser.ParserConfig;
@@ -16,34 +16,43 @@ public class MethodUtil {
 		config.setAutoTypeSupport(true);
 	}
 	/**
-	 * 带@type的json
+	 * 带@type的json格式
 	 * @param args
 	 * @return
 	 */
 	public static Object[] parseJSONForArgsWithType(String args){
 		return JSON.parseObject(args,objArrayClass , config);
 	}
-	public static Object[] parseJSONForArgs(Method method,String args){
-		Type[] argTypes = method.getGenericParameterTypes();
-    	List<Object> list = JSON.parseArray(args,argTypes);
-    	return null;
-	}
 	/**
-	 * 不带@type的json
-	 * args：JSON.parseArray("[...]")的结果，或者JSON.parse("{..."list":[...]}")的list属性值
+	 * 不带@type的json格式
+	 * @param method
+	 * @param argsJSONArray
+	 * @return
 	 */
-	public static Object[] parseJSONForArgs(Method method,List<Object> args){
-		/*Class<?>[] parameterTypes = method.getParameterTypes();
-		Type[] genericParameterTypes = method.getGenericParameterTypes();
-		Object[] methodArgs = new Object[parameterTypes.length];
-		for(int i=0;i<parameterTypes.length;i++){
-			methodArgs[i] = JSONUtil.toJavaObject(args.get(i), parameterTypes[i],genericParameterTypes[i]);
-		}
-		return methodArgs;*/
-		return null;
+	public static Object[] parseJSONForArgs(Method method,String argsJSONArray){
+    	Class<?>[] pts = method.getParameterTypes();
+		Type[] argTypes = method.getGenericParameterTypes();
+    	List<Object> list = JSON.parseArray(argsJSONArray,argTypes);
+    	Object[] args = new Object[list.size()];
+    	/*DefaultJSONParser存在缺陷，如下
+    	 *  if (type instanceof Class) {
+                            Class<?> clazz = (Class<?>) type;
+                            isArray = clazz.isArray();
+                            componentType = clazz.getComponentType();
+                        }
+    	 * 对于数组类型，反序列化时传class，则会丢失泛型信息；传type，则不会使用componentType。
+    	 * */
+    	for(int i=0;i<list.size();i++){
+    		if(pts[i].isArray()){
+    			args[i] = CollectionUtil.toArray((Object[])list.get(i), pts[i].getComponentType());
+    		}else{
+    			args[i] = list.get(i);
+    		}
+    	}
+    	return args;
 	}
-	public static Object parseJSONForReturnType(String json, Method method) {
-		Class<?> returnType = method.getReturnType();// 获取返回值类型
+	public static Object parseJSONForReturnType(Method method, String json) {
+		//Class<?> returnType = method.getReturnType();// 获取返回值类型
 		Type genericReturnType = method.getGenericReturnType();// 获取泛型返回值类型
 		return JSON.parseObject(json, genericReturnType);
 		//return JSONUtil.parseJSON(json, returnType, genericReturnType);

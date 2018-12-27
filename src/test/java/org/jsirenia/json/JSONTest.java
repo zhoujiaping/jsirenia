@@ -43,9 +43,8 @@ public class JSONTest {
     public void testPrimitive() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException{
     	Object[] args = new Object[]{"hello",100,'z'};
     	String text = JSON.toJSONString(args);
-    	List<Object> list = JSON.parseArray(text);
     	Method method = MethodUtil.getMethodByName(userClass, "testPrimitive");
-    	Object[] res = MethodUtil.parseJSONForArgs(method, list);
+    	Object[] res = MethodUtil.parseJSONForArgs(method, text);
     	Object obj = method.invoke(new User(), res);
     	print(obj);
     }
@@ -59,9 +58,8 @@ public class JSONTest {
     	String str = "str";
     	Object[] args = new Object[]{map,str};
     	String text = JSON.toJSONString(args);
-    	List<Object> list = JSON.parseArray(text);
     	Method method = MethodUtil.getMethodByName(userClass, "testMap");
-    	Object[] res = MethodUtil.parseJSONForArgs(method, list);
+    	Object[] res = MethodUtil.parseJSONForArgs(method, text);
     	Object obj = method.invoke(new User(), res);
     	print(obj);
     }
@@ -75,9 +73,8 @@ public class JSONTest {
     	String str = "str";
     	Object[] args = new Object[]{map,str};
     	String text = JSON.toJSONString(args);
-    	List<Object> list = JSON.parseArray(text);
     	Method method = MethodUtil.getMethodByName(userClass, "testMapNest");
-    	Object[] res = MethodUtil.parseJSONForArgs(method, list);
+    	Object[] res = MethodUtil.parseJSONForArgs(method, text);
     	Object obj = method.invoke(new User(), res);
     	print(obj);
     }
@@ -88,9 +85,8 @@ public class JSONTest {
     	Res res =  new Res(Lists.asList(new User("john"), new User[]{new User("lucy")}));
     	Object[] args = new Object[]{res};
     	String text = JSON.toJSONString(args);
-    	List<Object> list = JSON.parseArray(text);
     	Method method = MethodUtil.getMethodByName(userClass, "testGenericNest");
-    	Object[] arr = MethodUtil.parseJSONForArgs(method, list);
+    	Object[] arr = MethodUtil.parseJSONForArgs(method, text);
     	Object obj = method.invoke(new User(), arr);
     	print(obj);
     }
@@ -100,31 +96,9 @@ public class JSONTest {
     	map.put("res", new Res(Lists.asList(new User("john"), new User[]{new User("lucy")})));
     	Object[] args = new Object[]{new Map[]{map}};
     	String text = JSON.toJSONString(args);
-    	List<Object> list = JSON.parseArray(text);
     	Method method = MethodUtil.getMethodByName(userClass, "testGenericArray");
-    	//Object[] res = MethodUtil.parseJSONForArgs(method, list);
-    	//Object obj = method.invoke(new User(), res);
-    	//print(obj);
-    	/*DefaultJSONParser存在缺陷，如下
-    	 *  if (type instanceof Class) {
-                            Class<?> clazz = (Class<?>) type;
-                            isArray = clazz.isArray();
-                            componentType = clazz.getComponentType();
-                        }
-    	 * 对于数组类型，反序列化时传class，则会丢失泛型信息；传type，则不会使用componentType。
-    	 * */
-    	Class<?>[] pts = method.getParameterTypes();
-    	Type[] argTypes = method.getGenericParameterTypes();
-    	list = JSON.parseArray(text,argTypes);//第一个元素的类型，应该是Map[]，但结果却是Object[]。
-    	//Object obj = method.invoke(new User(), new Object[]{CollectionUtil.toArray((Object[])list.get(0), Map.class)});
-    	for(int i=0;i<list.size();i++){
-    		if(pts[i].isArray()){
-    			args[i] = CollectionUtil.toArray((Object[])list.get(i), pts[i].getComponentType());
-    		}else{
-    			args[i] = list.get(i);
-    		}
-    	}
-    	Object obj = method.invoke(new User(), args);
+    	Object[] res = MethodUtil.parseJSONForArgs(method, text);
+    	Object obj = method.invoke(new User(), res);
     	print(obj);
     }
     /**
@@ -133,15 +107,9 @@ public class JSONTest {
     public void testArray() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException{
     	Object[] args = new Object[]{new Object[]{new User("john"), new User("lucy")}};
     	String text = JSON.toJSONString(args);
-    	List<Object> list = JSON.parseArray(text);
     	Method method = MethodUtil.getMethodByName(userClass, "testArray");
-    	Object[] res = MethodUtil.parseJSONForArgs(method, list);
+    	Object[] res = MethodUtil.parseJSONForArgs(method, text);
     	Object obj = method.invoke(new User(), res);
-    	print(obj);
-    	
-    	Type[] argTypes = method.getGenericParameterTypes();
-    	list = JSON.parseArray(text,argTypes);
-    	obj = method.invoke(new User(), list.toArray());
     	print(obj);
     }
     /**
@@ -151,9 +119,8 @@ public class JSONTest {
     	Object args = new Object[]{UserStatus.VALID};
     	String text = JSON.toJSONString(args);
     	print(text);
-    	List<Object> list = JSON.parseArray(text);
     	Method method = MethodUtil.getMethodByName(userClass, "testEnum");
-    	Object[] res = MethodUtil.parseJSONForArgs(method, list);
+    	Object[] res = MethodUtil.parseJSONForArgs(method, text);
     	Object obj = method.invoke(new User(), res);
     	print(obj);
     }
@@ -168,9 +135,8 @@ public class JSONTest {
     	Object args = new Object[]{json,jsonArray};
     	String text = JSON.toJSONString(args);
     	print(text);
-    	List<Object> list = JSON.parseArray(text);
     	Method method = MethodUtil.getMethodByName(userClass, "testJSON");
-    	Object[] res = MethodUtil.parseJSONForArgs(method, list);
+    	Object[] res = MethodUtil.parseJSONForArgs(method, text);
     	Object obj = method.invoke(new User(), res);
     	print(obj);
     }
