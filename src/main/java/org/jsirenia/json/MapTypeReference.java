@@ -1,3 +1,4 @@
+package org.jsirenia.json;
 
 
 import java.lang.reflect.Type;

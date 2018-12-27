@@ -3,6 +3,7 @@ package org.jsirenia.http;
 import java.io.File;
 import java.io.FileInputStream;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 
 import javax.servlet.http.HttpServletRequest;
@@ -44,9 +45,15 @@ public class HttpExporter{
 		if(target==null){
 			throw new RuntimeException("没有找到"+className+"的实例");
 		}
-		Object[] args = JSON.parseObject(body, new Object[]{}.getClass(), parseConfig);
 		Method method = MethodUtil.getMethodByName(className, methodName);
-		return method.invoke(target, args);
+		if(body.contains("@type")){
+			Object[] args = JSON.parseObject(body, new Object[]{}.getClass(), parseConfig);
+			return method.invoke(target, args);
+		}else{
+			Type[] types = method.getGenericParameterTypes();
+			Object[] args = JSON.parseArray(body, types).toArray();
+			return method.invoke(target, args);
+		}
 	}
 	public static void main(String[] args0) throws Exception{
 		File f = ResourceUtils.getFile("classpath:test2.json");

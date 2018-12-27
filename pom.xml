@@ -206,6 +206,16 @@
 	</dependencies>
 	<build>
 		<finalName>${project.artifactId}</finalName>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+			<resource>
+				<directory>src/main/java</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -239,4 +249,23 @@
 			</plugin>
 		</plugins>
 	</build>
+	<profiles>
+		<profile>
+			<id>local</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<profile.properties>local</profile.properties>
+				<profile.product>false</profile.product>
+			</properties>
+		</profile>
+		<profile>
+			<id>product</id>
+			<properties>
+				<profile.properties>product</profile.properties>
+				<profile.product>true</profile.product>
+			</properties>
+		</profile>
+	</profiles>
 </project>

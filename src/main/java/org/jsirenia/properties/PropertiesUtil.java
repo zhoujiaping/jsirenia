@@ -5,7 +5,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.Properties;
-
+/**
+ * https://www.hellojava.com/a/158.html
+ *
+ */
 public class PropertiesUtil {
 	public static Properties loadProperties(File file){
 		try(BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file),"utf-8"))) {
