@@ -23,7 +23,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.parser.ParserConfig;
 /**
- *
+ * 对手动创建的代理对象进行aop
  */
 public class MethodHttpInterceptor implements MethodInterceptor{
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());

@@ -6,7 +6,7 @@ function test(params){
 	}else{
 		print('test2 not exist')
 	}
-	return JSON.stringify({k:'1'});
+	return {k:'1'};
 }
 function test1(params){
 	print(params.name)
@@ -16,7 +16,7 @@ function test1(params){
 	}else{
 		print('test2 not exist')
 	}
-	return JSON.stringify({k:'1'});
+	return {k:'1'};
 }
 var o = {
 		x:function(){
@@ -24,3 +24,9 @@ var o = {
 		}
 };
 var x = o.x;
+
+function hello(args){
+	print(args)
+	//return [1,"h",{k:'v',arr:[3,4,5]}];
+	return {k:'v',arr:[3,4,5]};
+}

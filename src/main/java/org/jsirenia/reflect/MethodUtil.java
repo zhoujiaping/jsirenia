@@ -1,5 +1,6 @@
 package org.jsirenia.reflect;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.List;
@@ -39,7 +40,7 @@ public class MethodUtil {
     	 * */
     	for(int i=0;i<list.size();i++){
     		if(pts[i].isArray()){
-    			args[i] = CollectionUtil.toArray((Object[])list.get(i), pts[i].getComponentType());
+    			args[i] = CollectionUtil.toArray(list.get(i), pts[i].getComponentType());
     		}else{
     			args[i] = list.get(i);
     		}

@@ -23,6 +23,7 @@ import org.springframework.util.ResourceUtils;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+
 /**
  * 重复加载文件的问题已经通过缓存解决。
  * 增加了目录监听功能，如果文件发生修改，会在下一次执行该脚本的函数时，读取文件内容兵保存到缓存。
@@ -39,6 +40,14 @@ public class JsFunctionRunner {
 	private static Lock lock = new ReentrantLock();
 	private static long lockTime = 1000*10;
 	private static TimeUnit timeUnit = TimeUnit.SECONDS;
+	
+	static{
+		try {
+			readFileTextAndEval(ResourceUtils.getFile("classpath:js/builtin.js"));
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 
 	/**
 	 * 将给定文件的内容作为js代码执行，并且将字符串作为入参和出参。
@@ -136,13 +145,9 @@ public class JsFunctionRunner {
 		Object param = null;
 		if (arg != null) {
 			param = JSON.parse(arg);
-			/*if(JSONUtil.isJSONArray(arg)){
-				param = JSONArray.parseArray(arg);
-			}else{
-				param = JSONObject.parseObject(arg);
-			}*/
 		}
-		res = invocable.invokeFunction(funcName, param);
+		//res = invocable.invokeFunction(funcName, param);
+		res = invocable.invokeFunction("__20181228invoke",funcName, param);
 		if (res == null) {
 			return null;
 		}
@@ -183,10 +188,17 @@ public class JsFunctionRunner {
 		});
 	}
 	public static void main(String[] args) throws InterruptedException {
-		watch("classpath:js");
-		test1();
+		//watch("classpath:js");
+		//test1();
 		test2();
 		test3();
+		test();
+	}
+	private static void test() {
+		JSONObject params = new JSONObject();
+		params.put("name", "zhou");
+		String res = JsFunctionRunner.runFile("classpath:js/test.js", "hello", params.toJSONString() );
+		System.out.println(res);
 	}
 	private static void test3() {
 		JSONObject params = new JSONObject();

@@ -101,6 +101,17 @@ public class JSONTest {
     	Object obj = method.invoke(new User(), res);
     	print(obj);
     }
+    @Test
+    public void testGenericArrayArray() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException{
+    	Map<String,Res<List<User>>> map = new HashMap<>();
+    	map.put("res", new Res(Lists.asList(new User("john"), new User[]{new User("lucy")})));
+    	Object[] args = new Object[]{new Map[]{map}};
+    	String text = JSON.toJSONString(new Object[]{args});
+    	Method method = MethodUtil.getMethodByName(userClass, "testGenericArrayArray");
+    	Object[] res = MethodUtil.parseJSONForArgs(method, text);
+    	Object obj = method.invoke(new User(), res);
+    	print(obj);
+    }
     /**
      */
     @Test

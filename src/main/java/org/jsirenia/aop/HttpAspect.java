@@ -1,9 +1,8 @@
 package org.jsirenia.aop;
 
-import java.lang.reflect.Type;
+import java.lang.reflect.Method;
 
 import org.apache.http.HttpEntity;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -11,16 +10,19 @@ import org.apache.http.util.EntityUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.jsirenia.file.PathUtil;
+import org.jsirenia.reflect.MethodUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 /**
- *
+ * 对spring管理的对象进行aop，调用http接口
  */
+@Component
 public class HttpAspect {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	private String host = "localhost";
@@ -49,24 +51,26 @@ public class HttpAspect {
 	@Around("execution(* ogr.jsirenia..*(..))")
 	public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
 		Signature signature =	joinPoint.getSignature();
+		MethodSignature methodSignature = (MethodSignature) signature;
+		Method method = methodSignature.getMethod();
 		String funcName = signature.getName();//方法名
 		String clazzname = joinPoint.getTarget().getClass().getSimpleName();//简单类名
 		try{
 			Object ret = null;
 			Object[] args = joinPoint.getArgs();
 			String argsJson = null;
-			if(args!=null && args.length>0){
-				argsJson = JSONArray.toJSONString(args);
+			if(args!=null){
+				argsJson = JSON.toJSONString(args);
 			}
 			logger.info("方法"+clazzname+"."+funcName+"入参=>{}",argsJson);
-			JSONObject ret0 = before(clazzname,funcName,argsJson);
+			JSONObject ret0 = before(method,clazzname,funcName,argsJson);
 			if(ret0.getBoolean("invoke")){
-				ret = invoke(clazzname,funcName,argsJson,joinPoint);
+				ret = invoke(method,clazzname,funcName,argsJson,joinPoint);
 				return ret;
 			}else{
 				ret = joinPoint.proceed();
 				if(ret0.getBoolean("afterReturning")){
-					ret = afterReturning(clazzname,funcName,ret,joinPoint);
+					ret = afterReturning(method,clazzname,funcName,ret,joinPoint);
 				}
 			}
 			logger.info("方法"+clazzname+"."+funcName+"结果=>{}",JSON.toJSONString(ret));
@@ -77,36 +81,27 @@ public class HttpAspect {
 		}finally{
 		}
 	}
-	private Object invoke(String clazzname, String funcName, String argsJson, ProceedingJoinPoint joinPoint) {
+	private Object invoke(Method method,String clazzname, String funcName, String argsJson, ProceedingJoinPoint joinPoint) {
 		try{
 			String url = PathUtil.concat("http://"+host+":"+port, contextPath, clazzname, funcName);
-			HttpGet request = new HttpGet(url);
+			HttpPost request = new HttpPost(url);
+			HttpEntity reqEntity = new StringEntity(argsJson, "utf-8");
+			request.setEntity(reqEntity);
 			return client.execute(request, (response)->{
 				HttpEntity entity = response.getEntity();
 				String body = EntityUtils.toString(entity , "utf-8" );
-				Class<?> retClazz = AspectUtil.getReturnType(joinPoint);
-				if(AspectUtil.isCollection(retClazz)){
-					Type[] types = AspectUtil.getActualReturnTypeArguments(joinPoint);
-					Class<?> typeArg = (Class<?>) types[0];
-					return JSONArray.parseArray(body, typeArg);
-				}else if(AspectUtil.isArray(retClazz)){
-					throw new RuntimeException("返回值类型不支持数组");
-				}else{
-					if(AspectUtil.hasTypeArg(retClazz)){//返回类型有泛型
-						throw new RuntimeException("返回值类型只对集合支持泛型");
-					}else{
-						return JSONObject.parseObject(body, retClazz);
-					}
-				}
+				return MethodUtil.parseJSONForReturnType(method, body);
 			});
 		}catch(Exception e){
 			throw new RuntimeException(e);
 		}
 	}
-	private JSONObject before(String clazzname, String funcName, String argsJson) {
+	private JSONObject before(Method method, String clazzname, String funcName, String argsJson) {
 		try{
 			String url = PathUtil.concat("http://"+host+":"+port, contextPath, clazzname, funcName);
-			HttpGet request = new HttpGet(url);
+			HttpPost request = new HttpPost(url);
+			HttpEntity reqEntity = new StringEntity(argsJson, "utf-8");
+			request.setEntity(reqEntity );
 			return client.execute(request, (response)->{
 				HttpEntity entity = response.getEntity();
 				String body = EntityUtils.toString(entity , "utf-8" );
@@ -116,7 +111,7 @@ public class HttpAspect {
 			throw new RuntimeException(e);
 		}
 	}
-	private Object afterReturning(String clazzname, String funcName, Object ret, ProceedingJoinPoint joinPoint) {
+	private Object afterReturning(Method method, String clazzname, String funcName, Object ret, ProceedingJoinPoint joinPoint) {
 		try{
 			String retJson = JSON.toJSONString(ret);
 			String url = PathUtil.concat("http://"+host+":"+port, contextPath, clazzname, funcName);
@@ -126,20 +121,7 @@ public class HttpAspect {
 			return client.execute(request, (response)->{
 				HttpEntity entity = response.getEntity();
 				String body = EntityUtils.toString(entity , "utf-8" );
-				Class<?> retClazz = AspectUtil.getReturnType(joinPoint);
-				if(AspectUtil.isCollection(retClazz)){
-					Type[] types = AspectUtil.getActualReturnTypeArguments(joinPoint);
-					Class<?> typeArg = (Class<?>) types[0];
-					return JSONArray.parseArray(body, typeArg);
-				}else if(AspectUtil.isArray(retClazz)){
-					throw new RuntimeException("返回值类型不支持数组");
-				}else{
-					if(AspectUtil.hasTypeArg(retClazz)){//返回类型有泛型
-						throw new RuntimeException("返回值类型只对集合支持泛型");
-					}else{
-						return JSONObject.parseObject(body, retClazz);
-					}
-				}
+				return MethodUtil.parseJSONForReturnType(method, body);
 			});
 		}catch(Exception e){
 			throw new RuntimeException(e);
