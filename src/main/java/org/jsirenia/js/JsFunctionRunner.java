@@ -6,11 +6,15 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.StandardWatchEventKinds;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import javax.script.Bindings;
 import javax.script.Invocable;
+import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
@@ -30,6 +34,11 @@ import com.alibaba.fastjson.JSONObject;
  * 重复eval脚本内容的问题已经通过缓存解决。
  * 注意脚本的执行上下文，如果有多个脚本文件，后面eval的脚本变量（包括函数）会覆盖前面eval的脚本变量，
  * 所以需要开发者自己控制。
+ * 解决方案：模块化。把js脚本用函数包裹。
+ * 
+ * 其实脚本方案，这个有严重缺陷。通过脚本引擎执行js，js无法直接做文件io、网络io等。
+ * https://www.cnblogs.com/qiumingcheng/p/7355456.html
+ * https://docs.oracle.com/javase/8/docs/technotes/guides/scripting/nashorn/toc.html
  */
 public class JsFunctionRunner {
 	private static final Logger logger = LoggerFactory.getLogger(JsFunctionRunner.class);
@@ -43,7 +52,11 @@ public class JsFunctionRunner {
 	
 	static{
 		try {
-			readFileTextAndEval(ResourceUtils.getFile("classpath:js/builtin.js"));
+			/*File file = ResourceUtils.getFile("classpath:js/builtin/invoke.js");
+			Bindings bindings = engine.getBindings(ScriptContext.ENGINE_SCOPE);
+			bindings.put("__root", file.getParentFile().getParentFile().getAbsolutePath());
+			readFileTextAndEval(file);
+			invocable.invokeFunction("__init");*/
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -187,12 +200,18 @@ public class JsFunctionRunner {
 			//fileTextCache.put(file.getAbsolutePath(), fileText);
 		});
 	}
-	public static void main(String[] args) throws InterruptedException {
+	public static void main(String[] args) throws InterruptedException, ScriptException, NoSuchMethodException {
 		//watch("classpath:js");
 		//test1();
-		test2();
-		test3();
-		test();
+		//test2();
+		//test3();
+		//test();
+		Object modules = engine.eval("var modules = {};");
+		String script = "function hello(name){return name;};exports.hello = hello;";
+		Object module = engine.eval("(function(){return modules.__1234={};})()");
+		Object newModule = engine.eval("function __1234(exports){print(JSON.stringify(exports));"+script+"print(exports.hello);}");
+		invocable.invokeFunction("__1234", module);
+		engine.eval("print(modules.__1234.hello)");
 	}
 	private static void test() {
 		JSONObject params = new JSONObject();
