@@ -12,8 +12,7 @@ import org.jsirenia.reflect.MethodUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-
-import com.alibaba.fastjson.JSONArray;
+import org.springframework.util.ResourceUtils;
 
 @Aspect
 @Component
@@ -33,14 +32,11 @@ public class JsAspect {
 		MethodSignature ms = (MethodSignature)signature;
 		Method method = ms.getMethod();
 		Object[] args = joinPoint.getArgs();
-		String arg = null;
-		if(args!=null){
-			arg = JSONArray.toJSONString(args);
-		}
 		String funcName = signature.getName();//方法名
 		String clazzname = joinPoint.getTarget().getClass().getSimpleName();//简单类名
 		try{
-			String res = JsFunctionRunner.runFile("classpath:js/"+clazzname+".js", funcName, arg);
+			Object jsObject = JsFunctionRunner.evalFile(ResourceUtils.getFile("classpath:js/"+clazzname+".js"));
+			String res = JsFunctionRunner.invokeMethod(jsObject, funcName, args);
 			return MethodUtil.parseJSONForReturnType(method, res);
 		}catch(Exception e){
 			logger.error(e.getMessage());
