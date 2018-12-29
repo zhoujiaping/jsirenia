@@ -23,6 +23,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.ResourceUtils;
 
+import groovy.inspect.swingui.ScriptToTreeNodeAdapter;
+
 /**
  * 这个工具类，可以执行js脚本。js脚本中可以调用java类或者java对象的方法。返回值可以是java对象。
  * 主要可以用来为java添加动态性。
@@ -40,6 +42,9 @@ import org.springframework.util.ResourceUtils;
  * html
  * 
  * js脚本中的load不会返回到java。所以不用那种方式。
+ * 
+ * 参考
+ * jdk.nashorn.internal.objects.Global
  */
 public class JsInvoker {
 	private static final Logger logger = LoggerFactory.getLogger(JsInvoker.class);
@@ -136,6 +141,12 @@ public class JsInvoker {
 		System.out.println(res);
 		// Object res = invokeMethod2(new Date(),"getTime");
 		// System.out.println(res);
+		Object httptest = evalFile(ResourceUtils.getFile("classpath:js/httptest.js"));
+		res = invokeJsMethod(httptest, "test");
+		System.out.println(res);
+		
+		res = invokeJsMethodReturnJSON(httptest,"testjson");
+		System.out.println(res);
 	}
 
 	/*
@@ -181,6 +192,9 @@ public class JsInvoker {
 	public static Object evalText(String key,String text) {
 		try {
 			lock.tryLock(lockTime, timeUnit);
+			if(key==null){
+				return engine.eval(text);
+			}
 			if (fileChangeCache.containsKey(key)) {
 				fileChangeCache.remove(key);
 				Object jsObject = engine.eval(text);
@@ -264,5 +278,22 @@ public class JsInvoker {
 			lock.unlock();
 		}
 	}
-
+	/**
+	 * @param target
+	 * @param method
+	 * @param args
+	 * @return
+	 */
+	public static Object invokeJsMethodReturnJSON(Object target, String method, Object... args) {
+		try {
+			lock.tryLock(lockTime, timeUnit);
+			Object jsInvoker = evalFile(ResourceUtils.getFile("classpath:js/builtin/js.js"));
+			Object res = invocable.invokeMethod(jsInvoker,"invoke",target, method, args);
+			return res;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		} finally {
+			lock.unlock();
+		}
+	}
 }

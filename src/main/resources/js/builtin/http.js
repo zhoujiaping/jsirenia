@@ -1,4 +1,4 @@
-(function(){
+(function(global){
 	var http = {};
 	var CloseableHttpClient = Java.type('org.apache.http.impl.client.CloseableHttpClient')
 	var HttpClients = Java.type('org.apache.http.impl.client.HttpClients')
@@ -47,5 +47,7 @@
 	print('===')
 	print(res)
 	print('===')
-*/	return http;
-})();
+*/	
+	global.http = http;
+	return http;
+})(this);
