@@ -106,12 +106,15 @@ public class JsInvoker {
 			// 優化:不要文件有修改就重新加载文件，而是先记录修改，用的时候才重新加载
 			// String fileText = readFileText(file);
 			String key = getKey(file);
-			if (jsObjectCache.containsKey(key)) {// 只有在缓存中有的才需要标记为已改变
-				fileChangeCache.put(key, "");
-			}
+			markChanged(key);
 			System.out.println(file.getName());
 			// fileTextCache.put(file.getAbsolutePath(), fileText);
 		});
+	}
+	public static void markChanged(String key){
+		if (jsObjectCache.containsKey(key)) {// 只有在缓存中有的才需要标记为已改变
+			fileChangeCache.put(key, "");
+		}
 	}
 
 	private static String getKey(File file) {
@@ -165,6 +168,28 @@ public class JsInvoker {
 				if (jsObject == null) {
 					fileText = readFileText(file);
 					jsObject = engine.eval(fileText);
+					jsObjectCache.put(key, jsObject);
+				}
+				return jsObject;
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		} finally {
+			lock.unlock();
+		}
+	}
+	public static Object evalText(String key,String text) {
+		try {
+			lock.tryLock(lockTime, timeUnit);
+			if (fileChangeCache.containsKey(key)) {
+				fileChangeCache.remove(key);
+				Object jsObject = engine.eval(text);
+				jsObjectCache.put(key, jsObject);
+				return jsObject;
+			} else {
+				Object jsObject = jsObjectCache.get(key);
+				if (jsObject == null) {
+					jsObject = engine.eval(text);
 					jsObjectCache.put(key, jsObject);
 				}
 				return jsObject;
