@@ -2,11 +2,11 @@ package org.jsirenia.json;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jsirenia.collection.CollectionUtil;
 import org.jsirenia.reflect.MethodUtil;
 import org.junit.Test;
 
@@ -112,6 +112,28 @@ public class JSONTest {
     	Object obj = method.invoke(new User(), res);
     	print(obj);
     }
+    @Test
+    public void testGenericArrayArray2() throws Exception{
+    	List<String> list = new ArrayList<>();
+    	list.add("robin");
+    	Object[] args = new Object[]{new List[][]{new List[]{list}}};
+    	String text = JSON.toJSONString(args);
+    	Class<?> clazz = User.class;
+    	Method method = clazz.getMethod("testGenericArrayArray2", List[][].class);
+    	Type[] types = method.getGenericParameterTypes();
+    	List<Object> argList = JSON.parseArray(text, types);
+    	Object res = new User().testGenericArrayArray2((List[][]) argList.get(0));
+    	System.out.println(res);
+    }
+    @Test
+    public void testArrayArray() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException{
+    	Object[] args = new String[][]{new String[]{"zoro","lufy"}};
+    	String text = JSON.toJSONString(new Object[]{args});
+    	Method method = MethodUtil.getMethodByName(userClass, "testArrayArray");
+    	Object[] res = MethodUtil.parseJSONForArgs(method, text);
+    	Object obj = method.invoke(new User(), res);
+    	print(obj);
+    }
     /**
      */
     @Test
@@ -122,6 +144,28 @@ public class JSONTest {
     	Object[] res = MethodUtil.parseJSONForArgs(method, text);
     	Object obj = method.invoke(new User(), res);
     	print(obj);
+    }
+    @Test
+    public void testArrayArray2() throws Exception{
+    	Object[] args = new Object[]{new String[][]{new String[]{"zoro","lufy"}}};
+    	String text = JSON.toJSONString(args);
+    	Class<?> clazz = User.class;
+    	Method method = clazz.getMethod("testArrayArray", String[][].class);
+    	Type[] types = method.getGenericParameterTypes();
+    	List<Object> argList = JSON.parseArray(text, types);
+    	Object res = new User().testArrayArray((String[][]) argList.get(0));
+    	System.out.println(res);
+    }
+    @Test
+    public void testArray2() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException{
+    	Object[] args = new Object[]{new Object[]{new User("john"), new User("lucy")}};
+    	String text = JSON.toJSONString(args);
+    	Class<?> clazz = User.class;
+    	Method method = clazz.getMethod("testArray", User[].class);
+    	Type[] types = method.getGenericParameterTypes();
+    	List<Object> argList = JSON.parseArray(text, types);
+    	Object res = new User().testArray((User[]) argList.get(0));
+    	System.out.println(res);
     }
     /**
      */

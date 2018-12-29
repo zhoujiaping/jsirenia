@@ -45,6 +45,13 @@ public class User implements IUser{
     public Map<String,Res<List<User>>>[][] testGenericArrayArray(Map<String,Res<List<User>>>[][] res){
     	return res;
     }
+    public List<String>[][] testGenericArrayArray2(List<String>[][] res){
+    	return res;
+    }
+    //数组的数组,不带泛型
+    public String[][] testArrayArray(String[][] res){
+    	return res;
+    }
     //数组
     public Object testArray(User[] res){
     	return res;
