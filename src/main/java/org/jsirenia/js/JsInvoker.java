@@ -23,8 +23,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.ResourceUtils;
 
-import groovy.inspect.swingui.ScriptToTreeNodeAdapter;
-
 /**
  * 这个工具类，可以执行js脚本。js脚本中可以调用java类或者java对象的方法。返回值可以是java对象。
  * 主要可以用来为java添加动态性。
