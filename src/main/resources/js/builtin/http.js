@@ -13,9 +13,10 @@
 		var reqEntity = new StringEntity(body, "utf-8");
 		request.setEntity(reqEntity);
 		var res = client.execute(request, function(response){
-			var entity = response.getEntity();
+			return response;
+			/*var entity = response.getEntity();
 			var json = EntityUtils.toString(entity , "utf-8" );
-			return json;
+			return json;*/
 		});
 		return res;
 	};

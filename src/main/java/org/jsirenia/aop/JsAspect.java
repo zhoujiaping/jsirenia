@@ -1,14 +1,10 @@
 package org.jsirenia.aop;
 
-import java.lang.reflect.Method;
-
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.reflect.MethodSignature;
-import org.jsirenia.js.JsFunctionRunner;
-import org.jsirenia.reflect.MethodUtil;
+import org.jsirenia.js.JsInvoker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -29,15 +25,13 @@ public class JsAspect {
 	@Around("execution(* com.xxx.impl..*(..))")
 	public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
 		Signature signature =	joinPoint.getSignature();
-		MethodSignature ms = (MethodSignature)signature;
-		Method method = ms.getMethod();
+		//MethodSignature ms = (MethodSignature)signature;
 		Object[] args = joinPoint.getArgs();
 		String funcName = signature.getName();//方法名
 		String clazzname = joinPoint.getTarget().getClass().getSimpleName();//简单类名
 		try{
-			Object jsObject = JsFunctionRunner.evalFile(ResourceUtils.getFile("classpath:js/"+clazzname+".js"));
-			String res = JsFunctionRunner.invokeMethod(jsObject, funcName, args);
-			return MethodUtil.parseJSONForReturnType(method, res);
+			Object jsObject = JsInvoker.evalFile(ResourceUtils.getFile("classpath:js/"+clazzname+".js"));
+			return JsInvoker.invokeJsMethod(jsObject, funcName, args);
 		}catch(Exception e){
 			logger.error(e.getMessage());
 			Object ret = joinPoint.proceed();

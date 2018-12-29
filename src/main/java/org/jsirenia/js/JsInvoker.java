@@ -6,6 +6,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.StandardWatchEventKinds;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -22,6 +24,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.ResourceUtils;
 
 /**
+ * 这个工具类，可以执行js脚本。js脚本中可以调用java类或者java对象的方法。返回值可以是java对象。
+ * 主要可以用来为java添加动态性。
+ * 和java动态加载类的方式相比，这里的方式不会污染jvm环境。
+ * 和使用groovy相比，不用引入groovy一大堆包。对java支持没groovy好。
+ * 和使用http代理相比，这里是本地调用，性能上有优势，在处理事务时不会引入分布式事务问题。
+ * 
  * 重复加载文件的问题已经通过缓存解决。 增加了目录监听功能，如果文件发生修改，会在下一次执行该脚本的函数时，读取文件内容兵保存到缓存。
  * 重复eval脚本内容的问题已经通过缓存解决。 注意脚本的执行上下文，如果有多个脚本文件，后面eval的脚本变量（包括函数）会覆盖前面eval的脚本变量，
  * 所以需要开发者自己控制。
@@ -33,19 +41,15 @@ import org.springframework.util.ResourceUtils;
  * 
  * js脚本中的load不会返回到java。所以不用那种方式。
  */
-public class JsFunctionRunner {
-	private static final Logger logger = LoggerFactory.getLogger(JsFunctionRunner.class);
+public class JsInvoker {
+	private static final Logger logger = LoggerFactory.getLogger(JsInvoker.class);
 	private static ScriptEngine engine = new ScriptEngineManager().getEngineByName("js");
 	private static Invocable invocable = (Invocable) engine;
-	// private static LRUCache<String, String> fileTextCache = new
-	// LRUCache<>(1000);
 	private static LRUCache<String, Object> jsObjectCache = new LRUCache<>(1000);
 	private static LRUCache<String, String> fileChangeCache = new LRUCache<>(1000);// filename->""
 	private static Lock lock = new ReentrantLock();
 	private static long lockTime = 1000 * 10;
 	private static TimeUnit timeUnit = TimeUnit.SECONDS;
-	private static Object starter;
-
 	/**
 	 * 每一个js file经过eval之后都要返回一个js对象。
 	 * 
@@ -56,12 +60,6 @@ public class JsFunctionRunner {
 			// engine.getBindings(ScriptContext.ENGINE_SCOPE);
 			// bindings.put("__root",
 			// getKey(ResourceUtils.getFile("classpath:js")));
-
-			File file = ResourceUtils.getFile("classpath:js/builtin/__starter.js");
-			starter = evalFile(file);
-			// readFileTextAndEval(ResourceUtils.getFile("classpath:js/builtin/http.js"));
-			// readFileTextAndEval(ResourceUtils.getFile("classpath:js/builtin/file.js"));
-			// readFileTextAndEval(ResourceUtils.getFile("classpath:js/builtin/mysql.js"));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -79,6 +77,7 @@ public class JsFunctionRunner {
 			throw new RuntimeException(e);
 		}
 	}
+
 	public static void watch(String dir) {
 		Thread t = new Thread(() -> {
 			try {
@@ -123,10 +122,33 @@ public class JsFunctionRunner {
 			throws InterruptedException, ScriptException, NoSuchMethodException, FileNotFoundException {
 		watch("classpath:js");
 		Object http = evalFile(ResourceUtils.getFile("classpath:js/builtin/http.js"));
-		Object res = invokeMethod(http, "post", "http://www.baidu.com","");
+		Object res = invokeJsMethod(http, "post", "http://www.baidu.com", "");
 		System.out.println(res);
+		res = invokeJavaMethod(new Date(), "getTime");
+		System.out.println(res);
+		res = invokeJavaMethod(LocalDate.now(), "atTime", 10, 20, 30);
+		// LocalDate.now().atTime(10, 20, 30);
+		System.out.println(res);
+		res = invokeJavaStaticMethod(LocalDate.class, "now");
+		System.out.println(res);
+		// Object res = invokeMethod2(new Date(),"getTime");
+		// System.out.println(res);
 	}
 
+	/*
+	 * private static void genCode(){ for(int i=1;i<=20;i++){
+	 * System.out.println("invoker.invoke"+i+" = function(target,method,args){"
+	 * ); List<String> params = new ArrayList<>(); for(int j=0;j<i;j++){
+	 * params.add("args["+j+"]"); } System.out.println(
+	 * "    return target[method]("+String.join(",", params)+");");
+	 * System.out.println("};"); } }
+	 */
+	/**
+	 * 返回js对象
+	 * 
+	 * @param file
+	 * @return
+	 */
 	public static Object evalFile(File file) {
 		try {
 			lock.tryLock(lockTime, timeUnit);
@@ -154,27 +176,68 @@ public class JsFunctionRunner {
 		}
 	}
 
-	public static String invokeMethod(Object target, String method, Object... args) {
+	public static Object invokeJavaStaticMethod(String clazzName, String method, Object... args) {
+		try {
+			return invokeJavaStaticMethod(Class.forName(clazzName), method, args);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public static Object invokeJavaStaticMethod(Class<?> clazz, String method, Object... args) {
 		try {
 			lock.tryLock(lockTime, timeUnit);
-			if (args == null) {
-				args = new Object[0];
-			}
-			Object[] actualArgs = new Object[2 + args.length];
-			actualArgs[0] = target;
-			actualArgs[1] = method;
-			for (int i = 2; i < actualArgs.length; i++) {
-				actualArgs[i] = args[i - 2];
-			}
-			Object res = invocable.invokeMethod(starter, "__invoke", actualArgs);
-			if (res == null) {
-				return null;
-			}
-			return res.toString();
+			Object invoker = evalFile(ResourceUtils.getFile("classpath:js/builtin/java.js"));
+			return invocable.invokeMethod(invoker, "invokeStatic", clazz.getName(), method, args);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		} finally {
 			lock.unlock();
 		}
 	}
+
+	/**
+	 * 
+	 * @param target
+	 *            java对象
+	 * @param method
+	 *            java方法名
+	 * @param args
+	 *            java参数
+	 * @return
+	 */
+	public static Object invokeJavaMethod(Object target, String method, Object... args) {
+		try {
+			lock.tryLock(lockTime, timeUnit);
+			Object invoker = evalFile(ResourceUtils.getFile("classpath:js/builtin/java.js"));
+			return invocable.invokeMethod(invoker, "invoke", target, method, args);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		} finally {
+			lock.unlock();
+		}
+	}
+
+	/**
+	 * 
+	 * @param target
+	 *            js对象
+	 * @param method
+	 *            js方法名
+	 * @param args
+	 *            js参数
+	 * @return
+	 */
+	public static Object invokeJsMethod(Object target, String method, Object... args) {
+		try {
+			lock.tryLock(lockTime, timeUnit);
+			Object res = invocable.invokeMethod(target, method, args);
+			return res;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		} finally {
+			lock.unlock();
+		}
+	}
+
 }
