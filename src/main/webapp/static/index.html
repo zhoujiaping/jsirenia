@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style type="text/css">
+html,body{
+height:100%;
+width:100%;
+}
+.content{
+border:1px solid gray;
+min-height: 20%;
+width:100%; 
+}
+</style>
+</head>
+<body>
+<div contenteditable="true" class="content" id="data"></div>
+<div>
+<button id="btn">submit</button>
+</div>
+<div id="res"></div>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script type="text/javascript">
+	$(()=>{
+		$('#btn').on('click',e=>{
+			$('#res').text('');
+			const data = $('#data').text();
+			$.ajax({
+				url:'/hessian-http/jsInvoker/invoke',
+				data:data,
+				method:'POST',
+				headers: {
+		             'Content-Type':'text/plain',
+		             'Accept':'text/plain'
+		        }
+			}).done(res=>{
+				console.info(JSON.parse(res));
+			}).fail(xhr=>{
+				console.error(res);
+			});
+		});
+	});
+</script>
+</body>
+</html>

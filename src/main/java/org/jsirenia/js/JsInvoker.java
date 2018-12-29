@@ -46,7 +46,7 @@ import org.springframework.util.ResourceUtils;
  */
 public class JsInvoker {
 	private static final Logger logger = LoggerFactory.getLogger(JsInvoker.class);
-	private static ScriptEngine engine = new ScriptEngineManager().getEngineByName("js");
+	public static ScriptEngine engine = new ScriptEngineManager().getEngineByName("js");
 	private static Invocable invocable = (Invocable) engine;
 	private static LRUCache<String, Object> jsObjectCache = new LRUCache<>(1000);
 	private static LRUCache<String, String> fileChangeCache = new LRUCache<>(1000);// filename->""
