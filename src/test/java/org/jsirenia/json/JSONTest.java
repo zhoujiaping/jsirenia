@@ -20,7 +20,7 @@ public class JSONTest {
 	private String userClass = User.class.getName();
     @Test
     public void testToJSONStringWithType() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
-        Object[] users = new Object[2];
+    	Object[] users = new Object[2];
         users[0] = new User("john");
         users[1] = new User("lucy");
     	String text = JSONUtil.toJSONStringWithType(users);
