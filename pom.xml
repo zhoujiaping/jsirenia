@@ -215,10 +215,23 @@
 			<resource>
 				<directory>src/main/resources</directory>
 				<filtering>true</filtering>
+				<excludes>
+					<exclude>**/*.groovy</exclude><!-- maven参数替换排除groovy文件 -->
+				</excludes>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>false</filtering>
+				<includes>
+					<include>**/*.groovy</include>
+				</includes>
 			</resource>
 			<resource>
 				<directory>src/main/java</directory>
 				<filtering>true</filtering>
+				<includes>
+					<include>**/*.xml</include>
+				</includes>
 			</resource>
 		</resources>
 		<plugins>

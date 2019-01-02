@@ -1,4 +1,4 @@
-package org.jsirenia.bean;
+package org.jsirenia.groovy;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -9,7 +9,7 @@ import org.springframework.util.ResourceUtils;
 
 import groovy.lang.Binding;
 import groovy.util.GroovyScriptEngine;
-
+//https://blog.csdn.net/a906998248/article/details/46444967
 public class GroovyScriptFileRunner {
 	private String filepath = "";//目录
 	private GroovyScriptEngine  engine ;
