@@ -1,0 +1,1 @@
+D:\test>keytool -genkey -alias tomcat -keyalg RSA -keystore d:/test/mykey.keystore -storepass 123456 -keypass 123456

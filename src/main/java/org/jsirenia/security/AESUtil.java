@@ -24,8 +24,8 @@ public class AESUtil {
     public static byte[] encrypt(byte[] data, String key) {
         return doAES(data, key, Cipher.ENCRYPT_MODE);
     }
-    public static String encryptBase64(String base64, String key) {
-        byte[] buf = doAES(base64.getBytes(defaultCharset), key, Cipher.ENCRYPT_MODE);
+    public static String encryptBase64(String data, String key) {
+        byte[] buf = doAES(data.getBytes(defaultCharset), key, Cipher.ENCRYPT_MODE);
         return Base64.getEncoder().encodeToString(buf);
     }
     public static String encryptHex(String hex, String key) {
