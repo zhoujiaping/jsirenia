@@ -1,1 +1,4 @@
 D:\test>keytool -genkey -alias tomcat -keyalg RSA -keystore d:/test/mykey.keystore -storepass 123456 -keypass 123456
+
+https://www.npmjs.com/package/crypto-js
+https://github.com/travist/jsencrypt
