@@ -32,8 +32,7 @@ public class SecurityHttpServletResponse extends HttpServletResponseWrapper{
 		if(out!=null){
 			return out;
 		}
-		String secretKey = (String) request.getSession().getAttribute("secretKey");
-		out = new SecurityServletOutputStream(request,response,super.getOutputStream(),secretKey);
+		out = new SecurityServletOutputStream(request,response,super.getOutputStream());
 		return out;
 	}
 }

@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.StreamUtils;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 /**
  * 封装HttpServletRequest和HttpServletResponse，
  * 重写其获取请求体和输出响应体的方法，做加解密处理。
@@ -51,7 +52,7 @@ public class SecurityFilter implements Filter{
 		String secretKey = (String) session.getAttribute("secretKey");
 		String contextPath = req.getContextPath();
 		String uri = req.getRequestURI();
-		if(uri.equals(contextPath+"/security/get-cert")){
+		if(uri.equals(contextPath+"/static/img/c.png")){
 			logger.info("请求证书");
 			if(secretKey != null){
 				SecurityHttpServletResponse sresp = new SecurityHttpServletResponse(req,resp);
@@ -62,7 +63,7 @@ public class SecurityFilter implements Filter{
 				return;
 			}
 			CustomCert cert = new CustomCert();
-			cert.setOwner("sf-test");
+			cert.setOwner("test");
 			cert.setPublicKey(Base64.getEncoder().encodeToString(KeyHolder.publicKey.getEncoded()));
 			cert.setVersion("v1.0");
 			cert.setTimestamp(System.currentTimeMillis()+"");
@@ -75,7 +76,7 @@ public class SecurityFilter implements Filter{
 			resp.flushBuffer();
 			return;
 		}
-		if(uri.equals(contextPath+"/security/put-secret-key")){
+		if(uri.equals(contextPath+"/static/img/s.png")){
 			logger.info("保存密钥");
 			if(secretKey != null){
 				SecurityHttpServletResponse sresp = new SecurityHttpServletResponse(req,resp);
@@ -98,7 +99,9 @@ public class SecurityFilter implements Filter{
 			}
 			String decryptString = new String(decryptData,charset);
 			logger.info("解密的密钥：{}",decryptString);
-			session.setAttribute("secretKey", decryptString);
+			JSONObject json = JSON.parseObject(decryptString);
+			session.setAttribute("secretKey", json.get("sk"));
+			session.setAttribute("secretKey-iv", json.get("iv"));
 			try{
 				SecurityHttpServletResponse sresp = new SecurityHttpServletResponse(req,resp);
 				PrintWriter pw = sresp.getWriter();
@@ -107,6 +110,7 @@ public class SecurityFilter implements Filter{
 				sresp.setStatus(200);
 			}catch(Exception e){
 				session.removeAttribute("secretKey");
+				session.removeAttribute("secretKey-iv");
 				throw new RuntimeException(e);
 			}
 			return;

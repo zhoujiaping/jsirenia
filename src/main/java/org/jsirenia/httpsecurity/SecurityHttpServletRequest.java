@@ -12,8 +12,9 @@ import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
-import org.jsirenia.security.AESUtil;
+import org.jsirenia.security.AESCBCUtil;
 import org.jsirenia.security.MD5Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +42,9 @@ public class SecurityHttpServletRequest extends HttpServletRequestWrapper{
 		InputStream inputStream = super.getInputStream();
 		String contentType = request.getContentType();
 		String abstracts = request.getHeader(SecurityConst.HEADER_ABSTRACT);
-		String key = (String) request.getSession().getAttribute("secretKey");
+		HttpSession session = request.getSession();
+		String key = (String) session.getAttribute("secretKey");
+		String iv = (String) session.getAttribute("secretKey-iv");
 		boolean isText = contentType==null || contentType.matches(".*json.*|.*text.*|.*xml.*|.*x-www-form-urlencoded");
 		//application/x-www-form-urlencoded
 		//text/plain
@@ -55,7 +58,7 @@ public class SecurityHttpServletRequest extends HttpServletRequestWrapper{
 			logger.info("请求数据（未解密）：{}",encryptData);
 		}
 		//解密 验签
-		byte[] decryptData = AESUtil.decrypt(encryptData, key);
+		byte[] decryptData = AESCBCUtil.decrypt(encryptData, key,iv);
 		if(isText){
 			logger.info("请求数据（已解密）：{}",new String(decryptData,charset));
 		}else{

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style type="text/css">
+html,body{
+height:100%;
+width:100%;
+}
+.content{
+border:1px solid gray;
+min-height: 20%;
+width:100%; 
+}
+</style>
+</head>
+<body>
+<script src="./CryptoJS-v3.1.2/rollups/sha256.js"></script>
+<script type="text/javascript" src="./jsencrypt.js"></script>
+<script type="text/javascript">
+(()=>{
+	let encrypt = new JSEncrypt();
+	
+	const publicKey = `MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA30pnfUBSiocu4X0gbneapKjLBIyhZl7Q2/Eaydb75BA25gzgXzvPH8e09zzrFVu/tosThjN4beS7ltZK0CuZlxKXcTmnhQal21eG+Z4L7DlAQz4Kl32aU2B4IDkLnB6J8ALPv0x7dcIa09FwSgeYJw2JIX+1UPeg3D9Sk1C57lgeDBNyFZxbiiLKRogTLhsC9jgP5pUzBN5Sg/Wompp0ybAp0scjmBwZI1EtnBPcr01C9LZSCWXFF3BVdO2WBCkRJh2vnCqWs4hH+Ag0QqWXIqVXccxd0iN4ac1aYnpCRLjz7akdg+Iw4KVl6ppKtbMyei8kpp9POG6i+OxTr1FCTwIDAQAB
+	`;
+	encrypt.setPublicKey(publicKey);
+	let encrypted = encrypt.encrypt('123456');
+	console.info(encrypted);
+	let privateKey = `MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDfSmd9QFKKhy7hfSBud5qkqMsEjKFmXtDb8RrJ1vvkEDbmDOBfO88fx7T3POsVW7+2ixOGM3ht5LuW1krQK5mXEpdxOaeFBqXbV4b5ngvsOUBDPgqXfZpTYHggOQucHonwAs+/THt1whrT0XBKB5gnDYkhf7VQ96DcP1KTULnuWB4ME3IVnFuKIspGiBMuGwL2OA/mlTME3lKD9aiamnTJsCnSxyOYHBkjUS2cE9yvTUL0tlIJZcUXcFV07ZYEKREmHa+cKpaziEf4CDRCpZcipVdxzF3SI3hpzVpiekJEuPPtqR2D4jDgpWXqmkq1szJ6LySmn084bqL47FOvUUJPAgMBAAECggEAcOvY0F/SHlplHAXCe/siirkOCpvwF6xFpaUV7hM5ycllagwDAEZn5eOCIjJ9lIyUtIU693haJAEz2QFATmxuPRda3RjSHhURlY57JQuHbgw58oeSpbAQdq/nsCwJMgfDrExPsafFG/VwycQ2LEoQ6VcQDY/fKzY/9IJViUie7uhRCSA3CXCHByxFkbLk1wEBCxki3IeRh8bs4Z6/rZ/jadN5mYrccR7CzeGG8fa3TNTNkzsS8NifVV7ihlEoAQSPKZyPc5FO7foW0FRyrncpsClGEesdFVE+1y+LpCX67HlbsOagX+Ul5uFYfSU6HpGpIErWtmbikhsVcxRj6uKs4QKBgQD8BlLYvLXWUFpN5hVYArVbsam1PaCuImRUJMKWwAWpkeRpvi9muCkdQkKZ7vlBXrCw+MlttGjVh8Ws+rRHQBviFZq25NBpTvpV0KHAgu8b5aH4tnv7ygU3mW61oCXWt91mPWj577SEZ2IZJP3OM83Tt86ZLsGdzFqcmWo9LMcM8QKBgQDi0A1r9JNQECHo6IsWu1o4qmGtoI5EVOfXPMK0c3m6b4itulNFfb5KZ7dnacx3tdPVRLxIZfwD5hkBZ0tnHGFIUi0mBlszZmKLuKhem9HydxFdRTYFQwr3Ab07++aDZhSYPs3dz4i8GW2SMT+1yIDzkISvk5k//mgFLqt9ORJDPwKBgQDTDPCf9BhKquuUxJMnKs15RiSaVEuUx9RA6q/R0mhrgnNHYi8L1DkJ+Y0Qn6E4bvWEnjMAnc4U0yhlHWWPLU6sW+8+LguhxLO63YY3Uu6t6/Vh9F+LkbggwWqGyuAlGcBceBzLAUOohXMPH300CwnYvNpUSWV2ocVX0tm29SKT4QKBgAyyox25Goov7QYSBr9mC74CY+eJho1yx2v4XdomYNk8J0W6mbDZQk7+EXl7pdPJ3SsiZvwSoZJCToISm1kRcKzQ1PA9CNwOzlOOKfbp+E3/tnwnRMf0oeeENGjoSFZw35RKZ9IULU6CiezWTv/JUtbP72248KpxfrdTjow7JreXAoGAPTlccufDjoqlC1L58lVfFiYUxC9ZdXPWvZAPwLbFyJMA4pnNROw8w4E4R0u82OSRmionv5HhDDPH+Dax2kkvTDzeL/MJGcR/mUJCkMCnZ4CEXmrDScAX+YXXMYxLEscaGBAjmzcdAzDrrY2eWq/op2ksenQMam3Pnoz9QIRMAY4=
+`;
+	var decrypt = new JSEncrypt();
+	decrypt.setPrivateKey(privateKey);
+    var uncrypted = decrypt.decrypt(encrypted);
+	console.info(uncrypted);
+	
+	let signature = `kuyhpdwWIxqR2CnT+V++o6Irk8xBFs2bBl3gf7cJjjjVY8DOEUp/1FcSUS0/xUmwjGbHX/TiUScyRAXZdha0znf6xYve+1UJTqJLOVSAOg55AWFSqiCN92FC4e9OkBdXB+nr4SeWCm1TTLaAG+eJMA4guWhlQMHGeAMo0JEhbZ1tV5UVaiOwA+JxdWxCF1dJvHfDwe74v0CALM2ohQAy1jIg9O6l3C2H0HMisj11jgx2+ppJmgpffcBMVHaUjCdYeaJ5Q5xZb827xK699hWnL63aQRdL11eyQTtHHeskbVG0kY8kIt1ZSqgNXUqMzJbepAgXbRd1GfY0EbpE+hyAPw==
+`;
+	var verify = new JSEncrypt();
+	verify.setPublicKey(publicKey);
+	var verified = verify.verify('1472583690', signature, CryptoJS.SHA256);
+	console.info(verified);
+	
+})();
+</script>
+</body>
+</html>

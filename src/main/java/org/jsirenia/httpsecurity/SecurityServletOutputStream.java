@@ -10,7 +10,7 @@ import javax.servlet.WriteListener;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.jsirenia.security.AESUtil;
+import org.jsirenia.security.AESCBCUtil;
 import org.jsirenia.security.MD5Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,12 +23,10 @@ public class SecurityServletOutputStream extends ServletOutputStream{
 	private HttpServletResponse response;
 	private ServletOutputStream out;
 	private ByteArrayOutputStream bos;
-	private String secretKey;
 	private boolean flushed;
-	public SecurityServletOutputStream(HttpServletRequest request, HttpServletResponse response, ServletOutputStream out,String secretKey){
+	public SecurityServletOutputStream(HttpServletRequest request, HttpServletResponse response, ServletOutputStream out){
 		this.out = out;
 		bos = new ByteArrayOutputStream();
-		this.secretKey = secretKey;
 		this.request = request;
 		this.response = response;
 	}
@@ -64,7 +62,10 @@ public class SecurityServletOutputStream extends ServletOutputStream{
 			logger.info("响应数据（未加密）：{}",decryptData);
 		}
 		//签名 加密
-		byte[] encryptData = AESUtil.encrypt(decryptData, secretKey);
+		String secretKey = (String) request.getSession().getAttribute("secretKey");
+		String iv = (String) request.getSession().getAttribute("secretKey-iv");
+
+		byte[] encryptData = AESCBCUtil.encrypt(decryptData, secretKey,iv);
 		String codetypeAccept = request.getHeader(SecurityConst.HEADER_CODETYPE_ACCEPT);
 		if(codetypeAccept!=null && codetypeAccept.equalsIgnoreCase("base64")){
 			encryptData = Base64.getEncoder().encode(encryptData);
