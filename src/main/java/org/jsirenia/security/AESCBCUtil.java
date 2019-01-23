@@ -57,12 +57,12 @@ public class AESCBCUtil {
 
 	
 	
-	public static String encryptToBase64(byte[] data, String keyHex, String ivHex) {
+	public static String encryptAsBase64(byte[] data, String keyHex, String ivHex) {
 		byte[] buf = doAES(data, keyHex, Cipher.ENCRYPT_MODE, ivHex);
 		return Base64.getEncoder().encodeToString(buf);
 	}
 
-	public static String encryptToHex(byte[] data, String keyHex, String ivHex) {
+	public static String encryptAsHex(byte[] data, String keyHex, String ivHex) {
 		byte[] buf = doAES(data, keyHex, Cipher.ENCRYPT_MODE, ivHex);
 		return HexUtil.toHexString(buf);
 	}
@@ -80,12 +80,12 @@ public class AESCBCUtil {
 		return doAES(data, keyHex, Cipher.DECRYPT_MODE, ivHex);
 	}
 
-	public static byte[] decryptFromBase64(String base64, String keyHex, String ivHex) {
+	public static byte[] decryptBase64(String base64, String keyHex, String ivHex) {
 		byte[] buf = Base64.getDecoder().decode(base64);
 		return doAES(buf, keyHex, Cipher.DECRYPT_MODE, ivHex);
 	}
 
-	public static byte[] decryptFromHex(String hex, String keyHex, String ivHex) {
+	public static byte[] decryptHex(String hex, String keyHex, String ivHex) {
 		byte[] buf = HexUtil.toByteArray(hex);
 		return doAES(buf, keyHex, Cipher.DECRYPT_MODE, ivHex);
 	}
@@ -149,10 +149,10 @@ public class AESCBCUtil {
 		ivHex = "C74274C19D349391A0172B700F8F8BB6";
 		System.out.println("iv："+ivHex);
 		// 加密
-		String encrypt = encryptToBase64(content.getBytes("utf-8"), key, ivHex);
+		String encrypt = encryptAsBase64(content.getBytes("utf-8"), key, ivHex);
 		System.out.println("加密后：" + encrypt);
 		// 解密
-		String decrypt = new String(decryptFromBase64(encrypt, key, ivHex),"utf-8");
+		String decrypt = new String(decryptBase64(encrypt, key, ivHex),"utf-8");
 		System.out.println("解密后：" + decrypt);
 		// 生成rsa的密钥对
 		KeyPair pair = RSAUtil.generateKeyPair("RSA", size);

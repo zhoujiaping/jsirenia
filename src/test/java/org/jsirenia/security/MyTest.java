@@ -21,6 +21,6 @@ public class MyTest {
 	}
 	@Test
 	public void test1(){
-		System.out.println(MD5Util.md5Hex("1234abc"));
+		System.out.println(MD5Util.md5AsHex("1234abc".getBytes()));
 	}
 }

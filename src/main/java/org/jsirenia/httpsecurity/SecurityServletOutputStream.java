@@ -73,7 +73,7 @@ public class SecurityServletOutputStream extends ServletOutputStream{
 		}else{
 			logger.info("响应数据（已加密）：{}",encryptData);
 		}
-		String md5 = MD5Util.md5Hex(decryptData);
+		String md5 = MD5Util.md5AsHex(decryptData);
 		response.setHeader(SecurityConst.HEADER_ABSTRACT, md5);
 		response.setContentLength(encryptData.length);//这一行代码千万不能省略，否则响应数据不全。
 		out.write(encryptData);

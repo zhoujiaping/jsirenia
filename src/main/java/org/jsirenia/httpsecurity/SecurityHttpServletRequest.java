@@ -64,7 +64,7 @@ public class SecurityHttpServletRequest extends HttpServletRequestWrapper{
 		}else{
 			logger.info("请求数据（已解密）：{}",decryptData);
 		}
-		String md5 = MD5Util.md5Hex(decryptData);
+		String md5 = MD5Util.md5AsHex(decryptData);
 		//
 		if(!md5.equals(abstracts)){
 			throw new RuntimeException("摘要不匹配");
