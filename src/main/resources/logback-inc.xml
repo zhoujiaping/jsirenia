@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--以下所有pattern中输出的内容只包含了基本的信息，请根据需要进行扩展-->
 <included>
-	<property name="project.name" value="jdbc-template" />
+	<property name="project.name" value="jsirenia" />
 	<property name="log.base" value="/logs/${project.name}" />
 	<property name="max.size" value="200MB" />
 	<jmxConfigurator />
