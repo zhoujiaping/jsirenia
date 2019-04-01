@@ -11,7 +11,16 @@ import org.jsirenia.util.callback.Callback30;
 import org.jsirenia.util.callback.Callback31;
 import org.jsirenia.util.callback.Callback41;
 
+/**
+ *
+ * 这个接口定义，是按照javascript的Array定义的
+ * @author zhoujiaping
+ */
 public interface Array<T> extends Iterable<T>{
+	/**
+	 * 转换成jdk内置的list类型
+	 * @return
+	 */
 		public List<T> toList();
 		public <E> Array<E> map(Callback11<E,T> cb);
 		public <E> Array<E> map(Callback21<E,T,Integer> cb);

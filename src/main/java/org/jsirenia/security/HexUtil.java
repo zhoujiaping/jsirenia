@@ -20,7 +20,8 @@ public class HexUtil {
         int j = 0;
         for(int i=0;i<buf.length;i++){
             charArray[j++] = chars[buf[i]>>>4 & 0x0F];
-            charArray[j++] = chars[buf[i] & 0x0F];//先取高4位，再取低4位
+            //先取高4位，再取低4位
+            charArray[j++] = chars[buf[i] & 0x0F];
         }
         return new String(charArray);
     }
@@ -52,7 +53,7 @@ public class HexUtil {
      * @throws NoSuchAlgorithmException 
      * 
      */
-    public static String randomHex(int length) throws NoSuchAlgorithmException {
+    public static String randomHex(int length){
 		SecureRandom sr = new SecureRandom();
 		byte[] bytes = new byte[length/2];
 		sr.nextBytes(bytes);

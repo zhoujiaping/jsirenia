@@ -742,8 +742,8 @@ public class JArray<T> implements Array<T>{
 	public static <E> Array<E> fromString(String str,Class<E> clazz){
 		return JArray.of(JSONArray.parseArray(str, clazz));
 	}
-	public static Array<String> split(String text,String sepratorReg){
-		String[] arr = text.split(sepratorReg);
+	public static Array<String> split(String text,String separatorReg){
+		String[] arr = text.split(separatorReg);
 		return JArray.of(arr);
 	}
 }
