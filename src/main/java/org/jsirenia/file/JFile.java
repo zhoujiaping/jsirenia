@@ -56,10 +56,13 @@ public class JFile{
 	 * 遍历文件（深度优先，即优先处理子孙文件）
 	 */
 	public void walkRecursion(Callback10<File> cb) {
+		walkRecursionInternal(file,cb);
+	}
+	private void walkRecursionInternal(File file,Callback10<File> cb) {
 		File[] files = file.listFiles();
 		for(int i=0;i<files.length;i++){
 			if(files[i].isDirectory()){
-				walkRecursion(cb);
+				walkRecursionInternal(files[i],cb);
 			}
 			cb.apply(files[i]);
 		}
