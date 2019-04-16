@@ -7,7 +7,7 @@ import java.util.Set;
 
 import org.jsirenia.exception.demo.ApiProducerDemo;
 import org.jsirenia.reflect.ReflectHelper;
-import org.jsirenia.util.callback.Callback31;
+import org.jsirenia.util.Callback.Callback31;
 import org.springframework.cglib.proxy.Enhancer;
 import org.springframework.cglib.proxy.MethodInterceptor;
 import org.springframework.cglib.proxy.MethodProxy;

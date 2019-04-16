@@ -1,4 +1,4 @@
-package com.sf;
+package org.jsirenia.dubbodemo;
 import com.alibaba.dubbo.config.ApplicationConfig;
 import com.alibaba.dubbo.config.ProtocolConfig;
 import com.alibaba.dubbo.config.RegistryConfig;
@@ -16,7 +16,6 @@ public class ProviderBootstrap {
 		// Registry Info
 		RegistryConfig registry = new RegistryConfig();
 		registry.setProtocol("zookeeper");
-		//registry.setAddress("10.118.238.66:2181,10.118.238.48:2181,10.118.238.71:2181");
 		registry.setAddress("127.0.0.1:2181");
 		/*registry.setUsername("aaa");
 		registry.setPassword("bbb");*/

@@ -3,7 +3,7 @@ package org.jsirenia.ratelimit;
 import java.io.FileNotFoundException;
 import java.util.List;
 
-import org.jsirenia.file.Jfile;
+import org.jsirenia.file.MyFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.ResourceUtils;
@@ -25,7 +25,7 @@ public class RateLimiter {
 		this.jedis = jedis;
 		String file = "classpath:ratelimit2.lua";
 		try {
-			script = new Jfile(ResourceUtils.getFile(file)).text();
+			script = new MyFile(ResourceUtils.getFile(file)).readText();
 		} catch (FileNotFoundException e) {
 			throw new RuntimeException(e);
 		}
@@ -55,7 +55,7 @@ public class RateLimiter {
 			//清理环境
 			jedis.del("myservice:tokens");
 			jedis.del("myservice:timestamp");
-			String script = new Jfile(ResourceUtils.getFile("classpath:ratelimit2.lua")).text();
+			String script = new MyFile(ResourceUtils.getFile("classpath:ratelimit2.lua")).readText();
 			for(int i=0;i<500;i++){
 				Object result = jedis.eval(script, Lists.newArrayList(),
 						Lists.newArrayList("myservice", System.currentTimeMillis()/1000 + ""));

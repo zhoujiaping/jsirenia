@@ -1,8 +1,10 @@
-package com.sf.exception;
+package org.jsirenia.log;
 
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.spi.ThrowableProxy;
 import ch.qos.logback.core.UnsynchronizedAppenderBase;
+import org.jsirenia.exception.ServiceException;
+
 /**
  *
  在logback-inc.xml中添加

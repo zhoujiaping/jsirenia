@@ -1,23 +1,27 @@
 package org.jsirenia.file;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.jsirenia.util.Callback.Callback10;
 /**
  * 封装文件操作
+ * @author zjp
  */
-public class Jfile {
+public class MyFile {
 	private File file;
-	public Jfile(File file){
+	public MyFile(File file){
 		this.file = file;
 	}
-	public Jfile(String filename){
+	public MyFile(String filename){
 		this.file = new File(filename);
 	}
 	public File getFile(){
@@ -27,7 +31,9 @@ public class Jfile {
 		File p = file.getParentFile();
 		try {
 			if(!p.exists()){
-				p.mkdirs();
+				if(!p.mkdirs()){
+					return false;
+				}
 			}
 			return file.createNewFile();
 		} catch (IOException e) {
@@ -38,35 +44,57 @@ public class Jfile {
 	 * 递归删除该文件及其子文件
 	 */
 	public boolean deleteRecursion(){
+		return deleteRecursion(true);
+	}
+	public boolean deleteRecursion(boolean deleteThisFile){
 		Map<String,Boolean> map = new HashMap<>();
-		walkRecursion(f->map.put(f.getAbsolutePath(), f.delete()));
+		walkDfs(f->map.put(f.getAbsolutePath(), f.delete()),deleteThisFile);
 		return map.isEmpty();
 	}
 	/**
-	 * 遍历其子文件和当前文件
-	 */
-	public void walk(Callback10<File> cb) {
+	 * 深度优先遍历
+	 * */
+	public void walkDfs(Callback10<File> cb) {
+		walkDfs(cb,true);
+	}
+	/**
+	 * 广度优先遍历
+	 * */
+	public void walkBfs(Callback10<File> cb) {
+		walkBfs(cb,true);
+	}
+	public void walkBfs(Callback10<File> cb, boolean walkThisFile) {
+		if(walkThisFile){
+			cb.apply(file);
+		}
+		walkBfsInternal(file,cb);
+	}
+	/**
+	 * 深度优先遍历
+	 * */
+	public void walkDfs(Callback10<File> cb,boolean walkThisFile) {
+		walkDfsInternal(file,cb);
+		if(walkThisFile){
+			cb.apply(file);
+		}
+	}
+	private void walkBfsInternal(File file,Callback10<File> cb) {
 		File[] files = file.listFiles();
 		for(int i=0;i<files.length;i++){
 			cb.apply(files[i]);
+			if(files[i].isDirectory()){
+				walkBfsInternal(files[i],cb);
+			}
 		}
-		cb.apply(file);
 	}
-	/**
-	 * 遍历文件（深度优先，即优先处理子孙文件）
-	 */
-	public void walkRecursion(Callback10<File> cb) {
-		walkRecursionInternal(file,cb);
-	}
-	private void walkRecursionInternal(File file,Callback10<File> cb) {
+	private void walkDfsInternal(File file,Callback10<File> cb) {
 		File[] files = file.listFiles();
 		for(int i=0;i<files.length;i++){
 			if(files[i].isDirectory()){
-				walkRecursionInternal(files[i],cb);
+				walkDfsInternal(files[i],cb);
 			}
 			cb.apply(files[i]);
 		}
-		cb.apply(file);
 	}
 	/**
 	 * 遍历当前文件的文本行
@@ -84,21 +112,27 @@ public class Jfile {
 	/**
 	 * 获取当前文件的文本内容
 	 */
-	public String text(){
+	public String readText(){
 		StringBuilder sb = new StringBuilder();
 		try(BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file), "utf-8"))){
-			char[] cbuf = new char[1024];
-			int len = -1;
-			while((len = br.read(cbuf))>-1){
-				sb.append(new String(cbuf,0,len));
+			char[] buf = new char[1024];
+			int len;
+			while((len = br.read(buf))>-1){
+				sb.append(new String(buf,0,len));
 			}
 		}catch(Exception e){
 			throw new RuntimeException(e);
 		}
 		return sb.toString();
 	}
+	public void writeText(String text){
+		try(BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file),"utf-8"))){
+			bw.write(text);
+		}catch(Exception e){
+			throw new RuntimeException(e);
+		}
+	}
 	public static void main(String[] args) {
-		//new Jfile("f:/Settings.xml").eachLine(System.out::println);
-		new Jfile("d:/upc/a/b/c/d").createRecursion();
+		System.out.println(new MyFile("d:/upc/a/b/c/d").createRecursion());
 	}
 }

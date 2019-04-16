@@ -1,4 +1,4 @@
-package com.sfpay.msfs.jyd.common.util;
+package org.jsirenia.log;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.IntUnaryOperator;
@@ -14,8 +14,6 @@ import org.springframework.util.StringUtils;
  * 该工具类就是要解决这个问题，使跑批任务的日志也非常方便查看，非常方便定位问题。
  * 能实现的效果：（要配合其他实践，配合NamedThreadFactory，MDC）
  * 根据日志可以区分不同job、同一job的不同task、同一task的不同data。
- * 
- * @author 01375156   2019-04-10
  *
  */
 public class JobLogUtil {

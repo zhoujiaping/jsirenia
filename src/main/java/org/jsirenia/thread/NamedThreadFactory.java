@@ -18,7 +18,6 @@ import org.slf4j.LoggerFactory;
  * 遵循最佳实践，要么在runnable中自己捕获异常，记录日志；
  * 要么在submit时获取Future，然后调用get方法。
  * 推荐在runnable中自己捕获异常，记录日志。
- * @author 01375156
  *
  */
 public class NamedThreadFactory implements ThreadFactory {

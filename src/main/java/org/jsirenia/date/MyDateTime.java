@@ -6,111 +6,95 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.Period;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 /**
  * java日期api用起来不够简洁，而且有些用法比较难记。
  * 所以做一些封装，应付常用场景。
- * 这个类有点“上帝类“的感觉，但是真的方便啊。比起java自带的难记的api，这个真的方便啊。
+ * 这个类有点“上帝类“的感觉，但是真的方便啊，比起java自带的难记的api。
  * @author Administrator
  *
  */
-public class DateTime implements  Comparable<DateTime>, Serializable {
+public class MyDateTime implements  Comparable<MyDateTime>, Serializable {
 	private static final long serialVersionUID = 1L;
 	private static final ZoneId zone = ZoneId.systemDefault();
+	private static final ZoneOffset zoneOffset = ZoneOffset.UTC;
 	private LocalDateTime dt;
-	private static final Map<String,DateTimeFormatter> formatters = new HashMap<>();
-	static{
-		formatters.put("yyyy-MM-dd HH:mm:ss", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-		formatters.put("yyyy-MM-dd", DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-		formatters.put("HH:mm:ss", DateTimeFormatter.ofPattern("HH:mm:ss"));
-		formatters.put("yyyyMMdd", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-		formatters.put("yyyy-MM-dd HH:mm:ss", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-	}
+	private static final Map<String,DateTimeFormatter> formatters = new ConcurrentHashMap<>();
 	//第一部分：构造
-	public static DateTime now(){
+	public static MyDateTime now(){
 		return fromLocalDateTime(LocalDateTime.now());
 	}
-	public static DateTime yesterday(){
+	public static MyDateTime yesterday(){
 		return now().plusDays(-1);
 	}
-	public static DateTime tomorrow(){
+	public static MyDateTime tomorrow(){
 		return now().plusDays(1);
 	}
-	public static DateTime fromLocalDateTime(LocalDateTime dt){
-		DateTime d = new DateTime();
+	public static MyDateTime fromLocalDateTime(LocalDateTime dt){
+		MyDateTime d = new MyDateTime();
 		d.dt = dt;
 		return d;
 	}
-	public static DateTime of(int year,int month,int dayOfMonth,int hour,int minute,int second,int millisecond,int nanoOfSecond){
+	public static MyDateTime of(int year,int month,int dayOfMonth,int hour,int minute,int second,int millisecond,int nanoOfSecond){
 		LocalDateTime dt = LocalDateTime.of(year, month, dayOfMonth, hour, minute, millisecond, nanoOfSecond);
 		return fromLocalDateTime(dt);
 	}
-	public static DateTime of(int year,int month,int dayOfMonth,int hour,int minute,int second,int millisecond){
+	public static MyDateTime of(int year,int month,int dayOfMonth,int hour,int minute,int second,int millisecond){
 		return of(year,month,dayOfMonth,hour,minute,second,millisecond,0);
 	}
-	public static DateTime of(int year,int month,int dayOfMonth,int hour,int minute,int second){
+	public static MyDateTime of(int year,int month,int dayOfMonth,int hour,int minute,int second){
 		return of(year,month,dayOfMonth,hour,minute,second,0,0);
 	}
-	public static DateTime of(int year,int month,int dayOfMonth,int hour,int minute){
+	public static MyDateTime of(int year,int month,int dayOfMonth,int hour,int minute){
 		return of(year,month,dayOfMonth,hour,minute,0,0,0);
 	}
-	public static DateTime of(int year,int month,int dayOfMonth,int hour){
+	public static MyDateTime of(int year,int month,int dayOfMonth,int hour){
 		return of(year,month,dayOfMonth,hour,0,0,0,0);
 	}
-	public static DateTime of(int year,int month,int dayOfMonth){
+	public static MyDateTime of(int year,int month,int dayOfMonth){
 		return of(year,month,dayOfMonth,0,0,0,0,0);
 	}
-	public static DateTime of(LocalDate localDate,LocalTime localTime){
+	public static MyDateTime of(LocalDate localDate,LocalTime localTime){
 		return fromLocalDateTime(localTime.atDate(localDate));
 	}
-	public static DateTime ofInstant(Instant instant){
+	public static MyDateTime ofInstant(Instant instant){
 		return fromLocalDateTime(LocalDateTime.ofInstant(instant, zone));
 	}
-	public static DateTime ofEpochSecond(long epochSecond){
+	public static MyDateTime ofEpochSecond(long epochSecond){
 		return ofInstant(Instant.ofEpochSecond(epochSecond));
 	}
-	public static DateTime ofEpochMilli(long epochMilli) {
+	public static MyDateTime ofEpochMilli(long epochMilli) {
 		return ofInstant(Instant.ofEpochMilli(epochMilli));
 	}
-	public static DateTime ofEpochSecond(long epochSecond, int nanoOfSecond){
+	public static MyDateTime ofEpochSecond(long epochSecond, int nanoOfSecond){
 		return ofInstant(Instant.ofEpochSecond(epochSecond,nanoOfSecond));
 	}
 	//第二部分：解析
-	public static DateTime parseDateTime(String text){
+	public static MyDateTime parseDateTime(String text){
 		return fromLocalDateTime(LocalDateTime.parse(text));
 	}
-	public static DateTime parseDateTime(String text,String pattern){
-		DateTimeFormatter format = formatters.get(pattern);
-		if(format==null){
-			DateTimeFormatter.ofPattern(pattern);
-		}
+	public static MyDateTime parseDateTime(String text,String pattern){
+		DateTimeFormatter format = findFormatter(pattern);
 		return fromLocalDateTime(LocalDateTime.parse(text,format));
 	}
-	public static DateTime parseDate(String text){
+	public static MyDateTime parseDate(String text){
 		return fromLocalDateTime(LocalDate.parse(text).atStartOfDay());
 	}
-	public static DateTime parseDate(String text,String pattern){
-		DateTimeFormatter format = formatters.get(pattern);
-		if(format==null){
-			DateTimeFormatter.ofPattern(pattern);
-		}
+	public static MyDateTime parseDate(String text,String pattern){
+		DateTimeFormatter format = findFormatter(pattern);
 		return fromLocalDateTime(LocalDate.parse(text,format).atStartOfDay());
 	}
-	public static DateTime parseTime(String text){
+	public static MyDateTime parseTime(String text){
 		return fromLocalDateTime(LocalDate.now().atTime(LocalTime.parse(text)));
 	}
-	public static DateTime parseTime(String text,String pattern){
-		DateTimeFormatter format = formatters.get(pattern);
-		if(format==null){
-			DateTimeFormatter.ofPattern(pattern);
-		}
+	public static MyDateTime parseTime(String text,String pattern){
+		DateTimeFormatter format = findFormatter(pattern);
 		return fromLocalDateTime(LocalDate.now().atTime(LocalTime.parse(text,format)));
 	}
 	//第三部分：格式化
@@ -118,30 +102,21 @@ public class DateTime implements  Comparable<DateTime>, Serializable {
 		return dt.toLocalDate().toString();
 	}
 	public String formatDate(String pattern){
-		DateTimeFormatter format = formatters.get(pattern);
-		if(format==null){
-			DateTimeFormatter.ofPattern(pattern);
-		}
+		DateTimeFormatter format = findFormatter(pattern);
 		return dt.toLocalDate().format(format);
 	}
 	public String formatDateTime(){
 		return dt.toString();
 	}
 	public String formatDateTime(String pattern){
-		DateTimeFormatter format = formatters.get(pattern);
-		if(format==null){
-			DateTimeFormatter.ofPattern(pattern);
-		}
+		DateTimeFormatter format = findFormatter(pattern);
 		return dt.format(format);
 	}
 	public String formatTime(){
 		return dt.toLocalTime().toString();
 	}
 	public String formatTime(String pattern){
-		DateTimeFormatter format = formatters.get(pattern);
-		if(format==null){
-			DateTimeFormatter.ofPattern(pattern);
-		}
+		DateTimeFormatter format = findFormatter(pattern);
 		return dt.toLocalTime().format(format);
 	}
 	//第四部分：转换成java日期
@@ -152,117 +127,126 @@ public class DateTime implements  Comparable<DateTime>, Serializable {
 		return dt.toLocalTime();
 	}
 	public Instant toInstant(){
-		return dt.toInstant(ZoneOffset.UTC);
+		return dt.toInstant(zoneOffset);
 	}
 	public Date toDate(){
-		return Date.from(dt.toInstant(ZoneOffset.UTC));
+		return Date.from(dt.toInstant(zoneOffset));
 	}
 	public LocalDateTime toLocalDateTime(){
 		return dt;
 	}
 	//第五部分：计算
-	public DateTime plusDays(int days){
+	public MyDateTime plusDays(int days){
 		return fromLocalDateTime(dt.plusDays(days));
 	}
-	public DateTime plusYears(int years){
+	public MyDateTime plusYears(int years){
 		return fromLocalDateTime(dt.plusYears(years));
 	}
-	public DateTime plusWeeks(int weeks){
+	public MyDateTime plusWeeks(int weeks){
 		return fromLocalDateTime(dt.plusWeeks(weeks));
 	}
-	public DateTime plusMonths(int months){
+	public MyDateTime plusMonths(int months){
 		return fromLocalDateTime(dt.plusMonths(months));
 	}
-	public DateTime plusHours(int hours){
+	public MyDateTime plusHours(int hours){
 		return fromLocalDateTime(dt.plusHours(hours));
 	}
-	public DateTime plusMinutes(int minutes){
+	public MyDateTime plusMinutes(int minutes){
 		return fromLocalDateTime(dt.plusMinutes(minutes));
 	}
-	public DateTime plusSeconds(int seconds){
+	public MyDateTime plusSeconds(int seconds){
 		return fromLocalDateTime(dt.plusSeconds(seconds));
 	}
-	public DateTime plusNanos(int nanos){
+	public MyDateTime plusNanos(int nanos){
 		return fromLocalDateTime(dt.plusNanos(nanos));
 	}
 	//第六部分：调整值
-	public DateTime previousOrSameMonday(){
+	public MyDateTime previousOrSameMonday(){
 		return fromLocalDateTime(dt.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY)));
 	}
-	public DateTime previousOrSameTuesday(){
+	public MyDateTime previousOrSameTuesday(){
 		return fromLocalDateTime(dt.with(TemporalAdjusters.previousOrSame(DayOfWeek.TUESDAY)));
 	}
-	public DateTime previousOrSameWendesday(){
+	public MyDateTime previousOrSameWendesday(){
 		return fromLocalDateTime(dt.with(TemporalAdjusters.previousOrSame(DayOfWeek.WEDNESDAY)));
 	}
-	public DateTime previousOrSameThursday(){
+	public MyDateTime previousOrSameThursday(){
 		return fromLocalDateTime(dt.with(TemporalAdjusters.previousOrSame(DayOfWeek.THURSDAY)));
 	}
-	public DateTime previousOrSameFriday(){
+	public MyDateTime previousOrSameFriday(){
 		return fromLocalDateTime(dt.with(TemporalAdjusters.previousOrSame(DayOfWeek.FRIDAY)));
 	}
-	public DateTime previousOrSameSaturday(){
+	public MyDateTime previousOrSameSaturday(){
 		return fromLocalDateTime(dt.with(TemporalAdjusters.previousOrSame(DayOfWeek.SATURDAY)));
 	}
-	public DateTime previousOrSameSunday(){
+	public MyDateTime previousOrSameSunday(){
 		return fromLocalDateTime(dt.with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY)));
 	}
-	public DateTime previousOrSameWeekDay(DayOfWeek dayOfWeek){
+	public MyDateTime previousOrSameWeekDay(DayOfWeek dayOfWeek){
 		return fromLocalDateTime(dt.with(TemporalAdjusters.previousOrSame(dayOfWeek)));
 	}
-	public DateTime withYear(int year){
+	public MyDateTime withYear(int year){
 		return fromLocalDateTime(dt.withYear(year));
 	}
-	public DateTime withMonth(int month){
+	public MyDateTime withMonth(int month){
 		return fromLocalDateTime(dt.withMonth(month));
 	}
-	public DateTime withDayOfMonth(int dayOfMonth){
+	public MyDateTime withDayOfMonth(int dayOfMonth){
 		return fromLocalDateTime(dt.withDayOfMonth(dayOfMonth));
 	}
-	public DateTime withDayOfYear(int dayOfYear){
+	public MyDateTime withDayOfYear(int dayOfYear){
 		return fromLocalDateTime(dt.withDayOfYear(dayOfYear));
 	}
-	public DateTime withHour(int hour){
+	public MyDateTime withHour(int hour){
 		return fromLocalDateTime(dt.withHour(hour));
 	}
-	public DateTime withMinute(int minute){
+	public MyDateTime withMinute(int minute){
 		return fromLocalDateTime(dt.withMinute(minute));
 	}
-	public DateTime withSecond(int second){
+	public MyDateTime withSecond(int second){
 		return fromLocalDateTime(dt.withSecond(second));
 	}
-	public DateTime withNanoOfSecond(int nanoOfSecond){
+	public MyDateTime withNanoOfSecond(int nanoOfSecond){
 		return fromLocalDateTime(dt.withNano(nanoOfSecond));
 	}
 	//第七部分：时间段
-	public long daysBetween(DateTime date){
+	public long daysBetween(MyDateTime date){
 		return dt.toLocalDate().toEpochDay()-date.dt.toLocalDate().toEpochDay();
 	}
-	public long secondsBetween(DateTime date){
-		return dt.toEpochSecond(ZoneOffset.UTC)-date.dt.toEpochSecond(ZoneOffset.UTC);
+	public long secondsBetween(MyDateTime date){
+		return dt.toEpochSecond(zoneOffset)-date.dt.toEpochSecond(zoneOffset);
 	}
 	//第八部分：比较
-	public boolean isBefore(DateTime date){
-		return true;
+	public boolean isBefore(MyDateTime date){
+		return dt.isBefore(date.dt);
 	}
-	public boolean isAfter(DateTime date){
-		return true;
+	public boolean isAfter(MyDateTime date){
+		return dt.isAfter(date.dt);
 	}
-	public boolean isEqual(DateTime date){
-		return true;
+	public boolean isEqual(MyDateTime date){
+		return dt.isEqual(date.dt);
 	}
-	public int compareTo(DateTime date) {
-		return 0;
+	public int compareTo(MyDateTime date) {
+		return dt.compareTo(date.dt);
 	}
 	//第九部分：提取值
 	public long toEpochSecond(){
-		return 0;
+		return dt.toEpochSecond(zoneOffset);
 	}
 	public long toEpochMilli(){
-		return 0;
+		return dt.toInstant(zoneOffset).toEpochMilli();
 	}
-	public long toNano(){
-		return 0;
+	public long getNano(){
+		return dt.toInstant(zoneOffset).getNano();
 	}
 	//第十部分：
+	
+	private static DateTimeFormatter findFormatter(String pattern){
+		DateTimeFormatter format = formatters.get(pattern);
+		if(format==null){
+			format = DateTimeFormatter.ofPattern(pattern);
+			formatters.put(pattern, format);
+		}
+		return format;
+	}
 }

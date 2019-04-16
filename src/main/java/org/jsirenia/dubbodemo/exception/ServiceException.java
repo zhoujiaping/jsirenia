@@ -1,4 +1,4 @@
-package com.sf.exception;
+package org.jsirenia.dubbodemo.exception;
 
 
 /**

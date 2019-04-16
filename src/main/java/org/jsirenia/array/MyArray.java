@@ -21,19 +21,19 @@ import com.alibaba.fastjson.JSONArray;
  * 性能嘛，当然和java的stream没法比。
  * 挺有意思的，操作数据很6很方便
  */
-public class JArray<T> implements Array<T>{
+public class MyArray<T> implements Array<T>{
 	private List<T> list;
-	public JArray(){
+	public MyArray(){
 		list = new ArrayList<>();
 	}
-	public static <E> JArray<E> of(List<E> list){
-		JArray<E> array = new JArray<>();
+	public static <E> MyArray<E> of(List<E> list){
+		MyArray<E> array = new MyArray<>();
 		array.list = list;
 		return array;
 	}
 	@SafeVarargs
-	public static <E> JArray<E> of(E... objects){
-		JArray<E> array = new JArray<>();
+	public static <E> MyArray<E> of(E... objects){
+		MyArray<E> array = new MyArray<>();
 		array.list = new ArrayList<>();
 		if(objects==null){
 			return array;
@@ -53,7 +53,7 @@ public class JArray<T> implements Array<T>{
 		for(int i=0;i<list.size();i++){
 			localList.add(cb.apply(list.get(i)));
 		}
-		return JArray.of(localList);
+		return MyArray.of(localList);
 	}
 	@Override
 	public <E> Array<E> map(Callback21<E,T,Integer> cb){
@@ -61,7 +61,7 @@ public class JArray<T> implements Array<T>{
 		for(int i=0;i<list.size();i++){
 			localList.add(cb.apply(list.get(i),i));
 		}
-		return JArray.of(localList);
+		return MyArray.of(localList);
 	}
 	@Override
 	public <E> Array<E> map(Callback31<E,T,Integer,Array<T>> cb){
@@ -69,7 +69,7 @@ public class JArray<T> implements Array<T>{
 		for(int i=0;i<list.size();i++){
 			localList.add(cb.apply(list.get(i),i,this));
 		}
-		return JArray.of(localList);
+		return MyArray.of(localList);
 	}
 	@Override
 	public Object[] toArray(){
@@ -119,7 +119,7 @@ public class JArray<T> implements Array<T>{
 				newList.add(v);
 			}
 		}
-		JArray<T> array = new JArray<>();
+		MyArray<T> array = new MyArray<>();
 		array.list = newList;
 		return array;
 	}
@@ -133,7 +133,7 @@ public class JArray<T> implements Array<T>{
 				newList.add(v);
 			}
 		}
-		JArray<T> array = new JArray<>();
+		MyArray<T> array = new MyArray<>();
 		array.list = newList;
 		return array;
 	}
@@ -147,7 +147,7 @@ public class JArray<T> implements Array<T>{
 				newList.add(v);
 			}
 		}
-		JArray<T> array = new JArray<>();
+		MyArray<T> array = new MyArray<>();
 		array.list = newList;
 		return array;
 	}
@@ -162,7 +162,7 @@ public class JArray<T> implements Array<T>{
 			k = cb.apply(v);
 			array = map.get(k);
 			if(array==null){
-				array = JArray.of();
+				array = MyArray.of();
 				map.put(k, array);
 			}
 			array.push(v);
@@ -180,7 +180,7 @@ public class JArray<T> implements Array<T>{
 			k = cb.apply(v,i);
 			array = map.get(k);
 			if(array==null){
-				array = JArray.of();
+				array = MyArray.of();
 				map.put(k, array);
 			}
 			array.push(v);
@@ -198,7 +198,7 @@ public class JArray<T> implements Array<T>{
 			k = cb.apply(v,i,this);
 			array = map.get(k);
 			if(array==null){
-				array = JArray.of();
+				array = MyArray.of();
 				map.put(k, array);
 			}
 			array.push(v);
@@ -429,7 +429,7 @@ public class JArray<T> implements Array<T>{
 		List<T> newList = new ArrayList<>(list.size()+a1.toList().size());
 		newList.addAll(list);
 		newList.addAll(a1.toList());
-		return JArray.of(newList);
+		return MyArray.of(newList);
 	}
 	private Array<T> concat(Array<T>[] anothers){
 		int size = list.size();
@@ -441,7 +441,7 @@ public class JArray<T> implements Array<T>{
 		for(int i=0;i<anothers.length;i++){
 			newList.addAll(anothers[i].toList());
 		}
-		return JArray.of(newList);
+		return MyArray.of(newList);
 	}
 	@Override
 	public Array<T> concat(T v1,T v2,T v3,T v4,T v5,T v6,T v7,T v8,T v9,T v10){
@@ -457,7 +457,7 @@ public class JArray<T> implements Array<T>{
 		newList.add(v8);
 		newList.add(v9);
 		newList.add(v10);
-		return JArray.of(newList);
+		return MyArray.of(newList);
 	}
 	@Override
 	public Array<T> concat(T v1,T v2,T v3,T v4,T v5,T v6,T v7,T v8,T v9){
@@ -472,7 +472,7 @@ public class JArray<T> implements Array<T>{
 		newList.add(v7);
 		newList.add(v8);
 		newList.add(v9);
-		return JArray.of(newList);
+		return MyArray.of(newList);
 	}
 	@Override
 	public Array<T> concat(T v1,T v2,T v3,T v4,T v5,T v6,T v7,T v8){
@@ -486,7 +486,7 @@ public class JArray<T> implements Array<T>{
 		newList.add(v6);
 		newList.add(v7);
 		newList.add(v8);
-		return JArray.of(newList);
+		return MyArray.of(newList);
 	}
 	@Override
 	public Array<T> concat(T v1,T v2,T v3,T v4,T v5,T v6,T v7){
@@ -499,7 +499,7 @@ public class JArray<T> implements Array<T>{
 		newList.add(v5);
 		newList.add(v6);
 		newList.add(v7);
-		return JArray.of(newList);
+		return MyArray.of(newList);
 	}
 	@Override
 	public Array<T> concat(T v1,T v2,T v3,T v4,T v5,T v6){
@@ -511,7 +511,7 @@ public class JArray<T> implements Array<T>{
 		newList.add(v4);
 		newList.add(v5);
 		newList.add(v6);
-		return JArray.of(newList);
+		return MyArray.of(newList);
 	}
 	@Override
 	public Array<T> concat(T v1,T v2,T v3,T v4,T v5){
@@ -522,7 +522,7 @@ public class JArray<T> implements Array<T>{
 		newList.add(v3);
 		newList.add(v4);
 		newList.add(v5);
-		return JArray.of(newList);
+		return MyArray.of(newList);
 	}
 	@Override
 	public Array<T> concat(T v1,T v2,T v3,T v4){
@@ -532,7 +532,7 @@ public class JArray<T> implements Array<T>{
 		newList.add(v2);
 		newList.add(v3);
 		newList.add(v4);
-		return JArray.of(newList);
+		return MyArray.of(newList);
 	}
 	@Override
 	public Array<T> concat(T v1,T v2,T v3){
@@ -541,7 +541,7 @@ public class JArray<T> implements Array<T>{
 		newList.add(v1);
 		newList.add(v2);
 		newList.add(v3);
-		return JArray.of(newList);
+		return MyArray.of(newList);
 	}
 	@Override
 	public Array<T> concat(T v1,T v2){
@@ -549,14 +549,14 @@ public class JArray<T> implements Array<T>{
 		newList.addAll(list);
 		newList.add(v1);
 		newList.add(v2);
-		return JArray.of(newList);
+		return MyArray.of(newList);
 	}
 	@Override
 	public Array<T> concat(T v1){
 		List<T> newList = new ArrayList<>(list.size()+1);
 		newList.addAll(list);
 		newList.add(v1);
-		return JArray.of(newList);
+		return MyArray.of(newList);
 	}
 	/*private Array<T> concat(T[] values){
 		if(values==null){
@@ -567,7 +567,7 @@ public class JArray<T> implements Array<T>{
 		for(int i=0;i<values.length;i++){
 			newList.add(values[i]);
 		}
-		return JArray.of(newList);
+		return MyArray.of(newList);
 	}*/
 	@Override
 	public int unshift(){
@@ -604,7 +604,7 @@ public class JArray<T> implements Array<T>{
 		for(int i=start;i<end;i++){
 			newList.add(list.get(i));
 		}
-		return JArray.of(newList);
+		return MyArray.of(newList);
 	}
 	@Override
 	public void sort(Comparator<? super T> c){
@@ -712,9 +712,9 @@ public class JArray<T> implements Array<T>{
 		return list.listIterator();
 	}
 	public static void main(String[] args) {
-		String[] array = JArray.of("hello","world").toArray(String.class);
+		String[] array = MyArray.of("hello","world").toArray(String.class);
 		System.out.println(array);
-		JArray<String> jarray = JArray.of("hello","world","jsirenia");
+		MyArray<String> jarray = MyArray.of("hello","world","jsirenia");
 		String res = jarray.filter(i->i.contains("l")).map(t->{
 			return t.toUpperCase();
 		}).reduce((prev,curr)->prev+" "+curr, "");
@@ -722,7 +722,7 @@ public class JArray<T> implements Array<T>{
 		for(String item : jarray){
 			System.out.println(item);
 		}
-		JArray<String> jarray2 = JArray.of(new String[]{"hello","hworld","jsirenia"});
+		MyArray<String> jarray2 = MyArray.of(new String[]{"hello","hworld","jsirenia"});
 		System.out.println(jarray2.join(","));
 		String s = jarray.concat(jarray2).join(",");
 		System.out.println(s);
@@ -740,10 +740,10 @@ public class JArray<T> implements Array<T>{
 		return JSONArray.toJSONString(list);
 	}
 	public static <E> Array<E> fromString(String str,Class<E> clazz){
-		return JArray.of(JSONArray.parseArray(str, clazz));
+		return MyArray.of(JSONArray.parseArray(str, clazz));
 	}
 	public static Array<String> split(String text,String separatorReg){
 		String[] arr = text.split(separatorReg);
-		return JArray.of(arr);
+		return MyArray.of(arr);
 	}
 }

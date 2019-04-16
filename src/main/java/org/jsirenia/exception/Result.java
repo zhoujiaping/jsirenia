@@ -2,6 +2,8 @@ package org.jsirenia.exception;
 
 import java.io.Serializable;
 
+import org.jsirenia.exception.demo.ResultCode;
+
 import com.alibaba.fastjson.JSONObject;
 
 /**
@@ -12,14 +14,34 @@ public class Result<T> implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private boolean success;
+	private String code;
 	private String msg;
 	private T data;
-	public boolean isSuccess() {
-		return success;
+	public String getCode(){return this.code;}
+	public void setCode(String code){
+		this.code = code;
 	}
-	public void setSuccess(boolean success) {
-		this.success = success;
+	public Result<T> success(){
+		this.code = ResultCode.SUCCESS;
+		return this;
+	}
+	public Result<T> systemError(String msg){
+		this.code = ResultCode.SYSTEM_ERROR;
+		this.msg = msg;
+		return this;
+	}
+	public Result<T> serviceError(String code,String msg){
+		this.code = code;
+		this.msg = msg;
+		return this;
+	}
+	public Result<T> success(T data){
+		this.code = ResultCode.SUCCESS;
+		this.data = data;
+		return this;
+	}
+	public boolean isSuccess() {
+		return ResultCode.SUCCESS.equals(code);
 	}
 	public String getMsg() {
 		return msg;

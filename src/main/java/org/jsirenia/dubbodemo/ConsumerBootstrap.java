@@ -1,5 +1,6 @@
-package com.sf;
+package org.jsirenia.dubbodemo;
 
+import org.jsirenia.dubbodemo.exception.ExceptionHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -7,7 +8,6 @@ import com.alibaba.dubbo.config.ApplicationConfig;
 import com.alibaba.dubbo.config.ConsumerConfig;
 import com.alibaba.dubbo.config.ReferenceConfig;
 import com.alibaba.dubbo.config.RegistryConfig;
-import com.sf.exception.ExceptionHandler;
 
 public class ConsumerBootstrap {
 	private static final Logger logger = LoggerFactory.getLogger(ConsumerBootstrap.class);
@@ -46,7 +46,6 @@ public class ConsumerBootstrap {
 		// Registry Info
 		registry = new RegistryConfig();
 		registry.setProtocol("zookeeper");
-		// registry.setAddress("10.118.238.66:2181,10.118.238.48:2181,10.118.238.71:2181");
 		registry.setAddress("127.0.0.1:2181");
 		// registry.setAddress("127.0.0.1:2181");
 		registry.setCheck(false);

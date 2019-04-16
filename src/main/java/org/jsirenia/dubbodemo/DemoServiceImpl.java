@@ -1,6 +1,7 @@
-package com.sf;
+package org.jsirenia.dubbodemo;
 
-import com.sf.exception.ServiceException;
+
+import org.jsirenia.dubbodemo.exception.ServiceException;
 
 public class DemoServiceImpl implements DemoService {
 
