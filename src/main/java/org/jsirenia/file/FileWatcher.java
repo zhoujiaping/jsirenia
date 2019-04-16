@@ -53,7 +53,7 @@ public class FileWatcher {
                 //检查文件名是否符合要求
                 if("test.txt".equals(fileName)){
                     String filePath = path.toFile().getAbsolutePath()+File.separator+fileName;
-                    System.out.println(new JFile(filePath).text());
+                    System.out.println(new Jfile(filePath).text());
                 }*/
             	cb.apply(event);
             }
@@ -69,7 +69,7 @@ public class FileWatcher {
             //检查文件名是否符合要求
             if("text.txt".equals(fileName)){
                 String filePath = PathUtil.concat(dir, fileName);
-                System.out.println(new JFile(filePath).text());
+                System.out.println(new Jfile(filePath).text());
             }
 		});
 	}

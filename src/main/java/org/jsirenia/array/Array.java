@@ -4,12 +4,12 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
-import org.jsirenia.util.callback.Callback11;
-import org.jsirenia.util.callback.Callback20;
-import org.jsirenia.util.callback.Callback21;
-import org.jsirenia.util.callback.Callback30;
-import org.jsirenia.util.callback.Callback31;
-import org.jsirenia.util.callback.Callback41;
+import org.jsirenia.util.Callback.Callback11;
+import org.jsirenia.util.Callback.Callback20;
+import org.jsirenia.util.Callback.Callback21;
+import org.jsirenia.util.Callback.Callback30;
+import org.jsirenia.util.Callback.Callback31;
+import org.jsirenia.util.Callback.Callback41;
 
 /**
  *
