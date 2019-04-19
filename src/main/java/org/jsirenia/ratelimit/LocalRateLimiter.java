@@ -3,6 +3,9 @@ package org.jsirenia.ratelimit;
 import java.io.FileNotFoundException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,11 +19,13 @@ public class LocalRateLimiter {
 	private long timestamp;
 	private int rate;
 	private String service;
+	private Lock lock = new ReentrantLock(false);
 	private static Map<String,LocalRateLimiter> map = new ConcurrentHashMap<>();
 	public static LocalRateLimiter getRateLimiter(String service){
 		LocalRateLimiter limiter = map.get(service);
 		if(limiter == null){
 			limiter = new LocalRateLimiter(service);
+			limiter.timestamp = System.currentTimeMillis();
 			map.put(service, limiter);
 		}
 		return limiter;
@@ -43,30 +48,47 @@ public class LocalRateLimiter {
 	 * 申请令牌
 	 */
 	public boolean applyToken(){
-		long now = System.currentTimeMillis();
-		if(timestamp<=0){
-			tokens = capacity-1;
-			timestamp = now;
-			return true;
-		}
-		tokens = tokens + (now-timestamp)/1000*rate;
-		if(tokens>capacity){
-			tokens = capacity;
-		}
-		if(tokens<1){
-			return false;
-		}else{
-			timestamp = now;
-			tokens = tokens-1;
-			return true;
+		try{
+			if(lock.tryLock(200, TimeUnit.MILLISECONDS)){
+				long now = System.currentTimeMillis();
+				//更新令牌数
+				tokens = tokens + (now-timestamp)/1000*rate;
+				if(tokens>capacity){
+					tokens = capacity;
+				}
+				//令牌被申请完了
+				if(tokens<1){
+					return false;
+				}else{
+					//令牌没被申请完，更新时间戳，更新令牌数
+					timestamp = now;
+					tokens = tokens-1;
+					return true;
+				}
+			}else{
+				return false;
+			}
+		}catch(Exception e){
+			throw new RuntimeException(e);
+		}finally{
+			lock.unlock();
 		}
 	}
 	/**
 	 * 清理token
 	 */
 	public void clear(){
-		tokens = 0;
-		timestamp = System.currentTimeMillis();
+		try{
+			if(lock.tryLock(200, TimeUnit.MILLISECONDS)){
+				tokens = 0;
+				timestamp = System.currentTimeMillis();
+			}
+		}catch(Exception e){
+			throw new RuntimeException(e);
+		}finally{
+			lock.unlock();
+		}
+		
 	}
 	public static void main(String[] args) throws FileNotFoundException, InterruptedException {
 		LocalRateLimiter limiter = LocalRateLimiter.getRateLimiter("test");

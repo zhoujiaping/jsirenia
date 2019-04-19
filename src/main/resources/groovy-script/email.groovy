@@ -19,8 +19,8 @@ email.setAuthenticator(new DefaultAuthenticator("421211679@qq.com",
 				"passowrd"));
 email.setSSLOnConnect(true);
 email.setFrom("421211679@qq.com");
-email.setSubject("²âÊÔÓÊ¼þ");
-email.setMsg("¼û¸½¼þ");
+email.setSubject("ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½");
+email.setMsg("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
 email.addTo("421211679@qq.com");
  
 email.attach(attachment);
