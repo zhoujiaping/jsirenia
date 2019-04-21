@@ -1,10 +1,6 @@
 package org.jsirenia.queue;
 
-import java.util.Collection;
-
 public interface RedisQueue {
-
-	boolean addAll(Collection<? extends String> arg0);
 
 	void clear();
 
@@ -12,10 +8,10 @@ public interface RedisQueue {
 
 	Object[] toArray();
 
-	boolean add(String e);
-
 	boolean offer(String e);
 
 	String peek();
+
+	boolean add(String... source);
 
 }

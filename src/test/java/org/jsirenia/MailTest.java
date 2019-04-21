@@ -1,11 +1,26 @@
 package org.jsirenia;
 import java.util.Properties;
 
+import org.jsirenia.queue.DefaultRedisQueue;
 import org.junit.Test;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
+import redis.clients.jedis.Jedis;
+
 public class MailTest {
+	@Test
+	public void testAdd() {
+		DefaultRedisQueue queue = new DefaultRedisQueue();
+		Jedis redis = new Jedis("localhost",6379);
+		redis.auth("123456");
+		queue.config(redis , "q", 5);
+		String[] c = {"a","b","c"};
+		boolean res = queue.add(c);
+		System.out.println(res);
+		res = queue.add(c);
+		System.out.println(res);
+	}
 	@Test
 	public void test(){
 		JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
