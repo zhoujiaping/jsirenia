@@ -9,7 +9,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 import org.jsirenia.file.PathUtil;
-import org.jsirenia.util.callback.Callback10;
+import org.jsirenia.util.Callback.Callback10;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.util.ResourceUtils;
 /**

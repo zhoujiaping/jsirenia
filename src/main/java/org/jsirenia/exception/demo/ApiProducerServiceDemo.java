@@ -7,6 +7,6 @@ import org.jsirenia.exception.ServiceException;
  */
 public class ApiProducerServiceDemo {
 	public String doService(){
-		throw new ServiceException(DemoExceptionCode.USER_NOT_FOUND,"id为1的用户未找到");
+		throw new ServiceException("001","id为1的用户未找到");
 	}
 }

@@ -1,0 +1,13 @@
+D:\test>keytool -genkey -alias tomcat -keyalg RSA -keystore d:/test/mykey.keystore -storepass 123456 -keypass 123456
+
+https://www.npmjs.com/package/crypto-js
+https://github.com/brix/crypto-js/blob/develop/README.md
+https://www.cnblogs.com/yuyutianxia/p/7694195.html
+下载
+http://www.xgllseo.com/?p=6033
+
+https://github.com/travist/jsencrypt
+https://www.npmjs.com/package/jsencrypt
+
+java随机数
+https://www.cnblogs.com/deng-cc/p/8064481.html

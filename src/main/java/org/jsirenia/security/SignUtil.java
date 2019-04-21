@@ -62,10 +62,10 @@ public class SignUtil {
     public static void main(String[] args) throws FileNotFoundException, UnsupportedEncodingException {
         File ksfile = ResourceUtils.getFile("xxx.keystore");
         KeyStore ks = KeyStoreUtil.loadKeyStore(ksfile,"xxx","JKS");//JKS:java keystore
-        PrivateKey privateKey = KeyUtil.getPrivateKey(ks,"xxx","xxx");
+        PrivateKey privateKey = RSAUtil.getPrivateKey(ks,"xxx","xxx");
         String sign = SignUtil.signBase64("my precious".getBytes("utf-8"),privateKey);
 
-        PublicKey publicKey = KeyUtil.getPublicKey(ks,"xxx","xxx");
+        PublicKey publicKey = RSAUtil.getPublicKey(ks,"xxx","xxx");
         boolean verify = SignUtil.verifySignBase64("my precious".getBytes("utf-8"),sign,publicKey);
         System.out.println(verify);
 

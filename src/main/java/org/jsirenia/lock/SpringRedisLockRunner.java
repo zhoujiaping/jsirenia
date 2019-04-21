@@ -2,10 +2,8 @@ package org.jsirenia.lock;
 
 import java.util.UUID;
 
-import org.jsirenia.util.callback.Callback00;
-import org.jsirenia.util.callback.Callback01;
-import org.jsirenia.util.callback.Callback10;
-import org.jsirenia.util.callback.Callback11;
+import org.jsirenia.util.Callback.Callback01;
+import org.jsirenia.util.Callback.Callback11;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

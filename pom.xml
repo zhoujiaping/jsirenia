@@ -213,17 +213,39 @@
 			<artifactId>joda-time</artifactId>
 			<version>2.9.4</version>
 		</dependency>
+		<dependency>
+			<groupId>com.sun.mail</groupId>
+			<artifactId>javax.mail</artifactId>
+			<version>1.5.0</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<finalName>${project.artifactId}</finalName>
 		<resources>
 			<resource>
+				<directory>src/main/resources/nofilter</directory>
+				<filtering>false</filtering>
+			</resource>
+			<resource>
 				<directory>src/main/resources</directory>
 				<filtering>true</filtering>
+				<excludes>
+					<exclude>**/*.groovy</exclude><!-- maven参数替换排除groovy文件 -->
+				</excludes>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>false</filtering>
+				<includes>
+					<include>**/*.groovy</include>
+				</includes>
 			</resource>
 			<resource>
 				<directory>src/main/java</directory>
 				<filtering>true</filtering>
+				<includes>
+					<include>**/*.xml</include>
+				</includes>
 			</resource>
 		</resources>
 		<plugins>

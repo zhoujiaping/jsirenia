@@ -15,7 +15,7 @@ public class LRUCache<K, V> extends LinkedHashMap<K, V> {
 		super(initialCapacity, loadFactor, accessOrder);
 		this.maxSize = maxSize;
 	}
-
+	@Override
 	protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
 		return this.size() > this.maxSize;
 	}

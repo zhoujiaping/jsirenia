@@ -17,33 +17,26 @@ public class ApiConsumerDemo {
 			}else{
 				result.setData(new ApiConsumerServiceDemo().doService2());
 			}
-			result.setSuccess(true);
+			result.success();
 			return result;
 		}catch(ApiException e){
 			System.out.println("at consumer");
 			System.err.print(e.getCode());
 			e.printStackTrace();
-			result.setSuccess(false);
 			String msg = e.getMessage();
 			if(msg==null||msg.trim()==""){
 				msg = "系统内部错误";
 			}
-			result.setMsg(msg);
+			result.systemError(msg);
 			return result;
 		}catch(ServiceException e){
 			System.out.println("at consumer");
 			e.printStackTrace();//模拟日志打印异常
-			result.setSuccess(false);
-			result.setMsg(e.getMsg());
-			return result;
+			return result.serviceError(e.getCode(), e.getMsg());
 		}catch(Exception e){
 			System.out.println("at consumer");
-			result.setSuccess(false);
-			String code = Demo2ExceptionCode.SYSTEM_ERROR;
-			result.setMsg(ServiceException.currentExceptionCodeSource().getMsg(code));
-			System.err.println(code+"#"+result.getMsg());
 			e.printStackTrace();//模拟日志打印异常
-			return result;
+			return result.systemError("系统内部异常");
 		}
 	}
 }

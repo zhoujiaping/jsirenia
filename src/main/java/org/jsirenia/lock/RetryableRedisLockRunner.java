@@ -1,6 +1,6 @@
 package org.jsirenia.lock;
 
-import org.jsirenia.util.callback.Callback01;
+import org.jsirenia.util.Callback.Callback01;
 import org.springframework.util.Assert;
 
 import redis.clients.jedis.Jedis;

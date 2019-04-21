@@ -1,9 +1,10 @@
 package org.jsirenia.lock;
 
+import java.util.Arrays;
 import java.util.UUID;
 
-import org.jsirenia.util.callback.Callback01;
-import org.jsirenia.util.callback.Callback11;
+import org.jsirenia.util.Callback.Callback01;
+import org.jsirenia.util.Callback.Callback11;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
@@ -189,6 +190,14 @@ public class RedisLockRunner<T> implements Callback11<T,Callback01<T>> {
 	}
 
 	public static void main(String[] args) {
+		//test();
+		//
+		//testResetPx();
+		
+		testQueue();
+	}
+
+	private static void test() {
 		Jedis redis = new Jedis("localhost", 6379);
         // redis.auth("");
 		JedisLock redisDistLock = new JedisLock();
@@ -200,8 +209,27 @@ public class RedisLockRunner<T> implements Callback11<T,Callback01<T>> {
 			return doInAnotherLock(redisDistLock, lockKey, expireTime);
 		});
 		System.out.println(res);
-		//
-		
+	}
+	private static void testQueue(){
+		Jedis redis = new Jedis("localhost", 6379);
+        // redis.auth("");
+		String script = "local msgList = redis.call('lrange', KEYS[1],ARGV[1],ARGV[2]); redis.call('ltrim',KEYS[2],ARGV[3],ARGV[4]); return msgList";
+		String key = "q";
+		Object result = redis.eval(script, Arrays.asList(key ,key),
+				Arrays.asList("0","9","10","-1"));
+		System.out.println(result);
+		redis.close();
+	}
+	private static void testResetPx(){
+		Jedis redis = new Jedis("localhost", 6379);
+        // redis.auth("");
+		JedisLock redisDistLock = new JedisLock();
+		redisDistLock.setRedis(redis);
+		String lockKey = "aaaa";
+		redisDistLock.tryGetDistributedLock(lockKey, "12345", 1000*10);
+		boolean b = redisDistLock.resetDistributedLockPX(lockKey, "12345", 1000*20);
+		System.out.println(redis.ttl(lockKey));
+		System.out.println(b);
 	}
 
 	private static Object doInAnotherLock(JedisLock redisDistLock, String lockKey, long expireTime) {

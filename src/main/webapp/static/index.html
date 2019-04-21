@@ -18,17 +18,19 @@ width:100%;
 <body>
 <div contenteditable="true" class="content" id="data"></div>
 <div>
-<button id="btn">submit</button>
+<button id="btn1">获取证书</button>
+<button id="btn2">发送密钥</button>
+<button id="btn3">业务请求</button>
 </div>
 <div id="res"></div>
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script type="text/javascript">
 	$(()=>{
-		$('#btn').on('click',e=>{
+		$('#btn1').on('click',e=>{
 			$('#res').text('');
 			const data = $('#data').text();
 			$.ajax({
-				url:'/hessian-http/jsInvoker/invoke',
+				url:'/jsirenia/static/c.png',
 				data:data,
 				method:'POST',
 				headers: {
@@ -36,8 +38,46 @@ width:100%;
 		             'Accept':'text/plain'
 		        }
 			}).done(res=>{
-				console.info(JSON.parse(res));
-			}).fail(xhr=>{
+				console.info(res);
+			}).fail(res=>{
+				console.error(res);
+			});
+		});
+		$('#btn2').on('click',e=>{
+			$('#res').text('');
+			const data = 'fE7crNtXc1LZpoSA2VtH55PtvneFWM24E6JCBul366MJZXxoPJk5v61UJYCNy41W/lA+KWWiTmrM3YYPyJ18zWsBWFLXP4lK2kuHTLsKRI33A3F61C1BjVolKrl7+eVxRvqrlLLNlW4++d9BrIXrhFxTob/9pqDKu0Gh3AHKsSk2JGvqqRCFnd0mvMwp06Tap+gkIDmPT7Xil3RBfynQuSs4V28Y4rKKRmQf19KOdRrg5uwI4e/TqzxE09LYqiYFQdLjJOsZ1rQTR/UIypWydzl2vF3Ul0n5SZXxX4L23/nZ7T36Lr0FnEWZQMRUE/iKzgM0SkUREX+yEEW/bnbr3A==';
+			$.ajax({
+				url:'/jsirenia/static/s.png',
+				data:data,
+				method:'POST',
+				headers: {
+		             'Content-Type':'text/plain',
+		             'Accept':'text/plain',
+		             'x-security-codetype-accept':'base64'
+		        }
+			}).done(res=>{
+				console.info(res);
+			}).fail(res=>{
+				console.error(res);
+			});
+		});
+		$('#btn3').on('click',e=>{
+			$('#res').text('');
+			const data = 'bATW3vqLvnNe7qwrZGdEuS9ZLX2BGLC2jlBN42xpmEJeL4qLe7xJ55Kl6JFwNBoopL24TQ3Yq3JaBqeRdz4jbtMv8nbe0Kt+X6msUe3Ltp3T1uNWtzyxHjdCDVd2HQlo47CNzukwccXICel11zILA6uDKKiVdAQzcARAR7xxQSn5LUUcz/aZDAu3BBJge/nhc4OfSh90wwYj1TRnl5XVHg==';
+			$.ajax({
+				url:'/security/test',
+				data:data,
+				method:'POST',
+				headers: {
+		             'Content-Type':'text/plain',
+		             'Accept':'application/json',
+		             'x-security-abstract':'1E70B16FDAFC29A92EBE817E3E37C927',
+		             'x-security-codetype':'base64',
+		             'x-security-codetype-accept':'base64'
+		        }
+			}).done(res=>{
+				console.info(res);
+			}).fail(res=>{
 				console.error(res);
 			});
 		});

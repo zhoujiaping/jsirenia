@@ -24,18 +24,8 @@ public class MD5Util{
 		return md5(data.getBytes(charset));
 	}
 
-	public static String md5Hex(byte[] data) {
+	public static String md5AsHex(byte[] data) {
 		return HexUtil.toHexString(md5(data));
-	}
-
-	public static String md5Hex(String data) {
-		return HexUtil.toHexString(md5(data));
-	}
-
-	public static byte[] md5(byte[] data, byte[] salt) {
-		MessageDigest md5 = getDigest();
-		md5.update(data);
-		return md5.digest(salt);
 	}
 
 	/**
@@ -45,13 +35,16 @@ public class MD5Util{
 	 * @param salt
 	 * @return
 	 */
-	public static String md5Hex(String data, String salt) {
-		return HexUtil.toHexString(md5(data.getBytes(charset),salt.getBytes(charset)));
+	public static byte[] md5(byte[] data, byte[] salt) {
+		MessageDigest md5 = getDigest();
+		md5.update(data);
+		return md5.digest(salt);
 	}
+
 	public static void main(String[] args){
 		String data = "123";
 		String salt = "null";
-		String res = md5Hex(data,salt);
+		String res = HexUtil.toHexString(md5(data.getBytes(),salt.getBytes()));
 		//res = md5Hex(data);
 		System.out.println(res);
 

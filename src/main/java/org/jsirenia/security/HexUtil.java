@@ -4,6 +4,9 @@ package org.jsirenia.security;
 import org.springframework.util.DigestUtils;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.Base64;
 
 /**
@@ -11,12 +14,14 @@ import java.util.Base64;
  */
 public class HexUtil {
     private static final char[] chars = "0123456789ABCDEF".toCharArray();
+    private static final Charset charset = Charset.forName("utf-8");
     public static String toHexString(byte[] buf){
         char[] charArray = new char[buf.length*2];
         int j = 0;
         for(int i=0;i<buf.length;i++){
             charArray[j++] = chars[buf[i]>>>4 & 0x0F];
-            charArray[j++] = chars[buf[i] & 0x0F];//先取高4位，再取低4位
+            //先取高4位，再取低4位
+            charArray[j++] = chars[buf[i] & 0x0F];
         }
         return new String(charArray);
     }
@@ -32,6 +37,28 @@ public class HexUtil {
         }
          return byteArray;
     }
+    /**
+     * eg: 4142 => ab
+     * */
+    public static String parse(String hex){
+    	return new String(toByteArray(hex),charset);
+    }
+    /**
+     * eg: ab => 4142
+     */
+    public static String stringify(String str){
+    	return toHexString(str.getBytes(charset));
+    }
+    /**
+     * @throws NoSuchAlgorithmException 
+     * 
+     */
+    public static String randomHex(int length){
+		SecureRandom sr = new SecureRandom();
+		byte[] bytes = new byte[length/2];
+		sr.nextBytes(bytes);
+		return toHexString(bytes);
+	}
     public static void main(String[] args) throws UnsupportedEncodingException {
         byte[] buf = "hell2154213165465o".getBytes("utf-8");
         String s1 = toHexString(buf);
@@ -45,7 +72,6 @@ public class HexUtil {
         System.out.println(s1);
         s = DigestUtils.md5DigestAsHex(buf);
         System.out.println(s);
-
     }
 
 }

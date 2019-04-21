@@ -19,7 +19,7 @@ public class ApiProducerDemo {
 			throw new ApiException(e);
 		}catch(Exception e){
 			e.printStackTrace();//模拟日志打印异常
-			throw new ApiException(new ServiceException(DemoExceptionCode.SYSTEM_ERROR,"系统内部异常了"));
+			throw new ApiException(new ServiceException(ResultCode.SYSTEM_ERROR,"系统内部异常了"));
 		}
 	}
 }

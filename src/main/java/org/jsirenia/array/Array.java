@@ -4,14 +4,23 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
-import org.jsirenia.util.callback.Callback11;
-import org.jsirenia.util.callback.Callback20;
-import org.jsirenia.util.callback.Callback21;
-import org.jsirenia.util.callback.Callback30;
-import org.jsirenia.util.callback.Callback31;
-import org.jsirenia.util.callback.Callback41;
+import org.jsirenia.util.Callback.Callback11;
+import org.jsirenia.util.Callback.Callback20;
+import org.jsirenia.util.Callback.Callback21;
+import org.jsirenia.util.Callback.Callback30;
+import org.jsirenia.util.Callback.Callback31;
+import org.jsirenia.util.Callback.Callback41;
 
+/**
+ *
+ * 这个接口定义，是按照javascript的Array定义的
+ * @author zhoujiaping
+ */
 public interface Array<T> extends Iterable<T>{
+	/**
+	 * 转换成jdk内置的list类型
+	 * @return
+	 */
 		public List<T> toList();
 		public <E> Array<E> map(Callback11<E,T> cb);
 		public <E> Array<E> map(Callback21<E,T,Integer> cb);
