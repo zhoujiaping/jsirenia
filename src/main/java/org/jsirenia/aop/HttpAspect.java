@@ -22,7 +22,7 @@ import com.alibaba.fastjson.JSONObject;
 /**
  * 对spring管理的对象进行aop，调用http接口
  */
-@Component
+//@Component
 public class HttpAspect {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	private String host = "localhost";
