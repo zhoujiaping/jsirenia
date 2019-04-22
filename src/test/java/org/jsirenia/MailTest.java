@@ -16,7 +16,7 @@ public class MailTest {
 		redis.auth("123456");
 		queue.config(redis , "q", 5);
 		String[] c = {"a","b","c"};
-		boolean res = queue.add(c);
+		int res = queue.add(c);
 		System.out.println(res);
 		res = queue.add(c);
 		System.out.println(res);

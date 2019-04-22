@@ -19,6 +19,7 @@ public class JedisLock implements RedisLock {
 
 	/**
 	 * 尝试获取分布式锁
+	 * 如果已经持有锁，则重新设置过期时间。
 	 * 
 	 * @param lockKey
 	 *            锁
@@ -29,7 +30,14 @@ public class JedisLock implements RedisLock {
 	 * @return 是否获取成功
 	 */
 	public boolean tryGetDistributedLock(String lockKey, String requestId, long expireTime) {
-		String result = redis.set(lockKey, requestId, SET_IF_NOT_EXIST, SET_WITH_EXPIRE_TIME, expireTime);
+		// SET key value XX PX millisecond
+		// SET key value NX PX millisecond
+		String script = "if redis.call('get', KEYS[1]) == ARGV[1] then "
+				+"				return redis.call('set', KEYS[1],ARGV[1],ARGV[2],ARGV[3])"
+				+ "           else "
+				+ "				return redis.call('set', KEYS[1],ARGV[1],ARGV[4],ARGV[2],ARGV[3])"
+				+ "           end ";
+		Object result = redis.eval(script, 1,lockKey, requestId,SET_WITH_EXPIRE_TIME,""+expireTime,SET_IF_NOT_EXIST);
 		if (LOCK_SUCCESS.equals(result)) {
 			return true;
 		}
@@ -49,7 +57,10 @@ public class JedisLock implements RedisLock {
 	 * @return 是否释放成功
 	 */
 	public boolean releaseDistributedLock(String lockKey, String requestId) {
-		String script = "if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return 0 end";
+		String script = "if redis.call('get', KEYS[1]) == ARGV[1] then "
+				+ "				return redis.call('del', KEYS[1]) "
+				+ "			else "
+				+ "				return 0 end";
 		Object result = redis.eval(script, Collections.singletonList(lockKey), Collections.singletonList(requestId));
 		if (RELEASE_SUCCESS.equals(result)) {
 			return true;
@@ -67,7 +78,7 @@ public class JedisLock implements RedisLock {
 	 * @return
 	 */
 	public boolean resetDistributedLockPX(String lockKey, String requestId, long expireTime) {
-		// SET key value NX PX millisecond
+		// SET key value XX PX millisecond
 		String script = "if redis.call('get', KEYS[1]) == ARGV[1] "
 				+ "				then redis.call('set', KEYS[1],ARGV[1],ARGV[2],ARGV[3],ARGV[4])"
 				+ "               return 1"

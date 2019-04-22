@@ -189,14 +189,35 @@ public class RedisLockRunner<T> implements Callback11<T,Callback01<T>> {
 		}
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InterruptedException {
 		//test();
-		//
+		testTryLock();
 		//testResetPx();
 		
-		testQueue();
+		//testQueue();
 	}
-
+	private static void testTryLock() throws InterruptedException {
+		Jedis redis = new Jedis("localhost", 6379);
+        // redis.auth("");
+		JedisLock redisDistLock = new JedisLock();
+		redisDistLock.setRedis(redis);
+		String lockKey = "aaaa";
+		long expireTime = 1200;
+		boolean res = redisDistLock.tryGetDistributedLock(lockKey, "hello", expireTime);
+		System.out.println(res);
+		System.out.println(redis.pttl(lockKey));
+		
+		Thread.sleep(300);
+		res = redisDistLock.tryGetDistributedLock(lockKey, "hello1", expireTime);
+		System.out.println(res);
+		System.out.println(redis.pttl(lockKey));
+		
+		
+		Thread.sleep(500);
+		res = redisDistLock.tryGetDistributedLock(lockKey, "hello", expireTime);
+		System.out.println(res);
+		System.out.println(redis.pttl(lockKey));
+	}
 	private static void test() {
 		Jedis redis = new Jedis("localhost", 6379);
         // redis.auth("");
