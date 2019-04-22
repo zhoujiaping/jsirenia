@@ -1,17 +1,23 @@
 package org.jsirenia.queue;
 
+import java.util.List;
+
 public interface RedisQueue {
 
 	void clear();
 
 	boolean isEmpty();
 
-	Object[] toArray();
-
-	boolean offer(String e);
-
 	String peek();
 
-	boolean add(String... source);
+	int add(String... source);
+
+	List<String> peek(int count);
+
+	List<String> take(int count);
+
+	String take();
+
+	int size();
 
 }

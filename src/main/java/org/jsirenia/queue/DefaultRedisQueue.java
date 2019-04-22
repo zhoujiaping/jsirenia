@@ -1,5 +1,8 @@
 package org.jsirenia.queue;
 
+import java.util.Arrays;
+import java.util.List;
+
 import com.google.common.base.Objects;
 
 import redis.clients.jedis.Jedis;
@@ -29,58 +32,59 @@ public class DefaultRedisQueue implements RedisQueue{
 		private static final long serialVersionUID = 1L;
 	}
 	@Override
-	public boolean add(String... source) {
+	public int add(String... source) {
+		if(source == null){
+			throw new RedisQueueException("参数不能为空");
+		}
+		if(source.length==0){
+			return 0;
+		}
+		int successCount = source.length;
 		if(capacity>0){
 			Long len = redis.llen(key);
 			int overSize =  (int) (len+source.length - capacity);
 			if(overSize > 0){
-				int effectSize = source.length - overSize;
-				String[] target = new String[effectSize];
-				System.arraycopy(source, 0, target, 0, effectSize);
+				successCount = source.length - overSize;
+				String[] target = new String[successCount];
+				System.arraycopy(source, 0, target, 0, successCount);
 				redis.lpush(key, target);
-				return false;
+				return successCount;
 			}else{
 				redis.lpush(key, source);
 			}
 		}else{
 			redis.lpush(key, source);
 		}
-		return true;
+		return successCount;
 	}
-	/* (non-Javadoc)
-	 * @see org.jsirenia.queue.RedisQueueI#clear()
-	 */
 	@Override
 	public void clear() {
 		redis.del(key);
 	}
-	/* (non-Javadoc)
-	 * @see org.jsirenia.queue.RedisQueueI#isEmpty()
-	 */
 	@Override
 	public boolean isEmpty() {
 		return Objects.equal(redis.llen(key),0);
 	}
-	/* (non-Javadoc)
-	 * @see org.jsirenia.queue.RedisQueueI#toArray()
-	 */
 	@Override
-	public Object[] toArray() {
-		return redis.lrange(key, 0, -1).toArray();
+	public int size() {
+		return redis.llen(key).intValue();
 	}
-	/* (non-Javadoc)
-	 * @see org.jsirenia.queue.RedisQueueI#offer(java.lang.String)
-	 */
-	@Override
-	public boolean offer(String e) {
-		redis.lpush(key,e);
-		return true;
-	}
-	/* (non-Javadoc)
-	 * @see org.jsirenia.queue.RedisQueueI#peek()
-	 */
 	@Override
 	public String peek() {
 		return redis.lrange(key, 0, 0).get(0);
+	}
+	@Override
+	public List<String> peek(int count) {
+		return redis.lrange(key, 0, count-1);
+	}
+	@Override
+	public List<String> take(int count){
+		String script = "local msgList = redis.call('lrange', KEYS[1],ARGV[1],ARGV[2]); redis.call('ltrim',KEYS[1],ARGV[3],ARGV[4]); return msgList";
+		Object result = redis.eval(script, Arrays.asList(key), Arrays.asList("0", String.valueOf(count-1), ""+count, "-1"));
+		return (List<String>) result;
+	}
+	@Override
+	public String take(){
+		return redis.rpop(key);
 	}
 }
