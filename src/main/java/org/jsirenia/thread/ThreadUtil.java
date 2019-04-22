@@ -3,6 +3,12 @@ package org.jsirenia.thread;
 import java.lang.Thread.UncaughtExceptionHandler;
 
 public class ThreadUtil {
+	public static class ThreadException extends RuntimeException{
+		private static final long serialVersionUID = 1L;
+		public ThreadException(String msg){
+			super(msg);
+		}
+	}
 	/**
 	 * 设置未捕获线程的异常处理器
 	 * @param handler
@@ -15,6 +21,22 @@ public class ThreadUtil {
 			return true;
 		}
 		return false;
+	}
+	/**
+	 * 配合getAllThreads、ensureStatus/checkStatus,实现优雅停机
+	 * 代码中，根据业务场景，决定是否调用ensureStatus/checkStatus
+	 * @param t
+	 */
+	public static void interruptThread(Thread t){
+		t.interrupt();
+	}
+	public static void ensureStatus(){
+		if(Thread.currentThread().isInterrupted()){
+			throw new ThreadException("线程已被中断");
+		}
+	}
+	public static boolean checkStatus(){
+		return Thread.currentThread().isInterrupted();
 	}
 
 	/**
