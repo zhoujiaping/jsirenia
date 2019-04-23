@@ -1,4 +1,4 @@
-package com.sfpay.module.log.util;
+package org.jsirenia.util;
 
 import java.io.IOException;
 import java.io.InputStream;
