@@ -18,7 +18,6 @@ import org.springframework.util.StringUtils;
  */
 public class JobLogUtil {
 	private static final Logger logger = LoggerFactory.getLogger(JobLogUtil.class);
-	private static AtomicInteger jobid = new AtomicInteger(0);
 	private static AtomicInteger taskid = new AtomicInteger(0);
 	private static AtomicInteger dataid = new AtomicInteger(0);
 	private static IntUnaryOperator updateFunction = new IntUnaryOperator() {
@@ -33,39 +32,20 @@ public class JobLogUtil {
 	private static final String uidKey = "uid";
 	private static final String ouidKey = JobLogUtil.class.getSimpleName() + "-uid";
 
-	public static void withJob(String jobName, Callback cb) {
+	public static void withJob(Callback cb) {
 		String uid = MDC.get(uidKey);
 		if (StringUtils.isEmpty(uid)) {
 			try {
 				MDC.put(uidKey, UUID.randomUUID().toString().replaceAll("-", ""));
-				withJobEXuid(jobName, cb);
+				cb.apply();
 			} finally {
 				MDC.remove(uidKey);
 			}
 		}else{
-			withJobEXuid(jobName, cb);
+			cb.apply();
 		}
 	}
 
-	private static void withJobEXuid(String jobName, Callback cb) {
-		try {
-			saveUid();
-			// 如果taskName是空，就采用计数的方式
-			if (StringUtils.isEmpty(jobName)) {
-				int id = jobid.getAndUpdate(updateFunction);
-				jobName = "job" + id;
-			}
-			String uid = MDC.get(uidKey);
-			if (StringUtils.isEmpty(uid)) {
-				logger.warn("跑批日志的uid为空，请检查配置。jobName=【{}】", jobName);
-			} else {
-				MDC.put(uidKey, uid + "-" + jobName);
-			}
-			cb.apply();
-		} finally {
-			recoverUid();
-		}
-	}
 
 	/**
 	 * 给日志上下文添加信息 建议taskName取2-5个字符的简称 不保证同一个job的taskid按顺序增长，只保证递增。
