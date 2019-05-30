@@ -248,9 +248,7 @@ public class RedisLockRunner<T> implements Callback11<T,Callback01<T>> {
 		redisDistLock.setRedis(redis);
 		String lockKey = "aaaa";
 		redisDistLock.tryGetDistributedLock(lockKey, "12345", 1000*10);
-		boolean b = redisDistLock.resetDistributedLockPX(lockKey, "12345", 1000*20);
 		System.out.println(redis.ttl(lockKey));
-		System.out.println(b);
 	}
 
 	private static Object doInAnotherLock(JedisLock redisDistLock, String lockKey, long expireTime) {

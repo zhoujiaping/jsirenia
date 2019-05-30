@@ -1,5 +1,11 @@
 package org.jsirenia.json;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
+
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.parser.ParserConfig;
 import com.alibaba.fastjson.serializer.SerializerFeature;
@@ -36,5 +42,24 @@ public class JSONUtil {
 		//如果parseconfig没有设置支持类型，同时文本中有@type，那么会抛出异常
 		T res = JSON.parseObject(text, clazz, parseconfig);
 		return res;
+	}
+	public static String read(InputStream in) throws IOException {
+		try (BufferedReader br = new BufferedReader(new InputStreamReader(in, Charset.forName("utf-8")))) {
+			String line = null;
+			StringBuilder text = new StringBuilder();
+			boolean isFirstLine = true;
+			while ((line = br.readLine()) != null) {
+				line = line.replaceAll("//.*$", "");
+				if(isFirstLine){
+					text.append(line);
+					isFirstLine = false;
+				}else{
+					text.append(System.lineSeparator());
+					text.append(line);
+				}
+			}
+			String jsontext = text.toString().replaceAll("(?s)/\\*.*?\\*/", "");// 正则要使用懒惰模式，不能用默认的贪婪模式。
+			return jsontext;
+		}
 	}
 }

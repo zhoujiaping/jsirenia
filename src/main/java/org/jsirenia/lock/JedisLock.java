@@ -2,6 +2,10 @@ package org.jsirenia.lock;
 
 import java.util.Collections;
 
+import org.springframework.dao.DataAccessException;
+import org.springframework.data.redis.connection.RedisConnection;
+import org.springframework.data.redis.core.RedisCallback;
+
 import redis.clients.jedis.Jedis;
 
 public class JedisLock implements RedisLock {
@@ -18,8 +22,7 @@ public class JedisLock implements RedisLock {
 	}
 
 	/**
-	 * 尝试获取分布式锁
-	 * 如果已经持有锁，则重新设置过期时间。
+	 * 尝试获取分布式锁 如果已经持有锁，则重新设置过期时间。
 	 * 
 	 * @param lockKey
 	 *            锁
@@ -33,11 +36,10 @@ public class JedisLock implements RedisLock {
 		// SET key value XX PX millisecond
 		// SET key value NX PX millisecond
 		String script = "if redis.call('get', KEYS[1]) == ARGV[1] then "
-				+"				return redis.call('set', KEYS[1],ARGV[1],ARGV[2],ARGV[3])"
-				+ "           else "
-				+ "				return redis.call('set', KEYS[1],ARGV[1],ARGV[4],ARGV[2],ARGV[3])"
-				+ "           end ";
-		Object result = redis.eval(script, 1,lockKey, requestId,SET_WITH_EXPIRE_TIME,""+expireTime,SET_IF_NOT_EXIST);
+				+ "				return redis.call('set', KEYS[1],ARGV[1],ARGV[2],ARGV[3])" + "           else "
+				+ "				return redis.call('set', KEYS[1],ARGV[1],ARGV[4],ARGV[2],ARGV[3])" + "           end ";
+		Object result = redis.eval(script, 1, lockKey, requestId, SET_WITH_EXPIRE_TIME, "" + expireTime,
+				SET_IF_NOT_EXIST);
 		if (LOCK_SUCCESS.equals(result)) {
 			return true;
 		}
@@ -58,9 +60,7 @@ public class JedisLock implements RedisLock {
 	 */
 	public boolean releaseDistributedLock(String lockKey, String requestId) {
 		String script = "if redis.call('get', KEYS[1]) == ARGV[1] then "
-				+ "				return redis.call('del', KEYS[1]) "
-				+ "			else "
-				+ "				return 0 end";
+				+ "				return redis.call('del', KEYS[1]) " + "			else " + "				return 0 end";
 		Object result = redis.eval(script, Collections.singletonList(lockKey), Collections.singletonList(requestId));
 		if (RELEASE_SUCCESS.equals(result)) {
 			return true;
@@ -68,25 +68,15 @@ public class JedisLock implements RedisLock {
 		return false;
 	}
 
-	/**
-	 * 重新设置锁的过期时间 使用方式： A获取锁，A每隔一段时间调用该方法，重新设置锁的过期时间，达到A一直持有该锁的效果，
-	 * 又能防止锁太长时间无法释放的问题。 使用场景： A获取了锁，希望一直持有锁，但是又要防止自己被kill掉之后，锁无法释放。
-	 * 
-	 * @param lockKey
-	 * @param requestId
-	 * @param expireTime
-	 * @return
-	 */
-	public boolean resetDistributedLockPX(String lockKey, String requestId, long expireTime) {
+	public boolean tryGetDistributedReentrantLock(final String lockKey, final String requestId, final long expireTime) {
 		// SET key value XX PX millisecond
-		String script = "if redis.call('get', KEYS[1]) == ARGV[1] "
-				+ "				then redis.call('set', KEYS[1],ARGV[1],ARGV[2],ARGV[3],ARGV[4])"
-				+ "               return 1"
-				+ "           else "
-				+ "				return 0 "
-				+ "           end ";
-		Object result = redis.eval(script, 1,lockKey, requestId,SET_IF_EXIST,SET_WITH_EXPIRE_TIME,""+expireTime);
-		if (Integer.parseInt(result.toString())>0) {
+		// SET key value NX PX millisecond
+		String script = "if redis.call('get', KEYS[1]) == ARGV[1] then "
+				+ "				return redis.call('set', KEYS[1],ARGV[1],ARGV[2],ARGV[3])" + "           else "
+				+ "				return redis.call('set', KEYS[1],ARGV[1],ARGV[4],ARGV[2],ARGV[3])" + "           end ";
+		Object result = redis.eval(script, 1, lockKey, requestId, SET_WITH_EXPIRE_TIME, "" + expireTime,
+				SET_IF_NOT_EXIST);
+		if (LOCK_SUCCESS.equals(result)) {
 			return true;
 		}
 		return false;
