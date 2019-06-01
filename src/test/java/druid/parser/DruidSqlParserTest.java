@@ -7,6 +7,7 @@ import java.lang.reflect.Proxy;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.jsirenia.file.MyFile;
 import org.junit.Test;
 import org.springframework.util.ResourceUtils;
 
@@ -24,7 +25,6 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
-import com.sfpay.jyd.util.Jfile;
 /**
  * https://github.com/alibaba/druid/wiki/SQL-Parser
  * https://www.jianshu.com/p/437aa22ea3ca
@@ -35,15 +35,15 @@ public class DruidSqlParserTest {
 	@Test
 	public void test() throws Exception {
 		// 从文件中读取多条sql，解析每一条sql，将每条sql解析的结果存入文件，后续分析
-		Jfile file = new Jfile(ResourceUtils.getFile("classpath:druid/test.sql"));
-		String content = file.text();
+		MyFile file = new MyFile(ResourceUtils.getFile("classpath:druid/test.sql"));
+		String content = file.readText();
 		String[] sqls = content.trim().split(";");
 		int i = 0;
 		for (String sql : sqls) {
 			MySqlStatementParser parser = new MySqlStatementParser(sql);
 			SQLStatement statement = parser.parseStatement();
 			File f = new File("d:", "/ast/ast-" + leftPad(i, "0", 2) + ".txt");
-			Jfile resFile = new Jfile(f);
+			MyFile resFile = new MyFile(f);
 			String text = sql + "\r\n";
 			text += JSON.toJSONString(statement, SerializerFeature.WriteClassName, SerializerFeature.PrettyFormat);
 			resFile.writeText(text);
