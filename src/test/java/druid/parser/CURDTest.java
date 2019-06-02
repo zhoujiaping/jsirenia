@@ -45,18 +45,18 @@ public class CURDTest {
 
 	@Test
 	public void testInsert() {
-		String sql = "insert into t_user(Name,age,create_time)values('test-name1',21,now());";
-		sql = "insert into t_user(name,age,create_time)values('test-name1',21,now()),('test-name2',22,now());";
+		String sql = "insert into t_user(Name,age,create_time)values('Test-name1',21,now());";
+		sql = "insert into t_user(name,age,create_time)values('Test-name1',21,now()),('test-name2',22,now());";
 		SQLStatementParser parser = new SQLStatementParser(sql);
 		SQLInsertStatement stmt = (SQLInsertStatement) parser.parseStatement();
-		String tableName = stmt.getTableName().getSimpleName();
+		String tableName = stmt.getTableName().getSimpleName().toLowerCase();
 		List<String> columnNames = new ArrayList<>();
 		Map<String, String> cryptColumns = cryptInfo.get(tableName);
 		List<SQLExpr> columns = stmt.getColumns();
 		for (SQLExpr column : columns) {
 			if(column instanceof SQLName){
 				SQLName columnExpr = (SQLName) column;
-				String columnName = columnExpr.getSimpleName();
+				String columnName = columnExpr.getSimpleName().toLowerCase();
 				columnNames.add(columnName);
 			}
 		}
@@ -78,6 +78,7 @@ public class CURDTest {
 			}
 		}
 		logger.info(stmt.toString());
+		logger.info(stmt.toLowerCaseString());
 	}
 
 	@Test
@@ -87,7 +88,7 @@ public class CURDTest {
 		//sql = "update t_user t set t.name='aaa' where name='abc' and t.name not in( 'test-1','test-2') and 1=1 ;";
 		SQLStatementParser parser = new SQLStatementParser(sql);
 		SQLUpdateStatement stmt = (SQLUpdateStatement) parser.parseStatement();
-		String tableName = stmt.getTableName().getSimpleName();
+		String tableName = stmt.getTableName().getSimpleName().toLowerCase();
 		Map<String, String> cryptColumns = cryptInfo.get(tableName);
 		List<SQLUpdateSetItem> items = stmt.getItems();
 		for(SQLUpdateSetItem item : items){
@@ -112,7 +113,7 @@ public class CURDTest {
 		String sql = "select * from t_user t where t.name = 'test-1' and t.age>20 and create_time between '2019-06-01' and now()";
 		sql = "select * from t_user t where t.name = 'test-1';";
 		sql = "select * from t_user t where name='abc' and t.name not in( 'test-1','test-2') and 1=1 ;";
-		sql = "select t.name,t.age from t_user t;";
+		sql = "select t.name,t.age from T_USER t;";
 		SQLStatementParser parser = new SQLStatementParser(sql);
 		SQLSelectStatement stmt = (SQLSelectStatement) parser.parseStatement();
 		SQLSelect select = stmt.getSelect();
@@ -128,7 +129,7 @@ public class CURDTest {
 		if(tableSource instanceof SQLExprTableSource){
 			SQLExprTableSource exprTableSource = (SQLExprTableSource) tableSource;
 			SQLName sqlName = exprTableSource.getName();
-			String tableName = sqlName.getSimpleName();
+			String tableName = sqlName.getSimpleName().toLowerCase();
 			Map<String, String> cryptColumns = cryptInfo.get(tableName);
 			List<SQLSelectItem> selectList = queryBlock.getSelectList();
 			for(SQLSelectItem item : selectList){
@@ -141,7 +142,7 @@ public class CURDTest {
 					});
 				}else if(expr instanceof SQLName){
 					SQLName name = (SQLName) expr;
-					String columnName = name.getSimpleName();
+					String columnName = name.getSimpleName().toLowerCase();
 					String columnType = allColumnsType.get(columnName);
 					if(needCryptTypes.contains(columnType)){
 						toCryptColumns.add(columnName);
@@ -160,7 +161,8 @@ public class CURDTest {
 			ResultCryptCallback callback = new ResultCryptCallback(){
 				@Override
 				public JSONArray crypt(JSONArray records) {
-					for(Object record : records){
+					JSONArray res = JSONArray.parseArray(records.toJSONString());
+					for(Object record : res){
 						JSONObject json = (JSONObject) record;
 						Set<Entry<String,Object>> entrySet = json.entrySet();
 						for(Entry<String,Object> entry : entrySet){
@@ -175,13 +177,8 @@ public class CURDTest {
 								}
 							}
 						}
-						json.forEach((name,value)->{
-							if(toCryptColumns.contains(name)){
-								
-							}
-						});
 					}
-					return null;
+					return res;
 				}
 			};
 			callback.crypt(records);
@@ -205,7 +202,7 @@ public class CURDTest {
 		sql = "delete from t_user t;";
 		SQLStatementParser parser = new SQLStatementParser(sql);
 		SQLDeleteStatement stmt = (SQLDeleteStatement) parser.parseStatement();
-		String tableName = stmt.getTableName().getSimpleName();
+		String tableName = stmt.getTableName().getSimpleName().toLowerCase();
 		Map<String, String> cryptColumns = cryptInfo.get(tableName);
 		SQLExpr where = stmt.getWhere();
 		cryptSQLExpr(where, tableName, cryptColumns);
@@ -221,7 +218,7 @@ public class CURDTest {
 				if (right instanceof SQLCharExpr) {
 					SQLName propExpr = (SQLName) left;
 					SQLCharExpr charExpr = (SQLCharExpr) right;
-					String columnName = propExpr.getSimpleName();
+					String columnName = propExpr.getSimpleName().toLowerCase();
 					String cryptType = cryptColumns.get(columnName);
 					String crypted = encrypt(charExpr.getText(), cryptType);
 					charExpr.setText(crypted);
@@ -235,7 +232,7 @@ public class CURDTest {
 			if (inExpr instanceof SQLName) {
 				SQLName propExpr = (SQLName) inExpr;
 				List<SQLExpr> targetList = inListExpr.getTargetList();
-				String columnName = propExpr.getSimpleName();
+				String columnName = propExpr.getSimpleName().toLowerCase();
 				String cryptType = cryptColumns.get(columnName);
 				for (SQLExpr target : targetList) {
 					if (target instanceof SQLCharExpr) {
@@ -248,7 +245,7 @@ public class CURDTest {
 		}
 	}
 	private void encrypt(SQLName sqlName,SQLCharExpr charExpr,Map<String,String> cryptColumns){
-		String columnName = sqlName.getSimpleName();
+		String columnName = sqlName.getSimpleName().toLowerCase();
 		String cryptType = cryptColumns.get(columnName);
 		String crypted = encrypt(charExpr.getText(), cryptType);
 		charExpr.setText(crypted);
