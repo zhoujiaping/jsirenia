@@ -19,7 +19,6 @@ import org.springframework.core.annotation.Order;
  * 在停掉应用的回调里面，比如spring的PreDestroy，比如ServletContextListener的contextDestroyed，
  * 获取NettryClient的静态属性 channelFactory，调用其releaseExternalResource方法。
  * 
- * @author 01375156 2019-04-18
  */
 public class DubboNettyClientResourceReleaser {
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
