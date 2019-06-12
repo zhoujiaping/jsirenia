@@ -17,6 +17,7 @@ public class ResourceUtil {
 	public static final LineHandler C_LANG_LINE_HANDLER = new LineHandler() {
 		@Override
 		public String handle(String line) {
+			//TODO 有可能包含字符串 http://localhost:8080/...  这样会导致bug
 			return line.replaceAll("//.*$", "");
 		}
 	};
