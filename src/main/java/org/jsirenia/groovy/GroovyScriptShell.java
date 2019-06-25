@@ -6,7 +6,7 @@ import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 
 public class GroovyScriptShell {
-	public Object evaluate(File file, Binding binding) {
+	public static Object evaluate(File file, Binding binding) {
 		// Binding binding = new Binding();
 		// binding.setProperty("name", "lufy");
 		GroovyShell groovyShell = new GroovyShell(binding);
@@ -19,7 +19,7 @@ public class GroovyScriptShell {
 		}
 	}
 
-	public Object evaluate(String script, Binding binding) {
+	public static Object evaluate(String script, Binding binding) {
 		GroovyShell groovyShell = new GroovyShell(binding);
 		Object result;
 		try {
@@ -28,5 +28,8 @@ public class GroovyScriptShell {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+	public static void main(String[] args) {
+		
 	}
 }
