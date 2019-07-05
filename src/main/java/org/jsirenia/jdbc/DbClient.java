@@ -25,6 +25,14 @@ public class DbClient {
 	public DbClient(DataSource ds) {
 		this.ds = ds;
 	}
+	private Connection getOrOpenConnection() throws SQLException{
+		Connection conn = connectionHolder.get();
+		if(conn==null||conn.isClosed()){
+			conn = ds.getConnection();
+			connectionHolder.set(conn);
+		}
+		return conn;
+	}
 	private Connection getOrOpenConnection(boolean autoCommit) throws SQLException{
 		Connection conn = connectionHolder.get();
 		if(conn==null||conn.isClosed()){
@@ -115,11 +123,9 @@ public class DbClient {
 		}
 		logger.info("sql=>{}",sql);
 		logger.info("params=>{}",params);
-		Connection conn = connectionHolder.get();
+		Connection conn;
 		try {
-			if(conn==null || conn.isClosed()){
-				throw new RuntimeException("连接未获取或连接已关闭");
-			}
+			conn = getOrOpenConnection();
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
