@@ -1,4 +1,4 @@
-package org.jsirenia.jdbc;
+package com.sfpay.asp.common.test.dbclient;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,17 +13,15 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.sql.DataSource;
 
-import org.jsirenia.bean.Beans;
-import org.jsirenia.string.GenericTokenParser;
-import org.jsirenia.util.Callback.Callback00;
-import org.jsirenia.util.Callback.Callback01;
-import org.jsirenia.util.Callback.Callback10;
-import org.jsirenia.util.Callback.Callback11;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.sfpay.asp.common.test.dbclient.Callback.Callback00;
+import com.sfpay.asp.common.test.dbclient.Callback.Callback01;
+import com.sfpay.asp.common.test.dbclient.Callback.Callback10;
+import com.sfpay.asp.common.test.dbclient.Callback.Callback11;
 
 public class DbClient {
 	private static final Logger logger = LoggerFactory.getLogger(DbClient.class);
@@ -175,8 +173,8 @@ public class DbClient {
 		return withTxInternal(callback);
 	}
 
-	public JSONObject queryOne(String sql) {
-		JSONArray array = query(sql, null);
+	public JSONObject queryOne(String sql,JSONObject params) {
+		JSONArray array = query(sql, params);
 		int size = array.size();
 		if (size == 0) {
 			return null;
@@ -184,6 +182,9 @@ public class DbClient {
 			throw new RuntimeException("查询结果" + size + "条，预期1条");
 		}
 		return array.getJSONObject(0);
+	}
+	public JSONObject queryOne(String sql) {
+		return queryOne(sql,null);
 	}
 
 	/**
