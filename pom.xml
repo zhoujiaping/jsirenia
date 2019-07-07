@@ -307,7 +307,7 @@
 		<profile>
 			<id>product</id>
 			<properties>
-				<profile.properties>product</profile.properties>
+				<profile.properties>file:/product</profile.properties>
 				<profile.product>true</profile.product>
 			</properties>
 		</profile>

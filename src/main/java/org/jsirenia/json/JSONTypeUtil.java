@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.concurrent.ConcurrentMap;
+
 import com.alibaba.fastjson.TypeReference;
 import com.alibaba.fastjson.util.ParameterizedTypeImpl;
 /**
@@ -56,4 +57,23 @@ public class JSONTypeUtil {
         }
         return cachedType;
     }
+	/**
+	 * eg：
+	 * Type type = JSONTypeUtil.createType(new TypeRef<RespData<Object>>(){});
+	 * RespData<Object> respData = JSONObject.parseObject(respBody, type);
+	 * @param ref
+	 * @return
+	 */
+	public static <T> Type createType(TypeRef<T> ref){
+		//获取参数化类型的接口列表，取第一个接口，也就是TypeRef
+		Type genericType = ref.getClass().getGenericInterfaces()[0];
+		ParameterizedType pt = (ParameterizedType) genericType;
+		//获取实际类型，实际类型也是参数化类型。如果不是，那么干嘛要用createType多此一举。
+		Type acType = pt.getActualTypeArguments()[0];
+		pt = (ParameterizedType) acType;
+		return createType(pt);
+	}
+	public static interface TypeRef<T>{
+		
+	}
 }
