@@ -1,5 +1,6 @@
 package org.jsirenia.exception;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
@@ -36,13 +37,11 @@ public class DatabaseExceptionCodeSource implements ExceptionCodeSource{
 	}
 	private Properties loadPropertiesFromDatabase(String module) {
 		return dbClient.withConn(conn->{
-			JSONObject params = new JSONObject();
-			params.put("mobule", module);
-			JSONArray array = dbClient.query("select id,module,code,msg from t_exception_code where module=#{module}", params );
+			List<Map<String, Object>> array = dbClient.queryMap("select id,module,code,msg from t_exception_code where module=#{module}", module );
 			Properties props = new Properties();
 			for(int i=0;i<array.size();i++){
-				JSONObject row = array.getJSONObject(i);
-				props.setProperty(module+"."+row.getString("code"), row.getString("msg"));
+				Map<String, Object> row = array.get(i);
+				props.setProperty(module+"."+row.get("code"), String.valueOf(row.get("msg")));
 			}
 			return props;
 		});
