@@ -17,7 +17,9 @@ public class ResourceUtil {
 	public static final LineHandler C_LANG_LINE_HANDLER = new LineHandler() {
 		@Override
 		public String handle(String line) {
-			//TODO 有可能包含字符串 http://localhost:8080/...  这样会导致bug
+			/*TODO 有可能包含字符串 http://localhost:8080/...  这样会导致bug
+			 * 所以权衡之后，并不支持所有的注释，只支持空白符之后的//
+			 * */
 			return line.replaceAll("//.*$", "");
 		}
 	};
