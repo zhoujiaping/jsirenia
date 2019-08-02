@@ -2,10 +2,12 @@ package org.jsirenia.date;
 
 import java.io.Serializable;
 import java.time.DayOfWeek;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.Period;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
@@ -210,11 +212,15 @@ public class MyDateTime implements  Comparable<MyDateTime>, Serializable {
 		return fromLocalDateTime(dt.withNano(nanoOfSecond));
 	}
 	//第七部分：时间段
-	public long daysBetween(MyDateTime date){
+	public long monthsBetween(MyDateTime date){
+		return Period.between(date.toLocalDate(), dt.toLocalDate()).getMonths();
+	}
+	public long minusAsDays(MyDateTime date){
 		return dt.toLocalDate().toEpochDay()-date.dt.toLocalDate().toEpochDay();
 	}
-	public long secondsBetween(MyDateTime date){
-		return dt.toEpochSecond(zoneOffset)-date.dt.toEpochSecond(zoneOffset);
+	public long minusAsSeconds(MyDateTime date){
+		return Duration.between(date.toInstant(), dt).getSeconds();
+		//or return dt.toEpochSecond(zoneOffset)-date.dt.toEpochSecond(zoneOffset);
 	}
 	//第八部分：比较
 	public boolean isBefore(MyDateTime date){
