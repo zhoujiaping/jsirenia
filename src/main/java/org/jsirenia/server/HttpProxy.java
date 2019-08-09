@@ -1,11 +1,11 @@
 package org.jsirenia.server;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -15,6 +15,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
@@ -32,7 +33,6 @@ import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.google.common.collect.Sets;
@@ -75,8 +75,14 @@ public class HttpProxy {
 				String headerValue = headers.nextElement().toString();
 				Header header = new BasicHeader(headerName, headerValue);
 				reqHeaderString.append(headerName).append(" :").append(headerValue).append("\n");
-				if (headerName.equalsIgnoreCase("Content-Type") && plains.contains(headerValue.toLowerCase())) {
-					isPlainReq = true;
+				if (headerName.equalsIgnoreCase("Content-Type")) {
+					String[] values = headerValue.toLowerCase().split(";");
+					for(int i=0;i<values.length;i++){
+						if(plains.contains(values[i].trim())){
+							isPlainReq = true;
+							break;
+						}
+					}
 				}
 				if(!headerName.equalsIgnoreCase("connection")){
 					headerList.add(header);
@@ -112,7 +118,7 @@ public class HttpProxy {
 			try(InputStream in = request.getInputStream();){
 				HttpEntity entity = null;
 				if(isPlainReq){
-					String body = StreamUtils.copyToString(in, Charset.forName("utf-8"));
+					String body = IOUtils.toString(in,"utf-8");
 					logger.info("请求体：{}",body);
 					entity = new StringEntity(body, "utf-8");
 				}else{
@@ -142,8 +148,14 @@ public class HttpProxy {
 		for (Header header : respHeaders) {
 			response.addHeader(header.getName(), header.getValue());
 			respHeaderString.append(header.getName()).append(" :").append(header.getValue()).append("\n");
-			if (header.getName().equalsIgnoreCase("Content-Type") && plains.contains(header.getValue().toLowerCase())) {
-				isPlainResp = true;
+			if (header.getName().equalsIgnoreCase("Content-Type")) {
+				String[] values = header.getValue().toLowerCase().split(";");
+				for(int i=0;i<values.length;i++){
+					if(plains.contains(values[i].trim())){
+						isPlainResp = true;
+						break;
+					}
+				}
 			}
 		}
 		logger.info("状态行：{}", resp.getStatusLine());
