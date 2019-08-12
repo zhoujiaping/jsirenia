@@ -159,10 +159,10 @@ public class AESCBCUtil {
 		PrivateKey privateKey = pair.getPrivate();
 		PublicKey publicKey = pair.getPublic();
 		// 对AES的密钥加密
-		byte[] ek = RSAUtil.encryptByPrivateKey(key.getBytes("utf-8"), privateKey.getEncoded(), size);
+		byte[] ek = RSAUtil.encryptByPublicKey(key.getBytes("utf-8"), publicKey);
 		System.out.println(Base64.getEncoder().encodeToString(ek));
 		// 解密得到AES的密钥
-		byte[] buf = RSAUtil.decryptByPublicKey(ek, publicKey.getEncoded(), size);
+		byte[] buf = RSAUtil.decryptByPrivateKey(ek,privateKey);
 		System.out.println("===");
 		System.out.println(new String(buf, "utf-8").equals(key));
 

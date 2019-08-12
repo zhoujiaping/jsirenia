@@ -7,20 +7,16 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.Base64;
 
-import org.jsirenia.security.HexUtil;
 import org.jsirenia.security.KeyStoreUtil;
 import org.jsirenia.security.RSAUtil;
 import org.jsirenia.security.SignUtil;
 import org.springframework.util.ResourceUtils;
-
-import com.fasterxml.classmate.util.ResolvedTypeCache.Key;
 
 public class KeyHolder {
 	//public static KeyPair pair;
 	
 	public static PrivateKey privateKey;
 	public static PublicKey publicKey;
-	public static int size = 2048;
 	static{
 			String storepass = "123456";
 			String keypass = "123456";
@@ -46,7 +42,7 @@ public class KeyHolder {
 		String data = "SkCbza7Oz3CN1O6wIeFvDSN/rxMzgsJQ68Ow/vTaqeVF9fZyQHUJ/Q8GNhG1cUN5c0QLJ6Eaj8W4j3mIUSJhafcShd2HGDW8DVbaYMkExnyiOAz5bKbN/yxc97IO10rYt0valpmU3VQ8iqsLfRoc3l5aSQ6G/3qpniKN/y+tbEI2Rp/Ve8+WDCxRV0qfFN//irebMWDzDwZBfSkAOgexZO8XX5JqyR6n0GH/RCQnFJzXLzvFxSdzn6zw39NvOHagp6R6WKkZZcnV3TNzMqmO2cF9bK0JaawnBFSbKVVigLnm2BX1JrB+8JyNCVGPHPVJvbEeAxJuxLyAsYlS6AgN+Q==";
 		pk = KeyHolder.privateKey.getEncoded();
 		System.out.println(Base64.getEncoder().encodeToString(pk));
-		byte[] decrypted = RSAUtil.decryptByPrivateKey(Base64.getDecoder().decode(data), KeyHolder.privateKey.getEncoded(), size);
+		byte[] decrypted = RSAUtil.decryptByPrivateKey(Base64.getDecoder().decode(data), KeyHolder.privateKey);
 		System.out.println(new String(decrypted));
 		
 		String signBase64 = SignUtil.signBase64("147258369", privateKey);

@@ -93,7 +93,7 @@ public class SecurityFilter implements Filter{
 			byte[] encryptData = Base64.getDecoder().decode(base64);//rsa加密的内容
 			byte[] decryptData;
 			try {
-				decryptData = RSAUtil.decryptByPrivateKey(encryptData, KeyHolder.privateKey.getEncoded(), KeyHolder.size);
+				decryptData = RSAUtil.decryptByPrivateKey(encryptData, KeyHolder.privateKey);
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}

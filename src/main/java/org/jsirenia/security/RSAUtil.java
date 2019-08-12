@@ -11,6 +11,8 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.cert.Certificate;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
@@ -24,6 +26,7 @@ import javax.crypto.Cipher;
  */
 public class RSAUtil {
     private static final String ALGOL = "RSA";
+    private static final String PADDING = "RSA/ECB/PKCS1Padding";
 	 /**
     *
     * @param size 密钥长度，单位比特
@@ -54,15 +57,15 @@ public class RSAUtil {
            throw new RuntimeException(e);
        }
    }
-   public static PublicKey getPublicKey(String algol,byte[] encodedKey) throws Exception{
-	   KeyFactory keyFactory = KeyFactory.getInstance(algol);//algol例如RSA
+   public static PublicKey getPublicKey(byte[] encodedKey) throws Exception{
+	   KeyFactory keyFactory = KeyFactory.getInstance(ALGOL);//algol例如RSA
        PublicKey pubKey = keyFactory.generatePublic(new X509EncodedKeySpec(encodedKey));
        return pubKey;
    }
-   public static PrivateKey getPrivateKey(String algol,byte[] encodedKey) throws Exception{
+   public static PrivateKey getPrivateKey(byte[] encodedKey) throws Exception{
 	PKCS8EncodedKeySpec priPKCS8 = new PKCS8EncodedKeySpec(encodedKey);
 		//algol例如RSA
-       KeyFactory keyf = KeyFactory.getInstance(algol);
+       KeyFactory keyf = KeyFactory.getInstance(ALGOL);
        PrivateKey priKey = keyf.generatePrivate(priPKCS8);
        return priKey;
    }
@@ -78,37 +81,6 @@ public class RSAUtil {
    }
 
     /**
-     * 私钥加密
-     *
-     * @param data 待加密数据
-     * @param key       密钥
-     * @param size 密钥长度，单位比特
-     * @return byte[] 加密数据
-     */
-    public static byte[] encryptByPrivateKey(byte[] data, byte[] key,int size) throws Exception {
-
-        //取得私钥
-        PKCS8EncodedKeySpec pkcs8KeySpec = new PKCS8EncodedKeySpec(key);
-        KeyFactory keyFactory = KeyFactory.getInstance(ALGOL);
-        //生成私钥
-        PrivateKey privateKey = keyFactory.generatePrivate(pkcs8KeySpec);
-        //数据加密
-        Cipher cipher = Cipher.getInstance(keyFactory.getAlgorithm());
-        cipher.init(Cipher.ENCRYPT_MODE, privateKey);
-        int blockSize = encryptBlockSize(size);
-        int begin = 0;
-        int end = begin+blockSize;
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        while(end<data.length){
-            bos.write(cipher.doFinal(data,begin,blockSize));
-            begin = end;
-            end += blockSize;
-        }
-        bos.write(cipher.doFinal(data,begin,data.length-begin));//Data must not be longer than 53 bytes
-        return bos.toByteArray();
-    }
-
-    /**
      *
      * @param size 密钥长度，单位比特
      * @return 加密块大小
@@ -121,38 +93,6 @@ public class RSAUtil {
         return size/8;
     }
     /**
-     * 公钥解密
-     *
-     * @param data 待解密数据
-     * @param key  密钥
-     * @param size 密钥长度，单位比特
-     * @return byte[] 解密数据
-     */
-    public static byte[] decryptByPublicKey(byte[] data, byte[] key,int size) throws Exception {
-
-        //实例化密钥工厂
-        KeyFactory keyFactory = KeyFactory.getInstance(ALGOL);
-        //初始化公钥
-        //密钥材料转换
-        X509EncodedKeySpec x509KeySpec = new X509EncodedKeySpec(key);
-        //产生公钥
-        PublicKey pubKey = keyFactory.generatePublic(x509KeySpec);
-        //数据解密
-        Cipher cipher = Cipher.getInstance(keyFactory.getAlgorithm());
-        cipher.init(Cipher.DECRYPT_MODE, pubKey);
-        int blockSize = decryptBlockSize(size);
-        int begin = 0;
-        int end = begin+blockSize;
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        while(end<data.length){
-            bos.write(cipher.doFinal(data,begin,blockSize));
-            begin = end;
-            end += blockSize;
-        }
-        bos.write(cipher.doFinal(data,begin,data.length-begin));//Data must not be longer than 53 bytes
-        return bos.toByteArray();
-    }
-    /**
      * 公钥加密
      *
      * @param data 待加密数据
@@ -160,20 +100,13 @@ public class RSAUtil {
      * @param size 密钥长度，单位比特
      * @return byte[] 加密数据
      */
-    public static byte[] encryptByPublicKey(byte[] data, byte[] key,int size) throws Exception {
-
-        //实例化密钥工厂
-        KeyFactory keyFactory = KeyFactory.getInstance(ALGOL);
-        //初始化公钥
-        //密钥材料转换
-        X509EncodedKeySpec x509KeySpec = new X509EncodedKeySpec(key);
-        //产生公钥
-        PublicKey pubKey = keyFactory.generatePublic(x509KeySpec);
-
+    public static byte[] encryptByPublicKey(byte[] data,PublicKey pubKey) throws Exception {
         //数据加密
-        Cipher cipher = Cipher.getInstance(keyFactory.getAlgorithm());
+        Cipher cipher = Cipher.getInstance(PADDING);
         cipher.init(Cipher.ENCRYPT_MODE, pubKey);
-        int blockSize = encryptBlockSize(size);
+        RSAPublicKey rsaPk = (RSAPublicKey) pubKey;
+        int keySize = rsaPk.getModulus().bitLength();
+        int blockSize = encryptBlockSize(keySize);
         int begin = 0;
         int end = begin+blockSize;
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -194,16 +127,13 @@ public class RSAUtil {
      * @param size 密钥长度，单位比特
      * @return byte[] 解密数据
      */
-    public static byte[] decryptByPrivateKey(byte[] data, byte[] key,int size) throws Exception {
-        //取得私钥
-        PKCS8EncodedKeySpec pkcs8KeySpec = new PKCS8EncodedKeySpec(key);
-        KeyFactory keyFactory = KeyFactory.getInstance(ALGOL);
-        //生成私钥
-        PrivateKey privateKey = keyFactory.generatePrivate(pkcs8KeySpec);
+    public static byte[] decryptByPrivateKey(byte[] data, PrivateKey privateKey) throws Exception {
         //数据解密
-        Cipher cipher = Cipher.getInstance(keyFactory.getAlgorithm());
+        Cipher cipher = Cipher.getInstance(PADDING);
         cipher.init(Cipher.DECRYPT_MODE, privateKey);
-        int blockSize = decryptBlockSize(size);
+        RSAPrivateKey rsaPk = (RSAPrivateKey) privateKey;
+        int keySize = rsaPk.getModulus().bitLength();
+        int blockSize = decryptBlockSize(keySize);
         int begin = 0;
         int end = begin+blockSize;
         ByteArrayOutputStream bos = new ByteArrayOutputStream();

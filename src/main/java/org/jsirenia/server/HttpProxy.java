@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -15,7 +16,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
@@ -33,6 +33,7 @@ import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.google.common.collect.Sets;
@@ -118,7 +119,7 @@ public class HttpProxy {
 			try(InputStream in = request.getInputStream();){
 				HttpEntity entity = null;
 				if(isPlainReq){
-					String body = IOUtils.toString(in,"utf-8");
+					String body = StreamUtils.copyToString(in, Charset.forName("utf-8"));
 					logger.info("请求体：{}",body);
 					entity = new StringEntity(body, "utf-8");
 				}else{
