@@ -35,13 +35,14 @@ public class MyHttpProxyTest {
 	public static void main(String[] args)throws IOException {
 		// 创建客户端
 		// 设置代理IP、端口、协议（请分别替换）
-		HttpHost proxy = new HttpHost("localhost", 1337, "http");
+		//HttpHost proxy = new HttpHost("localhost", 1337, "http");
+		HttpHost proxy = new HttpHost("www.baidu.com", 80, "https");
 		// 把代理设置到请求配置
 		RequestConfig defaultRequestConfig = RequestConfig.custom().setProxy(proxy).build();
 
 		// 实例化CloseableHttpClient对象
-		//CloseableHttpClient httpclient = HttpClients.custom().setDefaultRequestConfig(defaultRequestConfig).build();
-		CloseableHttpClient httpclient = HttpClients.createMinimal();
+		CloseableHttpClient httpclient = HttpClients.custom().setDefaultRequestConfig(defaultRequestConfig).build();
+		//CloseableHttpClient httpclient = HttpClients.createMinimal();
 		// 创建服务端
 		ServerBootstrap bs = ServerBootstrap.bootstrap().setListenerPort(8080);
 		HttpRequestHandler handler = (request,response,context)->{
@@ -57,7 +58,8 @@ public class MyHttpProxyTest {
 			InputStream in = new ByteArrayInputStream(buf);
 			OutputStream out = new FileOutputStream("d:/hessian.in.txt");
 			StreamUtils.copy(in, out );*/
-			CloseableHttpResponse resp = httpclient.execute(new HttpHost(request.getHeaders("Host")[0].getValue()), request);
+			CloseableHttpResponse resp = httpclient.execute(proxy, request);
+			//CloseableHttpResponse resp = httpclient.execute(new HttpHost(request.getHeaders("Host")[0].getValue()), request);
 			logger.info("响应=>{}", resp);
 			response.setStatusLine(resp.getStatusLine());
 			response.setHeaders(resp.getAllHeaders());
