@@ -7,6 +7,7 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.Base64;
 
+import org.jsirenia.http.URLUtil;
 import org.jsirenia.security.KeyStoreUtil;
 import org.jsirenia.security.RSAUtil;
 import org.jsirenia.security.SignUtil;
