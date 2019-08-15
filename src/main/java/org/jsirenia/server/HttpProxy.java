@@ -44,8 +44,7 @@ public class HttpProxy {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	private static final Set<String> plains = Sets.newHashSet("application/json", "application/xml", "text/plain",
 			"application/x-www-form-urlencoded");
-	@Resource
-	private CloseableHttpClient httpClient;
+	private CloseableHttpClient httpClient = HttpsClients.createDefault();
 	private static final String TARGET_HOST_HEADER = "X-TARGET-HOST";
 	private static final String THIS_MAPPING = "/proxy/";
 	//private static final Pattern pattern = Pattern.compile("");
