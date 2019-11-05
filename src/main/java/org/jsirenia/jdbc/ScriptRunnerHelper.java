@@ -14,7 +14,6 @@ import org.springframework.util.FileCopyUtils;
 import org.springframework.util.ResourceUtils;
 /**
  * 可以用于运行一个sql文件，测试的时候方便初始化数据。
- * @author 01375156 
  */
 public class ScriptRunnerHelper {
 	private Connection connection;

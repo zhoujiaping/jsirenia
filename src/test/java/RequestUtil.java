@@ -35,8 +35,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 /**
  * 
- * @author 01375156
- *
  */
 public class RequestUtil {
 	private static final Logger logger = LoggerFactory.getLogger(RequestUtil.class);
