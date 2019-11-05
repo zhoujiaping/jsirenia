@@ -1,10 +1,10 @@
 //https://blog.csdn.net/coolcoffee168/article/details/8128321
-@Grab(group='org.apache.commons', module='commons-email', version='1.5')
-
+package groovyscript
 import org.apache.commons.mail.DefaultAuthenticator;
 import org.apache.commons.mail.EmailAttachment;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.MultiPartEmail;
+@Grab(group='org.apache.commons', module='commons-email', version='1.5')
 
 EmailAttachment attachment = new EmailAttachment();
 attachment.setPath("email.groovy");

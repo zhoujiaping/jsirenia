@@ -8,7 +8,7 @@ import org.jsirenia.exception.ServiceException;
 /**
  *
  在logback-inc.xml中添加
- <appender name="myLogbackAppender" class="com.sf.exception.MyLogbackAppender">
+ <appender name="myLogbackAppender" class="com.xx.exception.MyLogbackAppender">
 		<filter class="ch.qos.logback.classic.filter.LevelFilter">
 			<level>ERROR</level>
 			<onMatch>ACCEPT</onMatch> 

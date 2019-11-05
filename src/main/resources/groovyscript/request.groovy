@@ -1,9 +1,6 @@
+package groovyscript
 
 //https://blog.csdn.net/ice00mouse/article/details/41647897
-@Grab(group='org.apache.httpcomponents', module='httpclient', version='4.2.2')
-
-@Grab(group='org.codehaus.groovy.modules.http-builder', module='http-builder', version='0.7')
-
 import groovyx.net.http.HTTPBuilder
 //import groovyx.net.http.ContentType // this doesn't import ContentType
 //import groovyx.net.http.Method // this doesn't import Method
@@ -16,7 +13,9 @@ import static groovyx.net.http.ContentType.*
 import static groovyx.net.http.Method.*
 
 
+@Grab(group='org.apache.httpcomponents', module='httpclient', version='4.2.2')
 
+@Grab(group='org.codehaus.groovy.modules.http-builder', module='http-builder', version='0.7')
 
 def http = new HTTPBuilder()
 http.request( 'https://blog.csdn.net', GET, TEXT ) { req ->

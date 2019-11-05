@@ -3,5 +3,5 @@ dubboProducerLogFilter=org.jsirenia.dubbo.filter..DubboProducerLogFilter
 dubboConsumerMockFilter=org.jsirenia.dubbo.filter.DubboConsumerMockFilter
 dubboProducerMockFilter=org.jsirenia.dubbo.filter.DubboProducerMockFilter
 
-producerExceptionFilter=com.sf.exception.ProducerExceptionFilter
+producerExceptionFilter=com.xx.exception.ProducerExceptionFilter
 

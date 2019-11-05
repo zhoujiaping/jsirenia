@@ -1,4 +1,4 @@
-1¡¢Ìí¼ÓÒÀÀµ
+1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 <dependency>
 	<groupId>org.eclipse.jetty</groupId>
 	<artifactId>jetty-server</artifactId>
@@ -12,18 +12,18 @@
 	<scope>test</scope>
 </dependency>
 
-2¡¢Ìí¼ÓÆô¶¯Àà
+2ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 public class JettySpringMVCStart {
 
 	public static final int PORT = 8080;
 
-	// web·ÃÎÊµÄ¸ùÂ·¾¶http://ip:port/£¬Ïàµ±ÓÚÏîÄ¿Ãû,/¼´ºöÂÔÏîÄ¿Ãû
-	public static final String CONTEXT_PATH= "/jyd-credit";
+	// webï¿½ï¿½ï¿½ÊµÄ¸ï¿½Â·ï¿½ï¿½http://ip:port/ï¿½ï¿½ï¿½àµ±ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½,/ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½
+	public static final String CONTEXT_PATH= "/xxx";
 
 	private static final String DEFAULT_WEBAPP_PATH = "src/main/webapp";
 
 	public static Server createServerIn(int port) {
-		// ´´½¨Server
+		// ï¿½ï¿½ï¿½ï¿½Server
 		Server server = new Server(port);
 
 		WebAppContext webContext = new WebAppContext(DEFAULT_WEBAPP_PATH, CONTEXT_PATH);
@@ -44,9 +44,9 @@ public class JettySpringMVCStart {
 	}
 }
 
-3¡¢Ö´ÐÐmain·½·¨Æô¶¯
+3ï¿½ï¿½Ö´ï¿½ï¿½mainï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
-¾­²âÊÔ£¬·¢ÏÖÕâÖÖ·½·¨Æô¶¯±ÈÓÃtomcatÆô¶¯¿ì30Ãë×óÓÒ¡£
-Èç¹ûÒª²¿Êð¶à¸öcontext£¬Ä¿Ç°»¹Ã»ÑÐ¾¿ÔõÃ´Ö§³Ö¡£
+ï¿½ï¿½ï¿½ï¿½ï¿½Ô£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½tomcatï¿½ï¿½ï¿½ï¿½ï¿½ï¿½30ï¿½ï¿½ï¿½ï¿½ï¿½Ò¡ï¿½
+ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½contextï¿½ï¿½Ä¿Ç°ï¿½ï¿½Ã»ï¿½Ð¾ï¿½ï¿½ï¿½Ã´Ö§ï¿½Ö¡ï¿½
 		
 		

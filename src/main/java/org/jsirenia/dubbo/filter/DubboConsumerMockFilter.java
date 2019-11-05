@@ -21,10 +21,6 @@ import com.alibaba.fastjson.JSONObject;
  * stub可能直接返回结果，也可能请求真正的producer，然后将真正的结果返回给consumer。
  */
 public class DubboConsumerMockFilter implements Filter {
-	/*private static ApplicationConfig application = new ApplicationConfig();
-	static{
-		application.setName("jyd-repayment");
-	}*/
 	static StubService stub;
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 	@Override

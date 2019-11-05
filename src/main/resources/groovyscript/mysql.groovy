@@ -5,9 +5,9 @@ import groovy.sql.Sql
 @Grab('mysql:mysql-connector-java:5.1.46')
 class SqlDatabase {
     static Sql setUpDatabase() {
-        def url = 'jdbc:mysql://10.118.242.13:3306/jyd?useUnicode=true&characterEncoding=UTF-8'
-        def user = 'jyd'
-        def password = 'jyd'
+        def url = 'jdbc:mysql://xx:3306/xx?useUnicode=true&characterEncoding=UTF-8'
+        def user = 'xx'
+        def password = 'xx'
         def driver = 'com.mysql.jdbc.Driver'
         def sql = Sql.newInstance(url, user, password, driver)
         return sql
@@ -31,7 +31,7 @@ sql.eachRow('show tables',{
         }
         //println row
         (0..<columnCount).each({i->
-            if(row[i]!=null && row[i].class==String.class &&row[i].contains('����')){
+            if(row[i]!=null && row[i].class==String.class &&row[i].contains('xx')){
                 println "${table}->${row}"
             }
         })
