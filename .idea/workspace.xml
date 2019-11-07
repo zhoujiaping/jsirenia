@@ -5,15 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8e3df83b-2cb9-4e0d-9321-ddf5159d1bf9" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/jsirenia/data/DataChecker.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/jsirenia/dubbo/Desensitizer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/jsirenia/dubbo/DubboConsumerLogFilter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/jsirenia/dubbo/DubboProducerLogFilter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/jsirenia/dubbo/FastJsonLogUtil.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/jsirenia/dubbo/StringExtUtil.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/jsirenia/druid/DruidDataSourceFactory.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/jsirenia/jdbc/ScriptRunnerHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/jsirenia/jdbc/ScriptRunnerHelper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/RequestUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/RequestUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/jsirenia.iml" beforeDir="false" afterPath="$PROJECT_DIR$/jsirenia.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -43,7 +38,7 @@
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="SONARLINT_PRECOMMIT_ANALYSIS" value="false" />
     <property name="SearchEverywhereHistoryKey" value="finished&#9;null&#9;null&#10;getMethodbyname&#9;PSI&#9;JAVA://org.jsirenia.reflect.MethodUtil#getMethodByName" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/java/org/jsirenia/dubbo" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/resources/groovy" />
     <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
   </component>
   <component name="RecentsManager">
@@ -53,11 +48,11 @@
       <recent name="" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\git-repo\jsirenia\src\main\resources\groovy" />
+      <recent name="D:\git-repo\jsirenia\src\main\java\org\jsirenia\druid" />
       <recent name="D:\git-repo\jsirenia\src\main\java\org\jsirenia\dubbo" />
       <recent name="D:\git-repo\jsirenia\src\test\java" />
-      <recent name="D:\git-repo\jsirenia\src\main\resources\groovy" />
       <recent name="D:\git-repo\jsirenia\src\test\java\druid\parser" />
-      <recent name="D:\git-repo\jsirenia\src\main\java\org\jsirenia\dubbodemo" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -194,7 +189,21 @@
       <option name="project" value="LOCAL" />
       <updated>1572949198934</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Default Changelist">
+      <created>1572950671173</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1572950671173</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Default Changelist">
+      <created>1573020960660</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1573020960660</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TestHistory">

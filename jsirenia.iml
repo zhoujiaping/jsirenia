@@ -128,5 +128,7 @@
     <orderEntry type="library" name="Maven: org.apache.commons:commons-compress:1.19" level="project" />
     <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpmime:4.5.2" level="project" />
     <orderEntry type="library" name="Maven: commons-fileupload:commons-fileupload:1.2.2" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.ivy:ivy:2.4.0" level="project" />
+    <orderEntry type="library" name="Maven: com.jcraft:jsch:0.1.54" level="project" />
   </component>
 </module>
