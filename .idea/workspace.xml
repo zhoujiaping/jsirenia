@@ -5,10 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8e3df83b-2cb9-4e0d-9321-ddf5159d1bf9" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/jsirenia/druid/DruidDataSourceFactory.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/jsirenia.iml" beforeDir="false" afterPath="$PROJECT_DIR$/jsirenia.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/groovy/svnIgnore.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/groovy/svnIgnore.groovy" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -38,7 +36,7 @@
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="SONARLINT_PRECOMMIT_ANALYSIS" value="false" />
     <property name="SearchEverywhereHistoryKey" value="finished&#9;null&#9;null&#10;getMethodbyname&#9;PSI&#9;JAVA://org.jsirenia.reflect.MethodUtil#getMethodByName" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/resources/groovy" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/resources/groovy-demo" />
     <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
   </component>
   <component name="RecentsManager">
@@ -67,7 +65,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.Defer">
+  <component name="RunManager" selected="Groovy.svnIgnore">
     <configuration name="Defer" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="org.jsirenia.defer.Defer" />
       <module name="jsirenia" />
@@ -93,6 +91,17 @@
       <setting name="vmparams" value="" />
       <setting name="params" value="" />
       <setting name="workDir" value="file://D:/user/01375156/桌面/groovy/云信" />
+      <setting name="debug" value="false" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="svnIgnore" type="GroovyScriptRunConfiguration" factoryName="Groovy" temporary="true">
+      <module name="jsirenia" />
+      <setting name="path" value="file://$PROJECT_DIR$/src/main/resources/groovy/svnIgnore.groovy" />
+      <setting name="vmparams" value="" />
+      <setting name="params" value="" />
+      <setting name="workDir" value="file://$PROJECT_DIR$/src/main/resources/groovy" />
       <setting name="debug" value="false" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -138,11 +147,13 @@
     <list>
       <item itemvalue="Application.Defer" />
       <item itemvalue="Groovy.UpdateOverDueFee" />
+      <item itemvalue="Groovy.svnIgnore" />
       <item itemvalue="JUnit.JSONTest.test1" />
       <item itemvalue="JUnit.JSONTest" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Groovy.svnIgnore" />
         <item itemvalue="Application.Defer" />
         <item itemvalue="Groovy.UpdateOverDueFee" />
         <item itemvalue="JUnit.JSONTest.test1" />
@@ -203,7 +214,14 @@
       <option name="project" value="LOCAL" />
       <updated>1573020960660</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Default Changelist">
+      <created>1573089004640</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1573089004640</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TestHistory">
