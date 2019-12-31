@@ -5,8 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8e3df83b-2cb9-4e0d-9321-ddf5159d1bf9" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/groovy/svnIgnore.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/groovy/svnIgnore.groovy" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -36,7 +36,7 @@
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="SONARLINT_PRECOMMIT_ANALYSIS" value="false" />
     <property name="SearchEverywhereHistoryKey" value="finished&#9;null&#9;null&#10;getMethodbyname&#9;PSI&#9;JAVA://org.jsirenia.reflect.MethodUtil#getMethodByName" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/resources/groovy-demo" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
   </component>
   <component name="RecentsManager">
@@ -46,11 +46,11 @@
       <recent name="" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\git-repo\jsirenia\src\main\resources\groovy-demo" />
       <recent name="D:\git-repo\jsirenia\src\main\resources\groovy" />
       <recent name="D:\git-repo\jsirenia\src\main\java\org\jsirenia\druid" />
       <recent name="D:\git-repo\jsirenia\src\main\java\org\jsirenia\dubbo" />
       <recent name="D:\git-repo\jsirenia\src\test\java" />
-      <recent name="D:\git-repo\jsirenia\src\test\java\druid\parser" />
     </key>
   </component>
   <component name="RunDashboard">

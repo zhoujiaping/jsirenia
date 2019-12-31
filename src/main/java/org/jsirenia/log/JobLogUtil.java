@@ -1,5 +1,7 @@
 package org.jsirenia.log;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.IntUnaryOperator;
@@ -17,7 +19,7 @@ import org.springframework.util.StringUtils;
  *
  */
 public class JobLogUtil {
-	private static final Logger logger = LoggerFactory.getLogger(com.sfpay.msfs.jyd.common.util.JobLogUtil.class);
+	private static final Logger logger = LoggerFactory.getLogger(JobLogUtil.class);
 	private static AtomicInteger taskid = new AtomicInteger(0);
 	private static AtomicInteger dataid = new AtomicInteger(0);
 	private static IntUnaryOperator updateFunction = operand -> {
@@ -27,7 +29,7 @@ public class JobLogUtil {
 		return operand + 1;
 	};
 	private static final String UID_KEY = "uid";
-	private static final String OUID_KEY = com.sfpay.msfs.jyd.common.util.JobLogUtil.class.getSimpleName() + "-uid";
+	private static final String OUID_KEY = JobLogUtil.class.getSimpleName() + "-uid";
 	private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
 
 	/**
