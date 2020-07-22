@@ -19,6 +19,8 @@ import org.apache.http.protocol.ResponseDate;
 import org.apache.http.protocol.ResponseServer;
 import org.apache.http.protocol.UriHttpRequestHandlerMapper;
 
+import javax.servlet.http.HttpServletRequest;
+
 public class TomcatStarter {
 	public static void main(String[] args) throws IOException {
 		ServerBootstrap bs = ServerBootstrap.bootstrap().setListenerPort(8080);

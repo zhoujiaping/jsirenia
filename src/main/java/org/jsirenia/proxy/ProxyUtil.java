@@ -11,6 +11,7 @@ import org.jsirenia.util.Callback.Callback31;
 import org.springframework.cglib.proxy.Enhancer;
 import org.springframework.cglib.proxy.MethodInterceptor;
 import org.springframework.cglib.proxy.MethodProxy;
+import org.springframework.objenesis.ObjenesisHelper;
 
 public class ProxyUtil {
 	/**
@@ -23,12 +24,12 @@ public class ProxyUtil {
 		Enhancer enhancer = new Enhancer();
 		enhancer.setSuperclass(superclass);
 		enhancer.setCallback(methodInterceptor);
-		Object proxyObj = enhancer.create();
+		//Object proxyObj = enhancer.create();
+        Object proxyObj = ObjenesisHelper.newInstance(enhancer.createClass());
 		return (T) proxyObj;
 	}
 	/**
 	 * 根据java对象创建cblib代理，注意，intercept方法的第一个参数是被代理对象。
-	 * @param target
 	 * @param cb
 	 * @return
 	 */

@@ -4,7 +4,6 @@ import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
-import com.sfpay.msfs.jyd.common.info.FtpConnParam;
 import org.apache.commons.pool2.BasePooledObjectFactory;
 import org.apache.commons.pool2.PooledObject;
 import org.apache.commons.pool2.impl.DefaultPooledObject;
@@ -28,12 +27,12 @@ public class SftpClientFactory extends BasePooledObjectFactory<SftpClient> {
         this.sshConfig.put("StrictHostKeyChecking", "no");
         this.sshConfig.putAll(sshConfig);
     }
-    public SftpClientFactory(FtpConnParam param){
+    public SftpClientFactory(String host,int port,String username,String password){
         this.sshConfig.put("StrictHostKeyChecking", "no");
-        this.sshConfig.put("host",String.valueOf(param.getHost()));
-        this.sshConfig.put("port",String.valueOf(param.getPort()));
-        this.sshConfig.put("username",String.valueOf(param.getUserName()));
-        this.sshConfig.put("password",String.valueOf(param.getPassword()));
+        this.sshConfig.put("host",host);
+        this.sshConfig.put("port",port+"");
+        this.sshConfig.put("username",username);
+        this.sshConfig.put("password",password);
     }
     /**
      * 创建一个{@link SftpClient}实例

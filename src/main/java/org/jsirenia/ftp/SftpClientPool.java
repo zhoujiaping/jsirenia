@@ -1,9 +1,9 @@
 package org.jsirenia.ftp;
 
-import com.sfpay.msfs.jyd.common.util.Callbacks;
 import org.apache.commons.pool2.impl.AbandonedConfig;
 import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
+import org.jsirenia.util.Callback;
 
 /**
  * sftp连接池
@@ -29,7 +29,7 @@ public class SftpClientPool extends GenericObjectPool<SftpClient> {
     public SftpClientPool(SftpClientFactory factory, GenericObjectPoolConfig<SftpClient> config, AbandonedConfig abandonedConfig) {
         super(factory, config, abandonedConfig);
     }
-    public void doWithSftpClient(Callbacks.Callback10<SftpClient> cb){
+    public void doWithSftpClient(Callback.Callback10<SftpClient> cb){
         SftpClient client = null;
         try{
             client = borrowObject(5000);
@@ -42,7 +42,7 @@ public class SftpClientPool extends GenericObjectPool<SftpClient> {
             }
         }
     }
-    public <T> T doWithSftpClient(Callbacks.Callback11<T,SftpClient> cb){
+    public <T> T doWithSftpClient(Callback.Callback11<T,SftpClient> cb){
         SftpClient client = null;
         try{
             client = borrowObject(5000);

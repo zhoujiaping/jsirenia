@@ -19,14 +19,6 @@ import java.util.Vector;
 import java.util.stream.Collectors;
 
 /**
- * ftp服务器是linux操作系统，不支持windows操作系统的ftp服务器。
- * 为了测试方便，客户端可以是linux或者windows操作系统，一般服务器是linux这很容易做到。
- * 第一原则：安全
- * 所以，为了安全起见，所有文件路径均采用绝对路径，不支持相对路径(踩过相对路径坑的同学都知道)。
- * 不提供相对通用的操作（比如delete自动判断是文件还是目录，如果是目录就删除目录下的所有文件然后删除目录）。
- * 如果需要其他方法，请自行添加，并且写测试用例。
- *
- * @author 01375156
  */
 public class SftpClient implements Closeable {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -35,55 +27,6 @@ public class SftpClient implements Closeable {
     public SftpClient(ChannelSftp channel) {
         this.channel = channel;
     }
-
-    /**
-     * 上传文件,将指定文件上传到sftp指定目录,文件名与原文件名一致
-     * 建议统一使用绝对路径
-     *
-     * @param fromFile 要上传的文件, 如 c:\\upload\\test1.txt
-     * @param toDir    上传到sftp的目标目录, 如:/upload/test/test222
-     */
-    /*public void uploadToDir(String fromFile, String toDir) throws SftpException {
-        if (fromFile == null) {
-            throw new IllegalArgumentException("fromFile can't be null");
-        }
-        if (toDir == null) {
-            throw new IllegalArgumentException("toDir can't be null");
-        }
-        fromFile = winPathToLinuxPath(fromFile);
-        toDir = winPathToLinuxPath(toDir);
-        File file = new File(fromFile);
-        if (!file.exists() || !file.isFile() || !file.canRead()) {
-            throw new RuntimeException("文件不存在或不可读取:" + fromFile);
-        }
-        // 创建目标文件夹
-        mkdirs(toDir);
-        channel.put(file.getAbsolutePath(), toDir);
-    }*/
-
-    /**
-     * 上传文件为目标文件
-     *
-     * @param fromFile 要上传的文件, 如 c:\\upload\\test1.txt
-     * @param toFile   上传为sftp的目标文件, 如:/upload/test/test222.txt
-     */
-    /*public void uploadAsFile(String fromFile, String toFile) throws SftpException, IOException {
-        if (fromFile == null) {
-            throw new IllegalArgumentException("fromFile can't be null");
-        }
-        if (toFile == null) {
-            throw new IllegalArgumentException("toFile can't be null");
-        }
-        fromFile = winPathToLinuxPath(fromFile);
-        toFile = winPathToLinuxPath(toFile);
-        File file = new File(fromFile);
-        if (!file.exists() || !file.isFile() || !file.canRead()) {
-            throw new RuntimeException("文件不存在或不可读取:" + fromFile);
-        }
-        try (InputStream inputStream = new BufferedInputStream(new FileInputStream(file))) {
-            uploadAsFile(inputStream, toFile);
-        }
-    }*/
 
     /**
      * 上传文件, 将输入流上传为sftp指定文件

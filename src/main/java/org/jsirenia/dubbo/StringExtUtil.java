@@ -1,20 +1,23 @@
+/*
 package org.jsirenia.dubbo;
 
-import org.apache.commons.lang3.StringUtils;
-
+*/
 /**
  * 
  *
- */
+ *//*
+
 public class StringExtUtil {
 	public static String overlayPwd(String pwd) {
 		return "";
 	}
-	/**
+	*/
+/**
 	 * 证件号脱敏，只展示前3后4位。
 	 * @param certifyNo
 	 * @return
-	 */
+	 *//*
+
 	public static String overlayCertifyNo(String certifyNo) {
 		if(certifyNo==null){
 			return null;
@@ -29,10 +32,12 @@ public class StringExtUtil {
 		int len = mobileNo.length();
 		return StringUtils.overlay(mobileNo, StringUtils.repeat("*", 7), len-11, len-4);
 	}
-	/**
+	*/
+/**
 	 * @param name 中文姓名
 	 * @return
-	 */
+	 *//*
+
 	public static String overlayUserNameCN(String name) {
 		if(name==null){
 			return null;
@@ -53,3 +58,4 @@ public class StringExtUtil {
 		System.out.println(overlayUserNameCN("方便面"));
 	}
 }
+*/
