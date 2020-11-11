@@ -4,7 +4,7 @@
  * 有了这个脚本，可以将它放在代码库里面，每次只需要修改一下projectPath，然后执行一下就可以了。
  */
 
-def projectPath = "D:\\svn-repo\\jyd\\branches\\1944-20191018(jyd)"
+def projectPath = "D:"
 
 if(projectPath.contains("trunk")){
     println "don't run this on trunk!"
