@@ -8,11 +8,14 @@
       <change afterPath="$PROJECT_DIR$/src/main/java/org/jsirenia/log/JsonLogUtil.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/src/main/java/org/jsirenia/util/ExceptionUtils.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/src/main/java/org/jsirenia/util/StringExtUtils.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/jsirenia/util/WebUtils.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/src/main/java/org/jsirenia/util/ZipUtils.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_commons_commons_pool2_2_0.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/jsirenia.iml" beforeDir="false" afterPath="$PROJECT_DIR$/jsirenia.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/groovy-demo/svnIgnore.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/groovy-demo/svnIgnore.groovy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/groovy/svnIgnore.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/groovy/svnIgnore.groovy" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />

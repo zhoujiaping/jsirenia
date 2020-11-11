@@ -15,15 +15,11 @@ def parse(String xml){
 def xml = '''
 <beans xmlns="http://www.springframework.org/schema/beans"
 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
-xmlns:dubbo-proxy="http://www.sf-pay.com/schema/dubbo-proxy"
 xmlns:context="http://www.springframework.org/schema/context" xmlns:p="http://www.springframework.org/schema/p"
-xmlns:monitor="http://www.sf-pay.com/schema/monitor"
 xsi:schemaLocation="
     http://www.springframework.org/schema/beans  http://www.springframework.org/schema/beans/spring-beans.xsd
     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
-    http://www.sf-pay.com/schema/dubbo-proxy http://www.sf-pay.com/schema/framework2-dubbo-proxy.xsd
     http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd
-    http://www.sf-pay.com/schema/monitor http://www.sf-pay.com/schema/monitor/framework2-monitor.xsd
 ">
 
     <!-- 配置系统应用名称 --> 
