@@ -22,7 +22,7 @@ public class ZipUtils {
         }
     }
 
-    public static void unZip(InputStream input, Callback.Callback20E<String,ZipInputStream> callback){
+    public static void unZip(InputStream input, Callback.Callback20e<String,ZipInputStream> callback){
 	    try(ZipInputStream zis = new ZipInputStream(input)){
             ZipEntry entry = zis.getNextEntry();
             callback.apply(entry.getName(),zis);

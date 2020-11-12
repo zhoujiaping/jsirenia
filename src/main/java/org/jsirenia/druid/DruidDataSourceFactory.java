@@ -4,15 +4,13 @@ import java.util.Properties;
 
 import javax.sql.DataSource;
 
-import org.apache.ibatis.datasource.DataSourceFactory;
-
 import com.alibaba.druid.pool.DruidDataSource;
 
 /**
  * 用来配置mybatis的configuration.xml
  * 			<dataSource type="xxx.DruidDataSourceFactory">
  */
-public class DruidDataSourceFactory implements DataSourceFactory{
+/*public class DruidDataSourceFactory implements DataSourceFactory {
 	private volatile DruidDataSource ds;
 	private Properties props;
 	@Override
@@ -38,4 +36,4 @@ public class DruidDataSourceFactory implements DataSourceFactory{
 		return ds;
 	}
 
-}
+}*/

@@ -4,6 +4,10 @@ package org.jsirenia.util;
  * 写在一个类中的好处是，代码移动的时候，不需要逐个修改package，只要改一次就行。
  */
 public class Callback {
+    @FunctionalInterface
+    public interface Callback00e{
+        public void apply() throws Exception;
+    }
     /**
      * 0个入参，没有返回值
      */
@@ -17,6 +21,10 @@ public class Callback {
      */
     @FunctionalInterface
     public interface Callback01<T>{
+        public T apply() throws Exception;
+    }
+    @FunctionalInterface
+    public interface Callback01e<T>{
         public T apply();
     }
     /**
@@ -36,6 +44,10 @@ public class Callback {
     @FunctionalInterface
     public interface Callback20<T1,T2>{
         public void apply(T1 t1,T2 t2);
+    }
+    @FunctionalInterface
+    public interface Callback20e<T1,T2>{
+        public void apply(T1 t1,T2 t2) throws Exception;
     }
     @FunctionalInterface
     public interface Callback21<R,T1,T2>{

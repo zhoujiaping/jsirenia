@@ -24,20 +24,20 @@ public class StringExtUtils {
         return StringUtils.overlay(certNo, replace, 3, len - 4);
     }
 
-    public static String tailBankcard(String bankCard) {
+    public static String overlayBankcard(String bankCard) {
         if (bankCard == null) {
             return "";
         }
         return StringUtils.overlay(bankCard, "", 0, bankCard.length() - 4);
     }
 
-    public static String overlayCustName(String custName) {
-        if (custName == null) {
+    public static String overlayUserNameCn(String userName) {
+        if (userName == null) {
             return "";
         }
-        int len = custName.length();
+        int len = userName.length();
         String replace = StringUtils.repeat("*", len - 1);
-        return StringUtils.overlay(custName, replace, 1, len);
+        return StringUtils.overlay(userName, replace, 1, len);
     }
 
     public static String overlayAddress(String addr) {

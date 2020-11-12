@@ -1,5 +1,6 @@
 package org.jsirenia.lock;
 
+import org.jsirenia.util.Callback;
 import org.jsirenia.util.Callback.Callback01;
 import org.springframework.util.Assert;
 
@@ -14,7 +15,7 @@ public class RetryableRedisLockRunner<T> extends SpringRedisLockRunner<T>{
 	private long sleepMillisecond = 20;
 	private boolean executed;//为了防止执行后各配置被修改，加一个是否正执行过的标记。执行过就不允许修改配置。
 	private int tryedTimes = 0;
-	private Callback01<T> onGetLockSuccess;
+	private Callback.Callback01e<T> onGetLockSuccess;
 	private void ensureNotAtExecuting(){
 		if(executed){
 			throw new RuntimeException("已经执行过，某些操作不被支持");
@@ -43,7 +44,7 @@ public class RetryableRedisLockRunner<T> extends SpringRedisLockRunner<T>{
 		return this;
 	}
 	@Override
-	public T apply(Callback01<T> onGetLockSuccess) {
+	public T apply(Callback.Callback01e<T> onGetLockSuccess) {
 		this.onGetLockSuccess = onGetLockSuccess;
 		return super.apply(onGetLockSuccess);
 	}

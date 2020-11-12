@@ -4,9 +4,9 @@ import org.jsirenia.util.Callback;
 
 public class LazyRef<T> {
     private volatile T value;
-    private Callback.Callback01<T> initializer;
+    private Callback.Callback01e<T> initializer;
 
-    public LazyRef(Callback.Callback01<T> initializer){
+    public LazyRef(Callback.Callback01e<T> initializer){
         if(initializer==null){
             throw new RuntimeException("LazyRef构造器的initializer不能为空");
         }

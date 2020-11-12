@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 
 import org.jsirenia.defer.Defer;
 import org.jsirenia.reflect.PackageUtil;
+import org.jsirenia.util.StringExtUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
@@ -140,13 +141,12 @@ public class FastJsonLogUtil {
 	private static void configDesensitizers(SerializeConfig config, Set<Class<?>> clazzSet)
 			throws ClassNotFoundException, IOException, URISyntaxException {
 		Map<String, Desensitizer> desensitizers = new HashMap<>();
-		desensitizers.put("certifyNo", StringExtUtil::overlayCertifyNo);
-		desensitizers.put("legalCertifyNo", StringExtUtil::overlayCertifyNo);
-		desensitizers.put("fullName", StringExtUtil::overlayUserNameCN);
-		desensitizers.put("legalPerson", StringExtUtil::overlayUserNameCN);
-		desensitizers.put("pwd", StringExtUtil::overlayPwd);
-		desensitizers.put("mobilePhone", StringExtUtil::overlayMobileNo);
-		desensitizers.put("legalMobileNo", StringExtUtil::overlayMobileNo);
+		desensitizers.put("certifyNo", StringExtUtils::overlayCertNo);
+		desensitizers.put("legalCertifyNo", StringExtUtils::overlayCertNo);
+		desensitizers.put("fullName", StringExtUtils::overlayUserNameCn);
+		desensitizers.put("legalPerson", StringExtUtils::overlayUserNameCn);
+		desensitizers.put("mobilePhone", StringExtUtils::overlayPhoneNo);
+		desensitizers.put("legalMobileNo", StringExtUtils::overlayPhoneNo);
 		
 		FastJsonLogUtil.desensitizers.putAll(desensitizers);
 		clazzSet.stream().forEach(clazz -> {

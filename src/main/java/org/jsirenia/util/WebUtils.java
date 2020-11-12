@@ -13,7 +13,7 @@ public abstract class WebUtils {
     private static Logger logger = LoggerFactory.getLogger(WebUtils.class);
 
     public static void writeJson(Object data) throws IOException {
-        HttpServletResponse resp = HttpServletHolder.getCurrentResponse();
+        HttpServletResponse resp = null;//HttpServletHolder.getCurrentResponse();
         resp.setCharacterEncoding("utf-8");
         resp.setContentType("application/json;charset=utf-8");
         String json = JSON.toJSONString(data);
@@ -53,7 +53,4 @@ public abstract class WebUtils {
         return ip;
     }
 
-    public static void redirect(String errorPage) throws IOException {
-        HttpServletHolder.getCurrentResponse().sendRedirect(errorPage);
-    }
 }

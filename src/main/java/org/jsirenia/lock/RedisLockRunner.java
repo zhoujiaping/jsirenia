@@ -3,6 +3,7 @@ package org.jsirenia.lock;
 import java.util.Arrays;
 import java.util.UUID;
 
+import org.jsirenia.util.Callback;
 import org.jsirenia.util.Callback.Callback01;
 import org.jsirenia.util.Callback.Callback11;
 import org.slf4j.Logger;
@@ -16,7 +17,7 @@ import redis.clients.jedis.Jedis;
  * 固定次数重试模式，每隔一小段时间重试获取锁，如果最后仍然获取不到锁，就返回失败。
  * 使用了模板方法模式和适配器模式、回调风格。在成功获取锁之后、获取锁异常、获取锁失败、释放锁成功等各个点设计了回调。
  */
-public class RedisLockRunner<T> implements Callback11<T,Callback01<T>> {
+public class RedisLockRunner<T>{
 	private static final Logger logger = LoggerFactory.getLogger(RedisLockRunner.class);
 	private RedisLock redisDistLock;
 	private String lockKey;
@@ -37,7 +38,7 @@ public class RedisLockRunner<T> implements Callback11<T,Callback01<T>> {
 
 	/**
 	 * 
-	 * @param redisLock
+	 * @param redisDistLock
 	 * @param lockKey
 	 * @param expireTime
 	 *            锁的过期时间，单位秒
@@ -107,8 +108,7 @@ public class RedisLockRunner<T> implements Callback11<T,Callback01<T>> {
 	protected RedisLockRunner<T> withRetryTimes(int retryTimes) {
 		return this.withRetryTimes(retryTimes, this.sleepMillisecond);
 	}
-	@Override
-	public T apply(Callback01<T> onGetLockSuccess) {
+	public T apply(Callback.Callback01e<T> onGetLockSuccess) {
 		try {
 			executed = true;
 			return executeInternal(onGetLockSuccess);
@@ -117,7 +117,7 @@ public class RedisLockRunner<T> implements Callback11<T,Callback01<T>> {
 		}
 	}
 
-	private T executeInternal(Callback01<T> onGetLockSuccess) throws InterruptedException {
+	private T executeInternal(Callback.Callback01e<T> onGetLockSuccess) throws InterruptedException {
 		// boolean locked = redisLock.setValueNxExpire(lockKey,requestId,
 		// ""+expireTime);
 		boolean locked = false;

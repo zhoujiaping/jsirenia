@@ -5,17 +5,21 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8e3df83b-2cb9-4e0d-9321-ddf5159d1bf9" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/jsirenia/log/JsonLogUtil.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/jsirenia/util/ExceptionUtils.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/jsirenia/util/StringExtUtils.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/jsirenia/util/WebUtils.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/jsirenia/util/ZipUtils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_commons_commons_pool2_2_0.xml" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/jsirenia/util/EnumUtil.groovy" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/jsirenia.iml" beforeDir="false" afterPath="$PROJECT_DIR$/jsirenia.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/groovy-demo/svnIgnore.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/groovy-demo/svnIgnore.groovy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/groovy/svnIgnore.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/groovy/svnIgnore.groovy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/jsirenia/data/DataChecker.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/jsirenia/druid/DruidDataSourceFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/jsirenia/druid/DruidDataSourceFactory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/jsirenia/dubbo/FastJsonLogUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/jsirenia/dubbo/FastJsonLogUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/jsirenia/lazy/LazyRef.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/jsirenia/lazy/LazyRef.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/jsirenia/lock/RedisLockRunner.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/jsirenia/lock/RedisLockRunner.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/jsirenia/lock/RetryableRedisLockRunner.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/jsirenia/lock/RetryableRedisLockRunner.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/jsirenia/lock/SpringRedisLockRunner.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/jsirenia/lock/SpringRedisLockRunner.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/jsirenia/lock/TimeoutRedisLockRunner.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/jsirenia/lock/TimeoutRedisLockRunner.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/jsirenia/log/JsonLogUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/jsirenia/log/JsonLogUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/jsirenia/util/Callback.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/jsirenia/util/Callback.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/jsirenia/util/StringExtUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/jsirenia/util/StringExtUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/jsirenia/util/WebUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/jsirenia/util/WebUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/jsirenia/util/ZipUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/jsirenia/util/ZipUtils.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -76,14 +80,28 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.PathUtil">
-    <configuration name="Defer" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="org.jsirenia.defer.Defer" />
+  <component name="RunManager" selected="Application.EnumUtil (1)">
+    <configuration name="EnumUtil (1)" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="org.jsirenia.util.EnumUtil" />
       <module name="jsirenia" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="org.jsirenia.defer.*" />
+          <option name="PATTERN" value="org.jsirenia.util.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="EnumUtil" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="org.jsirenia.util.EnumUtil" />
+      <module name="jsirenia" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.jsirenia.util.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -125,16 +143,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="UpdateOverDueFee" type="GroovyScriptRunConfiguration" factoryName="Groovy" temporary="true">
-      <setting name="path" value="file://D:/user/01375156/桌面/groovy/云信/UpdateOverDueFee.groovy" />
-      <setting name="vmparams" value="" />
-      <setting name="params" value="" />
-      <setting name="workDir" value="file://D:/user/01375156/桌面/groovy/云信" />
-      <setting name="debug" value="false" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="svnIgnore" type="GroovyScriptRunConfiguration" factoryName="Groovy" temporary="true">
       <module name="jsirenia" />
       <setting name="path" value="file://$PROJECT_DIR$/src/main/resources/groovy/svnIgnore.groovy" />
@@ -163,19 +171,19 @@
       </method>
     </configuration>
     <list>
-      <item itemvalue="Application.Defer" />
       <item itemvalue="Application.TomcatStarter" />
       <item itemvalue="Application.PathUtil" />
-      <item itemvalue="Groovy.UpdateOverDueFee" />
       <item itemvalue="Groovy.svnIgnore" />
+      <item itemvalue="Application.EnumUtil" />
+      <item itemvalue="Application.EnumUtil (1)" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.EnumUtil (1)" />
+        <item itemvalue="Application.EnumUtil" />
         <item itemvalue="Application.PathUtil" />
         <item itemvalue="Application.TomcatStarter" />
         <item itemvalue="Groovy.svnIgnore" />
-        <item itemvalue="Application.Defer" />
-        <item itemvalue="Groovy.UpdateOverDueFee" />
       </list>
     </recent_temporary>
   </component>
@@ -292,6 +300,12 @@
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
+    <watches-manager>
+      <configuration name="Application">
+        <watch expression="HttpMethod.isAssignableFrom(it.class)" language="Groovy" />
+        <watch expression="it.get().class.name" language="Groovy" />
+      </configuration>
+    </watches-manager>
   </component>
   <component name="masterDetails">
     <states>

@@ -2,6 +2,7 @@ package org.jsirenia.lock;
 
 import java.util.UUID;
 
+import org.jsirenia.util.Callback;
 import org.jsirenia.util.Callback.Callback01;
 import org.jsirenia.util.Callback.Callback11;
 import org.slf4j.Logger;
@@ -12,7 +13,7 @@ import org.slf4j.LoggerFactory;
  * 应用该模板，在获取redis锁成功，失败，释放redis锁成功，失败，异常时，自定义行为。
  * 默认在获取锁失败、释放锁失败、释放锁异常的时候，打印日志并抛出异常。
  * */
-public abstract class SpringRedisLockRunner<T> implements Callback11<T,Callback01<T>>{
+public abstract class SpringRedisLockRunner<T>{
 	protected Logger logger = LoggerFactory.getLogger(SpringRedisLockRunner.class);
 	private RedisLock redisLock;
 	protected String lockKey;
@@ -44,8 +45,7 @@ public abstract class SpringRedisLockRunner<T> implements Callback11<T,Callback0
 		logger.error("释放redis锁异常,lockKey={},requestId={}",lockKey, requestId,e);
 		throw new RuntimeException(e);
 	}
-	@Override
-	public T apply(Callback01<T> cb) {
+	public T apply(Callback.Callback01e<T> cb) {
 		//boolean locked = redisLock.setValueNxExpire(lockKey,requestId, ""+expireTime);
 		boolean locked = redisLock.tryGetDistributedLock(lockKey, requestId, expireTime*1000);
 		if(locked){
