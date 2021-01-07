@@ -15,32 +15,39 @@ public class JdkLock implements RedisLock{
 	private Lock lock = new ReentrantLock();
 	@Override
 	public boolean tryGetDistributedLock(String lockKey, String requestId, long expireTime) {
-		try{
-			lock.tryLock();
-			if(cb.asMap().containsKey(lockKey)){//虽然用的是可重入锁，但是这里不能支持重入。
-				return false;
+		if(lock.tryLock()){
+			try{
+				if(cb.asMap().containsKey(lockKey)){//虽然用的是可重入锁，但是这里不能支持重入。
+					return false;
+				}
+				Lock l = new ReentrantLock();
+				cb.put(lockKey, l);
+				return l.tryLock();
+			}catch(Exception e){
+				throw new RuntimeException(e);
+			}finally{
+				lock.unlock();
 			}
-			Lock l = new ReentrantLock();
-			cb.put(lockKey, l);
-			return l.tryLock();
-		}catch(Exception e){
-			throw new RuntimeException(e);
-		}finally{
-			lock.unlock();
+		}else{
+			return false;
 		}
 	}
 
 	@Override
 	public boolean releaseDistributedLock(String lockKey, String requestId) {
-		try{
-			lock.tryLock();
-			Lock l = cb.asMap().remove(lockKey);
-			if(l!=null){
-				l.unlock();
+		if(lock.tryLock()){
+			try{
+
+				Lock l = cb.asMap().remove(lockKey);
+				if(l!=null){
+					l.unlock();
+				}
+				return true;
+			}finally{
+				lock.unlock();
 			}
-			return true;
-		}finally{
-			lock.unlock();
+		}else{
+			return false;
 		}
 	}
 	public static void main(String[] args) {
